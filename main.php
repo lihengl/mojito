@@ -1,17 +1,19 @@
 <?php
-require 'empty_element.php';
+require 'markup_element.php';
 
 session_start();
 //session_regenerate_id(true); 
 
 $_SESSION['user_id'] = 0;
 
-$element = new EmptyElement("hr");
-$element->indent_level = 4;
-$element->attributes = array("id"=>array("weibar"), "class"=>array("girl", "hot"));
 
-echo $element->compose();
+$text = new TextElement("hello world!");
 
+$markup = new HtmlElement("h1");
+$markup->add_attribute("id", "lihengl");
+$markup->add_child($text);
+
+echo $markup->compose("    ", 0);
 
 $_SESSION = array();
 
