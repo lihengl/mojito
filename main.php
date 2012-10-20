@@ -6,9 +6,9 @@ session_start();
 
 $_SESSION['user_id'] = 0;
 
-$element = new EmptyElement("hr", 0);
-$element->id_attribute = "break";
-$element->class_attribute = array("breaker", "rock");
+$element = new EmptyElement("hr");
+$element->indent_level = 4;
+$element->attributes = array("id"=>array("weibar"), "class"=>array("girl", "hot"));
 
 echo $element->compose();
 
