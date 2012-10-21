@@ -1,4 +1,6 @@
 <?php
+require 'markup_attributes.php';
+
 interface Composable
 {
     public function compose($indent_unit, $indent_level);
@@ -9,36 +11,14 @@ class HtmlElement implements Composable
     public static $empty_tag_names = array("br", "hr", "meta", "link");
 
     private $tag_name;
-    private $attributes;
     private $children;
+
+    public $attributes;    
 
     public function __construct($name) {
         $this->tag_name = $name;
-        $this->attributes = array();
+        $this->attributes = new MarkupAttributes();
         $this->children = array();
-    }
-
-    public function add_attribute($name, $value) {
-
-        if (count($this->attributes) == 0) {
-            $this->attributes = array($name=>array($value));
-        } else if (array_key_exists($name, $this->attributes)) {
-            $values = $this->attributes[$name];
-
-            if (in_array($value, $values)) {
-                // value already exist, do nothing
-            } else {
-                array_push($this->attributes[$name], $value);                
-            }
-
-        } else {
-            array_push($this->attributes[$name], $value);
-        }
-
-    }
-
-    public function remove_attribute($name, $value) {
-        // TODO
     }
 
     public function add_child(Composable $element) {
@@ -49,13 +29,12 @@ class HtmlElement implements Composable
         $result = "";
         $indent = str_repeat($indent_unit, $indent_level);
 
-        $opening = $indent;
-        $opening .= "<" . $this->tag_name;
+        $opening = $indent . "<" . $this->tag_name;
 
-        foreach ($this->attributes as $name=>$values) {
-            $opening .= " ";
-            $opening .= $name . '="';
-            $opening .= implode(" ", $values) . '"';
+        $attribute = $this->attributes->serialize();
+
+        if ($attribute != "") {
+            $attribute = " " . $attribute;
         }
 
         $closing = "";
@@ -81,7 +60,7 @@ class HtmlElement implements Composable
             $closing = ": error closing markup>";
         }
 
-        $result = $opening . $closing . "\n";
+        $result = $opening . $attribute . $closing . "\n";
 
         return $result;
     }
@@ -96,9 +75,7 @@ class TextElement implements Composable
     }
 
     public function compose($indent_unit, $indent_level) {
-        $result = "";
         $indent = str_repeat($indent_unit, $indent_level);
-
         $result = $indent . $this->content . "\n";
 
         return $result;
