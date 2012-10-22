@@ -10,6 +10,8 @@ $composer = new MarkupComposer();
 
 $heading = new H1Element("貨物運輸保險理賠案例");
 
+$line = new HrElement();
+
 $img = new ImgElement("img.png", "NOT FOUND");
 $img->attributes->others->set("title", "chiehli and jean");
 $img->attributes->id->set("girls");
@@ -30,6 +32,7 @@ $script = new ScriptElement("jscript.js");
 
 $body = new BodyElement();
 $body->children->add($heading);
+$body->children->add($line);
 $body->children->add($img);
 $body->children->add($pgh);
 $body->children->add($script);

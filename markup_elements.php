@@ -264,6 +264,25 @@ class HtmlElement implements Composable
     }
 }
 
+class HrElement implements Composable
+{
+    public static $TAG_NAME = "hr";
+
+    public $attributes;
+
+    public function __construct() {
+        $this->attributes = new MarkupAttributes();
+    }
+
+    public function name() {
+        return HrElement::$TAG_NAME;
+    }
+
+    public function schema() {
+        return Composable::EMPTY_SCHEMA;
+    }
+}
+
 class ImgElement implements Composable
 {
     public static $TAG_NAME = "img";
