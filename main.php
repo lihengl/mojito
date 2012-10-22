@@ -8,7 +8,7 @@ $_SESSION['user_id'] = 0;
 
 $composer = new MarkupComposer();
 
-$heading = new H1Element("貨物運輸保險理賠案例");
+$heading = new H1Element("MOJITO");
 
 $line = new HrElement();
 
@@ -30,11 +30,15 @@ $pgh->children->add($tx2);
 
 $script = new ScriptElement("jscript.js");
 
+$div = new DivElement();
+$div->attributes->id->set("main_div");
+$div->children->add($heading);
+$div->children->add($line);
+$div->children->add($img);
+$div->children->add($pgh);
+
 $body = new BodyElement();
-$body->children->add($heading);
-$body->children->add($line);
-$body->children->add($img);
-$body->children->add($pgh);
+$body->children->add($div);
 $body->children->add($script);
 
 $link = new LinkElement("style.css", "text/css", "stylesheet");

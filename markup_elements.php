@@ -78,6 +78,27 @@ class BrElement implements Composable
     }
 }
 
+class DivElement implements Composable
+{
+    public static $TAG_NAME = "div";
+
+    public $attributes;
+    public $children;
+
+    public function __construct() {
+        $this->attributes = new MarkupAttributes();
+        $this->children = new ElementChildren();
+    }
+
+    public function name() {
+        return DivElement::$TAG_NAME;
+    }
+
+    public function schema() {
+        return Composable::PAIRED_SCHEMA;
+    }
+}
+
 class HeadElement implements Composable
 {
     public static $TAG_NAME = "head";
@@ -365,6 +386,27 @@ class PElement implements Composable
 
     public function name() {
         return PElement::$TAG_NAME;
+    }
+
+    public function schema() {
+        return Composable::PAIRED_SCHEMA;
+    }
+}
+
+class SpanElement implements Composable
+{
+    public static $TAG_NAME = "span";
+
+    public $attributes;
+    public $children;
+
+    public function __construct() {
+        $this->attributes = new MarkupAttributes();
+        $this->children = new ElementChildren();
+    }
+
+    public function name() {
+        return SpanElement::$TAG_NAME;
     }
 
     public function schema() {
