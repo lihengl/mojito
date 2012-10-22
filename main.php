@@ -1,5 +1,5 @@
 <?php
-require 'markup_element.php';
+require 'markup_elements.php';
 
 session_start();
 //session_regenerate_id(true); 
@@ -9,6 +9,7 @@ $_SESSION['user_id'] = 0;
 $composer = new MarkupComposer();
 
 $img = new ImgElement("img.jpg", "NOT FOUND");
+$img->attributes->others->set("title", "chiehli and jean");
 
 $tx1 = new TextElement("hello returned text one.");
 $tx2 = new TextElement("hello returned text two.");
