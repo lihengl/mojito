@@ -14,7 +14,7 @@ class ElementChildren
         array_push($this->elements, $element);
     }
 
-    public function get_all() {
+    public function all() {
         return $this->elements;
     }
 }

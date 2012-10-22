@@ -99,7 +99,7 @@ class MarkupComposer
             $composition .= ">\n";
 
             $child_level = $indent_level + 1;
-            $children = $element->children->get_all();
+            $children = $element->children->all();
             foreach ($children as $child_element) {
                 $composition .= $this->compose($child_element, $child_level);
             }
