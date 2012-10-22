@@ -8,11 +8,14 @@ $_SESSION['user_id'] = 0;
 
 $composer = new MarkupComposer();
 
-$img = new ImgElement("img.jpg", "NOT FOUND");
-$img->attributes->others->set("title", "chiehli and jean");
+$heading = new H1Element("貨物運輸保險理賠案例");
 
-$tx1 = new TextElement("hello returned text one.");
-$tx2 = new TextElement("hello returned text two.");
+$img = new ImgElement("img.png", "NOT FOUND");
+$img->attributes->others->set("title", "chiehli and jean");
+$img->attributes->id->set("girls");
+
+$tx1 = new TextElement("中文中文中文");
+$tx2 = new TextElement("Englih English English");
 $lbr = new BrElement();
 
 $pgh = new PElement();
@@ -23,8 +26,28 @@ $pgh->children->add($tx1);
 $pgh->children->add($lbr);
 $pgh->children->add($tx2);
 
-echo $composer->compose($img, 0);
-echo $composer->compose($pgh, 0);
+$script = new ScriptElement("jscript.js");
+
+$body = new BodyElement();
+$body->children->add($heading);
+$body->children->add($img);
+$body->children->add($pgh);
+$body->children->add($script);
+
+$link = new LinkElement("style.css", "text/css", "stylesheet");
+$title = new TitleElement("testdrive");
+$meta = new MetaElement("charset", "UTF-8");
+$head = new HeadElement();
+$head->children->add($meta);
+$head->children->add($title);
+$head->children->add($link);
+
+$html = new HtmlElement();
+$html->children->add($head);
+$html->children->add($body);
+
+echo "<!DOCTYPE html>\n";
+echo $composer->compose($html, 0);
 
 $_SESSION = array();
 
