@@ -10,8 +10,6 @@ $composer = new MarkupComposer();
 
 $heading = new H1Element("MOJITO");
 
-$line = new HrElement();
-
 $img = new ImgElement("img.png", "NOT FOUND");
 $img->attributes->others->set("title", "chiehli and jean");
 $img->attributes->id->set("girls");
@@ -28,14 +26,14 @@ $pgh->children->add($tx1);
 $pgh->children->add($lbr);
 $pgh->children->add($tx2);
 
-$script = new ScriptElement("jscript.js");
+$script = new ScriptElement("script.js");
 
 $div = new DivElement();
 $div->attributes->id->set("main_div");
 $div->children->add($heading);
-$div->children->add($line);
 $div->children->add($img);
 $div->children->add($pgh);
+
 
 $body = new BodyElement();
 $body->children->add($div);

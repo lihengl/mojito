@@ -38,6 +38,33 @@ class TextElement implements Composable
     }
 }
 
+class AElement implements Composable
+{
+    public static $TAG_NAME = "a";
+    public static $HREF_NAME = "href";
+
+    public $attributes;
+    public $children;
+
+    public function __construct($href_value, $link_text) {
+        $this->attributes = new MarkupAttributes();
+        $this->children = new ElementChildren();
+
+        $this->attributes->others->set(AElement::$HREF_NAME, $href_value);
+
+        $content_element = new TextElement($link_text);
+        $this->children->add($content_element);
+    }
+
+    public function name() {
+        return AElement::$TAG_NAME;
+    }
+
+    public function schema() {
+        return Composable::PAIRED_SCHEMA;
+    }
+}
+
 class BodyElement implements Composable
 {
     public static $TAG_NAME = "body";
