@@ -52,6 +52,8 @@ $html->children->add($body);
 echo "<!DOCTYPE html>\n";
 echo $composer->compose($html, 0);
 
+echo "memory usage: " . memory_get_usage();
+
 $_SESSION = array();
 
 session_destroy();
