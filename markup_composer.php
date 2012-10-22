@@ -107,7 +107,7 @@ class MarkupComposer
             $composer = $this->closing_composer;
             $composition .= $composer->indent_compose($element, $indent);            
         } else {
-            echo "[MarkupComposer] Error: Unknown compose schema";
+            echo "[MarkupComposer] Error: Unknown composite schema";
         }
 
         $composition .= "\n";

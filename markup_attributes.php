@@ -1,90 +1,100 @@
 <?php
-class MarkupAttributes
+class IdAttribute
 {
-    public static $ID_NAME = "id";
-    public static $CLASS_NAME = "class";
+    public static $NAME = "id";
 
-    private $id;
-    private $classes;
-    private $others;
+    private $value;
 
     public function __construct() {
-        $this->id = "";
-        $this->classes = array();        
-        $this->others = array();
+        $this->value = "";
     }
 
-    private function set_classes($value) {
-        $success = false;
+    public function set($id_value) {
+        $this->value = $id_value;
+    }
 
-        if (in_array($value, $this->classes)) {
-            $success = false;
+    public function get() {
+        return $this->value;
+    }
+
+    public function compose() {
+        if ($this->value == "") {
+            return "";
         } else {
-            array_push($this->classes, $value);
-            $success = true;
+            return IdAttribute::$NAME . '="' . $this->value . '"';
         }
+    }
+}
 
-        return $success;
+class ClassesAttribute
+{
+    public static $NAME = "class";
+
+    private $values;
+
+    public function __construct() {
+        $this->values = array();
     }
 
-    private function set_others($name, $value) {
-        $success = false;
+    public function set($class_value) {
+        $this->values = array($class_value);
+    }
 
-        if (array_key_exists($name, $this->others)) {
-            $success = false;
+    public function add($class_value) {
+        if (in_array($class_value, $this->values)) {
+            // value already exists, do nothing
         } else {
-            $success = true;
+            array_push($this->values, $class_value);
         }
-
-        $this->others[$name] = $value;
-
-        return $success;
     }
 
-    public function add($name, $value) {
-        $success = false;
-
-        if ($name == MarkupAttributes::$ID_NAME) {
-            $this->id = $value;
-            $success = true;
-        } else if ($name == MarkupAttributes::$CLASS_NAME) {
-            $success = $this->set_classes($value);
+    public function compose() {
+        if (count($this->values) == 0) {
+            return "";
         } else {
-            $success = $this->set_others($name, $value);
+            $to_string = implode(" ", $this->values);
+            return ClassesAttribute::$NAME . '="' . $to_string . '"';
         }
+    }
+}
 
-        return $success;
+class OtherAttributes
+{
+    private $values;
+
+    public function __construct() {
+        $this->values = array();
     }
 
-    public function remove($name, $value) {
-        // TODO
+    public function set($name, $value) {
+        $this->values[$name] = $value;
     }
 
-    public function serialize() {
-        $series = array();
-
-        if ($this->id != "") {
-            $id_series = MarkupAttributes::$ID_NAME . '="' . $this->id . '"';
-            array_push($series, $id_series);
-        }
-
-        if (count($this->classes) > 0) {
-            $class_string = implode(" ", $this->classes);
-            $class_series = MarkupAttributes::$CLASS_NAME;
-            $class_series .= '="' . $class_string . '"';
-            array_push($series, $class_series);
-        }
-
-        if (count($this->others) > 0) {
-            foreach ($this->others as $name=>$value) {
-                $other_series = $name . '="' . $value . '"';
-                array_push($series, $other_series);
+    public function compose() {
+        if (count($this->values) == 0) {
+            return "";
+        } else {
+            $to_array = array();
+            $to_string = "";
+            foreach ($this->values as $name=>$value) {
+                $to_string = $name . '="' . $value . '"';
+                array_push($to_array, $to_string);
             }
+            return implode(" ", $to_array);
         }
+    }
+}
 
-        $serialized = implode(" ", $series);
+class MarkupAttributes
+{
+    public $id;
+    public $classes;
+    public $others;
 
-        return $serialized;
+    public function __construct() {
+        $this->id = new IdAttribute();
+        $this->classes = new ClassesAttribute();
+        $this->others = new OtherAttributes();
     }
 }
 ?>

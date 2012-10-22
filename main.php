@@ -6,22 +6,24 @@ session_start();
 
 $_SESSION['user_id'] = 0;
 
+$composer = new MarkupComposer();
 
-$text_first = new TextElement("This is text content one.");
-$markup_break = new HtmlElement("br");
-$text_second = new TextElement("This is text content two.");
-$markup_paragraph = new HtmlElement("p");
+$img = new ImgElement("img.jpg", "NOT FOUND");
 
-$markup_paragraph->add_child($text_first);
-$markup_paragraph->add_child($markup_break);
-$markup_paragraph->add_child($text_second);
+$tx1 = new TextElement("hello returned text one.");
+$tx2 = new TextElement("hello returned text two.");
+$lbr = new BrElement();
 
-$markup_paragraph->attributes->add("id", "yukuan");
-$markup_paragraph->attributes->add("class", "ycombinator");
-$markup_paragraph->attributes->add("class", "summer12");
-$markup_paragraph->attributes->add("alt", "google");
+$pgh = new PElement();
+$pgh->attributes->id->set("document");
+$pgh->attributes->classes->set("main");
+$pgh->attributes->classes->add("focus");
+$pgh->children->add($tx1);
+$pgh->children->add($lbr);
+$pgh->children->add($tx2);
 
-echo $markup_paragraph->compose("    ", 0);
+echo $composer->compose($img, 0);
+echo $composer->compose($pgh, 0);
 
 $_SESSION = array();
 
