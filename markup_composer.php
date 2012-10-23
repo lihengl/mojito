@@ -100,6 +100,7 @@ class MarkupComposer
 
             $child_level = $indent_level + 1;
             $children = $element->children->all();
+            
             foreach ($children as $child_element) {
                 $composition .= $this->compose($child_element, $child_level);
             }
