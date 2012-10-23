@@ -9,17 +9,13 @@ $composer = new MarkupComposer();
 
 $_heading = "MOJITO";
 $_title_text = "MOJITO - memory usage: ";
-$_src = "http://sphotos-d.ak.fbcdn.net/hphotos-ak-snc7/296_21167094371_8606_n.jpg";
-$_alt = "Hsu-Chuan Tai";
 $_charset = "charset";
 $_charset_val = "UTF-8";
 
 $heading = new H1Element($_heading);
-$img = new ImgElement($_src, $_alt);
 
 $body = new BodyElement();
 $body->children->add($heading);
-$body->children->add($img);
 
 $title_content = $_title_text . memory_get_usage();
 $title = new TitleElement($title_content);
