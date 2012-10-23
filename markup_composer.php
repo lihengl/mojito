@@ -1,122 +1,104 @@
 <?php
 interface Composable
 {
-    const TEXT_ELEMENT = "composition of text element";
-    const EMPTY_ELEMENT = "composition of empty element";
-    const PAIRED_ELEMENT = "composition of paired element";
-
-    const SINGLEVALUE_ATTRIBUTE = "composition of one to one attribute";
-    const MULTIVALUE_ATTRIBUTE = "composition of one to many attribute";    
+    const TEXT_ELEMENT_SCHEMA = "schema for text element";
+    const EMPTY_ELEMENT_SCHEMA = "schema for empty markup element";
+    const PAIRED_ELEMENT_SCHEMA = "schema of paired markup element";
 
     public function name();
     public function schema();
 }
 
-interface Composer
-{
-    public function indent_compose(Composable $element, $indent);
-}
-
-class TextComposer implements Composer
-{
-    public function indent_compose(Composable $element, $indent) {
-        $composed_text = $indent . $element->content;
-
-        return $composed_text;
-    }
-}
-
-class OpeningComposer implements Composer
-{
-    public function indent_compose(Composable $element, $indent) {
-        $composed_opening = $indent . "<" . $element->name();
-
-        $id_composed = $element->attributes->id->compose();
-        
-        if ($id_composed != "") {
-            $composed_opening .= " " . $id_composed;
-        } else {
-            // id attribute not specified, do nothing
-        }
-
-        $classes_composed = $element->attributes->classes->compose();
-        
-        if ($classes_composed != "") {
-            $composed_opening .= " " . $classes_composed;
-        } else {
-            // class attribute not specified, do nothing
-        }
-
-        $misc_composed = $element->attributes->others->compose();
-
-        if ($misc_composed != "") {
-            $composed_opening .= " " . $misc_composed;
-        } else {
-            // no misc attributes, do nothing
-        }
-
-        return $composed_opening;  
-    }
-}
-
-class ClosingComposer implements Composer
-{
-    public function indent_compose(Composable $element, $indent) {
-        $composed_closing = $indent . "</" . $element->name() . ">";
-
-        return $composed_closing;
-    }
-}
-
 class MarkupComposer
 {
+    public static $HTML5_DOCTYPE = "<!DOCTYPE html>";
+
     public static $INDENT_UNIT = "    ";
 
-    private $text_composer;
-    private $opening_composer;
-    private $closing_composer;
+    public static $OPENING_CHAR = "<";
+    public static $CLOSING_CHAR = ">";
+    public static $EMPTYCLOSE_CHAR = " />";
+    public static $OPENCLOSE_CHAR = "</";
 
-    public function __construct() {
-        $this->text_composer = new TextComposer();
-        $this->opening_composer = new OpeningComposer();
-        $this->closing_composer = new ClosingComposer();
+    private function compose_text(Composable $element, $indent) {
+        $markup = $element->content;
+
+        return $indent . $markup;
+    }
+
+    private function compose_opening(Composable $element) {
+        $opening = MarkupComposer::$OPENING_CHAR . $element->name();
+
+        $attr_value = $element->attributes->all();
+        $attr_markups = array();
+        $attr_markup = "";
+
+        foreach ($attr_value as $name=>$values) {
+            $value = implode(" ", $values);
+            $attr_markup = $name . '="' . $value . '"';
+            array_push($attr_markups, $attr_markup);
+        }
+
+        $attribute = implode(" ", $attr_markups);
+
+        if ($attribute == "") {
+            $markup = $opening;
+        } else {
+            $markup = $opening . " " . $attribute;
+        }
+
+        return $markup;
+    }
+
+    private function compose_content(Composable $element, $child_level) {
+        $content = "";
+        $children = $element->children->all();
+
+        foreach ($children as $child) {
+            $content .= $this->compose($child, $child_level);
+        }
+
+        return $content;
     }
 
     public function compose(Composable $element, $indent_level) {
         $indent = str_repeat(MarkupComposer::$INDENT_UNIT, $indent_level);
         $schema = $element->schema();
 
-        $composition = "";
-        $composer = NULL;
+        if ($schema == Composable::TEXT_ELEMENT_SCHEMA) {
+            $composed = $this->compose_text($element, $indent);
+        } else if ($schema == Composable::EMPTY_ELEMENT_SCHEMA) {
+            $opening = $this->compose_opening($element);
+            $closing = MarkupComposer::$EMPTYCLOSE_CHAR;
 
-        if ($schema == Composable::TEXT_ELEMENT) {
-            $composer = $this->text_composer;
-            $composition = $composer->indent_compose($element, $indent);
-        } else if ($schema == Composable::EMPTY_ELEMENT) {
-            $composer = $this->opening_composer;
-            $composition = $composer->indent_compose($element, $indent);
-            $composition .= " />";            
-        } else if ($schema == Composable::PAIRED_ELEMENT) {
-            $composer = $this->opening_composer;
-            $composition = $composer->indent_compose($element, $indent);
-            $composition .= ">\n";
+            $composed = $indent . $opening . $closing;
+        } else if ($schema == Composable::PAIRED_ELEMENT_SCHEMA) {
+            $opening = $this->compose_opening($element);
+
+            if (count($element->attributes->all()) > 0) {
+                $opening .= " " . MarkupComposer::$CLOSING_CHAR;
+            } else {
+                $opening .= MarkupComposer::$CLOSING_CHAR;
+            }
 
             $child_level = $indent_level + 1;
-            $children = $element->children->all();
+            $content = $this->compose_content($element, $child_level);
 
-            foreach ($children as $child_element) {
-                $composition .= $this->compose($child_element, $child_level);
-            }
- 
-            $composer = $this->closing_composer;
-            $composition .= $composer->indent_compose($element, $indent);            
+            $closing = MarkupComposer::$OPENCLOSE_CHAR . $element->name();
+            $closing .= MarkupComposer::$CLOSING_CHAR;
+
+            $composed = "";
+
+            $composed .= $indent . $opening . "\n";
+            $composed .= $content;
+            $composed .= $indent . $closing; 
         } else {
             echo "[MarkupComposer] Error: Unknown composite schema";
         }
 
-        $composition .= "\n";
+        $composed .= "\n";
 
-        return $composition;
+        return $composed;
     }
 }
 ?>

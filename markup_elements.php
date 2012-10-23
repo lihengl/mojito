@@ -1,8 +1,8 @@
 <?php
-require 'markup_attributes.php';
-require 'markup_composer.php';
+require_once 'markup_attributes.php';
+require_once 'markup_composer.php';
 
-class ElementChildren
+class MarkupChildren
 {
     private $elements;
 
@@ -34,23 +34,23 @@ class TextElement implements Composable
     }
 
     public function schema() {
-        return Composable::TEXT_ELEMENT;
+        return Composable::TEXT_ELEMENT_SCHEMA;
     }
 }
 
 class AElement implements Composable
 {
     public static $NAME = "a";
-    public static $HREF_NAME = "href";
 
     public $attributes;
     public $children;
 
     public function __construct($href_value, $link_text) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
-        $this->attributes->others->set(AElement::$HREF_NAME, $href_value);
+        $href_attribute = new HrefAttribute($href_value);
+        $this->attributes->add($href_attribute);
 
         $content_element = new TextElement($link_text);
         $this->children->add($content_element);
@@ -61,7 +61,7 @@ class AElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -74,7 +74,7 @@ class BodyElement implements Composable
 
     public function __construct() {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
     }
 
     public function name() {
@@ -82,7 +82,7 @@ class BodyElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -101,7 +101,7 @@ class BrElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT;
+        return Composable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
@@ -114,7 +114,7 @@ class DivElement implements Composable
 
     public function __construct() {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
     }
 
     public function name() {
@@ -122,7 +122,7 @@ class DivElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -135,7 +135,7 @@ class HeadElement implements Composable
 
     public function __construct() {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
     }
 
     public function name() {
@@ -143,7 +143,7 @@ class HeadElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -156,7 +156,7 @@ class H1Element implements Composable
 
     public function __construct($content) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -167,7 +167,7 @@ class H1Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -180,7 +180,7 @@ class H2Element implements Composable
 
     public function __construct($content) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -191,7 +191,7 @@ class H2Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -204,7 +204,7 @@ class H3Element implements Composable
 
     public function __construct($content) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -215,7 +215,7 @@ class H3Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -228,7 +228,7 @@ class H4Element implements Composable
 
     public function __construct($content) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -239,7 +239,7 @@ class H4Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -252,7 +252,7 @@ class H5Element implements Composable
 
     public function __construct($content) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -263,7 +263,7 @@ class H5Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -276,7 +276,7 @@ class H6Element implements Composable
 
     public function __construct($content) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -287,7 +287,7 @@ class H6Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -300,7 +300,7 @@ class HtmlElement implements Composable
 
     public function __construct() {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
     }
 
     public function name() {
@@ -308,7 +308,7 @@ class HtmlElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -327,22 +327,24 @@ class HrElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT;
+        return Composable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
 class ImgElement implements Composable
 {
     public static $NAME = "img";
-    public static $SRC_NAME = "src";
-    public static $ALT_NAME = "alt";
 
     public $attributes;
 
     public function __construct($src_value, $alt_value) {
         $this->attributes = new MarkupAttributes();
-        $this->attributes->others->set(ImgElement::$SRC_NAME, $src_value);
-        $this->attributes->others->set(ImgElement::$ALT_NAME, $alt_value);        
+
+        $src_attribute = new SrcAttribute($src_value);
+        $alt_attribute = new AltAttribute($alt_value);        
+
+        $this->attributes->add($src_attribute);
+        $this->attributes->add($alt_attribute);
     }
 
     public function name() {
@@ -350,24 +352,26 @@ class ImgElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT;
+        return Composable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
 class LinkElement implements Composable
 {
-    public static $NAME = "link";
-    public static $HREF_NAME = "href";
-    public static $TYPE_NAME = "type";
-    public static $REL_NAME = "rel";        
+    public static $NAME = "link";      
 
     public $attributes;
 
     public function __construct($href_value, $type_value, $rel_value) {
         $this->attributes = new MarkupAttributes();
-        $this->attributes->others->set(LinkElement::$HREF_NAME, $href_value);
-        $this->attributes->others->set(LinkElement::$TYPE_NAME, $type_value);
-        $this->attributes->others->set(LinkElement::$REL_NAME, $rel_value);
+
+        $href_attribute = new HrefAttribute($href_value);
+        $type_attribute = new TypeAttribute($type_value);
+        $rel_attribute = new RelAttribute($rel_value);
+
+        $this->attributes->add($href_attribute);
+        $this->attributes->add($type_attribute);
+        $this->attributes->add($rel_attribute);        
     }
 
     public function name() {
@@ -375,7 +379,7 @@ class LinkElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT;
+        return Composable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
@@ -385,9 +389,15 @@ class MetaElement implements Composable
 
     public $attributes;
 
-    public function __construct($name, $value) {
+    public function __construct($attr_name, $attr_value) {
         $this->attributes = new MarkupAttributes();
-        $this->attributes->others->set($name, $value);
+
+        if ($attr_name == "charset") {
+            $charset_attribute = new CharsetAttribute($attr_value);
+            $this->attributes->add($charset_attribute);
+        } else {
+            echo "[MetaElement] Error: Unknown attribute name";
+        }
     }
 
     public function name() {
@@ -395,7 +405,7 @@ class MetaElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT;
+        return Composable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
@@ -408,7 +418,7 @@ class PElement implements Composable
 
     public function __construct() {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
     }
 
     public function name() {
@@ -416,7 +426,7 @@ class PElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -429,7 +439,7 @@ class SpanElement implements Composable
 
     public function __construct() {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
     }
 
     public function name() {
@@ -437,23 +447,23 @@ class SpanElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
 class ScriptElement implements Composable
 {
     public static $NAME = "script";
-    public static $SRC_NAME = "src";
 
     public $attributes;
     public $children;
 
     public function __construct($src_value) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
-        $this->attributes->others->set(ScriptElement::$SRC_NAME, $src_value);
+        $src_attribute = new SrcAttribute($src_value);
+        $this->attributes->add($src_attribute);
     }
 
     public function name() {
@@ -461,7 +471,7 @@ class ScriptElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
@@ -474,7 +484,7 @@ class TitleElement implements Composable
 
     public function __construct($title_value) {
         $this->attributes = new MarkupAttributes();
-        $this->children = new ElementChildren();
+        $this->children = new MarkupChildren();
 
         $content_element = new TextElement($title_value);
         $this->children->add($content_element);
@@ -485,7 +495,7 @@ class TitleElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT;
+        return Composable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 ?>
