@@ -1,9 +1,9 @@
 <?php
 interface Composable
 {
-    const TEXT_SCHEMA = "text_schema";
-    const EMPTY_SCHEMA = "empty_schema";
-    const PAIRED_SCHEMA = "paired_schema";    
+    const TEXT_ELEMENT = "text_schema";
+    const EMPTY_ELEMENT = "empty_schema";
+    const PAIRED_ELEMENT = "paired_schema";    
 
     public function name();
     public function schema();
@@ -86,21 +86,21 @@ class MarkupComposer
         $composition = "";
         $composer = NULL;
 
-        if ($schema == Composable::TEXT_SCHEMA) {
+        if ($schema == Composable::TEXT_ELEMENT) {
             $composer = $this->text_composer;
             $composition = $composer->indent_compose($element, $indent);
-        } else if ($schema == Composable::EMPTY_SCHEMA) {
+        } else if ($schema == Composable::EMPTY_ELEMENT) {
             $composer = $this->opening_composer;
             $composition = $composer->indent_compose($element, $indent);
             $composition .= " />";            
-        } else if ($schema == Composable::PAIRED_SCHEMA) {
+        } else if ($schema == Composable::PAIRED_ELEMENT) {
             $composer = $this->opening_composer;
             $composition = $composer->indent_compose($element, $indent);
             $composition .= ">\n";
 
             $child_level = $indent_level + 1;
             $children = $element->children->all();
-            
+
             foreach ($children as $child_element) {
                 $composition .= $this->compose($child_element, $child_level);
             }

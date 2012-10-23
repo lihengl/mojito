@@ -34,7 +34,7 @@ class TextElement implements Composable
     }
 
     public function schema() {
-        return Composable::TEXT_SCHEMA;
+        return Composable::TEXT_ELEMENT;
     }
 }
 
@@ -61,7 +61,7 @@ class AElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -82,7 +82,7 @@ class BodyElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -101,7 +101,7 @@ class BrElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_SCHEMA;
+        return Composable::EMPTY_ELEMENT;
     }
 }
 
@@ -122,7 +122,7 @@ class DivElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -143,7 +143,7 @@ class HeadElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -167,7 +167,7 @@ class H1Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -191,7 +191,7 @@ class H2Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -215,7 +215,7 @@ class H3Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -239,7 +239,7 @@ class H4Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -263,7 +263,7 @@ class H5Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -287,7 +287,7 @@ class H6Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -308,7 +308,7 @@ class HtmlElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -327,7 +327,7 @@ class HrElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_SCHEMA;
+        return Composable::EMPTY_ELEMENT;
     }
 }
 
@@ -350,7 +350,7 @@ class ImgElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_SCHEMA;
+        return Composable::EMPTY_ELEMENT;
     }
 }
 
@@ -375,7 +375,7 @@ class LinkElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_SCHEMA;
+        return Composable::EMPTY_ELEMENT;
     }
 }
 
@@ -395,7 +395,7 @@ class MetaElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_SCHEMA;
+        return Composable::EMPTY_ELEMENT;
     }
 }
 
@@ -416,7 +416,7 @@ class PElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -437,7 +437,7 @@ class SpanElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -461,7 +461,7 @@ class ScriptElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 
@@ -485,7 +485,7 @@ class TitleElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_SCHEMA;
+        return Composable::PAIRED_ELEMENT;
     }
 }
 ?>

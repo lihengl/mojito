@@ -13,7 +13,9 @@ $heading = new H1Element("MOJITO");
 $body = new BodyElement();
 $body->children->add($heading);
 
-$title = new TitleElement("MOJITO");
+
+$title_content = "MOJITO - memory usage: " . memory_get_usage();
+$title = new TitleElement($title_content);
 $meta_char = new MetaElement("charset", "UTF-8");
 
 $head = new HeadElement();
@@ -26,8 +28,6 @@ $html->children->add($body);
 
 echo "<!DOCTYPE html>\n";
 echo $composer->compose($html, 0);
-
-echo "memory usage: " . memory_get_usage();
 
 $_SESSION = array();
 
