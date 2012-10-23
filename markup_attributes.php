@@ -26,7 +26,7 @@ class IdAttribute
     }
 }
 
-class ClassesAttribute
+class ClassAttribute
 {
     public static $NAME = "class";
 
@@ -53,7 +53,7 @@ class ClassesAttribute
             return "";
         } else {
             $to_string = implode(" ", $this->values);
-            return ClassesAttribute::$NAME . '="' . $to_string . '"';
+            return ClassAttribute::$NAME . '="' . $to_string . '"';
         }
     }
 }
@@ -93,7 +93,7 @@ class MarkupAttributes
 
     public function __construct() {
         $this->id = new IdAttribute();
-        $this->classes = new ClassesAttribute();
+        $this->classes = new ClassAttribute();
         $this->others = new OtherAttributes();
     }
 }
