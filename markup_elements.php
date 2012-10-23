@@ -21,7 +21,7 @@ class ElementChildren
 
 class TextElement implements Composable
 {
-    public static $TAG_NAME = "#text";
+    public static $NAME = "#";
 
     public $content;
 
@@ -30,7 +30,7 @@ class TextElement implements Composable
     }
 
     public function name() {
-        return TextElement::$TAG_NAME;
+        return TextElement::$NAME;
     }
 
     public function schema() {
@@ -40,7 +40,7 @@ class TextElement implements Composable
 
 class AElement implements Composable
 {
-    public static $TAG_NAME = "a";
+    public static $NAME = "a";
     public static $HREF_NAME = "href";
 
     public $attributes;
@@ -57,7 +57,7 @@ class AElement implements Composable
     }
 
     public function name() {
-        return AElement::$TAG_NAME;
+        return AElement::$NAME;
     }
 
     public function schema() {
@@ -67,7 +67,7 @@ class AElement implements Composable
 
 class BodyElement implements Composable
 {
-    public static $TAG_NAME = "body";
+    public static $NAME = "body";
 
     public $attributes;
     public $children;
@@ -78,7 +78,7 @@ class BodyElement implements Composable
     }
 
     public function name() {
-        return BodyElement::$TAG_NAME;
+        return BodyElement::$NAME;
     }
 
     public function schema() {
@@ -88,7 +88,7 @@ class BodyElement implements Composable
 
 class BrElement implements Composable
 {
-    public static $TAG_NAME = "br";
+    public static $NAME = "br";
 
     public $attributes;
 
@@ -97,7 +97,7 @@ class BrElement implements Composable
     }
 
     public function name() {
-        return BrElement::$TAG_NAME;
+        return BrElement::$NAME;
     }
 
     public function schema() {
@@ -107,7 +107,7 @@ class BrElement implements Composable
 
 class DivElement implements Composable
 {
-    public static $TAG_NAME = "div";
+    public static $NAME = "div";
 
     public $attributes;
     public $children;
@@ -118,7 +118,7 @@ class DivElement implements Composable
     }
 
     public function name() {
-        return DivElement::$TAG_NAME;
+        return DivElement::$NAME;
     }
 
     public function schema() {
@@ -128,7 +128,7 @@ class DivElement implements Composable
 
 class HeadElement implements Composable
 {
-    public static $TAG_NAME = "head";
+    public static $NAME = "head";
 
     public $attributes;
     public $children;
@@ -139,7 +139,7 @@ class HeadElement implements Composable
     }
 
     public function name() {
-        return HeadElement::$TAG_NAME;
+        return HeadElement::$NAME;
     }
 
     public function schema() {
@@ -149,7 +149,7 @@ class HeadElement implements Composable
 
 class H1Element implements Composable
 {
-    public static $TAG_NAME = "h1";
+    public static $NAME = "h1";
 
     public $attributes;
     public $children;
@@ -163,7 +163,7 @@ class H1Element implements Composable
     }
 
     public function name() {
-        return H1Element::$TAG_NAME;
+        return H1Element::$NAME;
     }
 
     public function schema() {
@@ -173,7 +173,7 @@ class H1Element implements Composable
 
 class H2Element implements Composable
 {
-    public static $TAG_NAME = "h2";
+    public static $NAME = "h2";
 
     public $attributes;
     public $children;
@@ -187,7 +187,7 @@ class H2Element implements Composable
     }
 
     public function name() {
-        return H2Element::$TAG_NAME;
+        return H2Element::$NAME;
     }
 
     public function schema() {
@@ -197,7 +197,7 @@ class H2Element implements Composable
 
 class H3Element implements Composable
 {
-    public static $TAG_NAME = "h3";
+    public static $NAME = "h3";
 
     public $attributes;
     public $children;
@@ -211,7 +211,7 @@ class H3Element implements Composable
     }
 
     public function name() {
-        return H3Element::$TAG_NAME;
+        return H3Element::$NAME;
     }
 
     public function schema() {
@@ -221,7 +221,7 @@ class H3Element implements Composable
 
 class H4Element implements Composable
 {
-    public static $TAG_NAME = "h4";
+    public static $NAME = "h4";
 
     public $attributes;
     public $children;
@@ -235,7 +235,7 @@ class H4Element implements Composable
     }
 
     public function name() {
-        return H4Element::$TAG_NAME;
+        return H4Element::$NAME;
     }
 
     public function schema() {
@@ -245,7 +245,7 @@ class H4Element implements Composable
 
 class H5Element implements Composable
 {
-    public static $TAG_NAME = "h5";
+    public static $NAME = "h5";
 
     public $attributes;
     public $children;
@@ -259,7 +259,7 @@ class H5Element implements Composable
     }
 
     public function name() {
-        return H5Element::$TAG_NAME;
+        return H5Element::$NAME;
     }
 
     public function schema() {
@@ -269,7 +269,7 @@ class H5Element implements Composable
 
 class H6Element implements Composable
 {
-    public static $TAG_NAME = "h6";
+    public static $NAME = "h6";
 
     public $attributes;
     public $children;
@@ -283,7 +283,7 @@ class H6Element implements Composable
     }
 
     public function name() {
-        return H6Element::$TAG_NAME;
+        return H6Element::$NAME;
     }
 
     public function schema() {
@@ -293,7 +293,7 @@ class H6Element implements Composable
 
 class HtmlElement implements Composable
 {
-    public static $TAG_NAME = "html";
+    public static $NAME = "html";
 
     public $attributes;
     public $children;
@@ -304,7 +304,7 @@ class HtmlElement implements Composable
     }
 
     public function name() {
-        return HtmlElement::$TAG_NAME;
+        return HtmlElement::$NAME;
     }
 
     public function schema() {
@@ -314,7 +314,7 @@ class HtmlElement implements Composable
 
 class HrElement implements Composable
 {
-    public static $TAG_NAME = "hr";
+    public static $NAME = "hr";
 
     public $attributes;
 
@@ -323,7 +323,7 @@ class HrElement implements Composable
     }
 
     public function name() {
-        return HrElement::$TAG_NAME;
+        return HrElement::$NAME;
     }
 
     public function schema() {
@@ -333,7 +333,7 @@ class HrElement implements Composable
 
 class ImgElement implements Composable
 {
-    public static $TAG_NAME = "img";
+    public static $NAME = "img";
     public static $SRC_NAME = "src";
     public static $ALT_NAME = "alt";
 
@@ -346,7 +346,7 @@ class ImgElement implements Composable
     }
 
     public function name() {
-        return ImgElement::$TAG_NAME;
+        return ImgElement::$NAME;
     }
 
     public function schema() {
@@ -356,7 +356,7 @@ class ImgElement implements Composable
 
 class LinkElement implements Composable
 {
-    public static $TAG_NAME = "link";
+    public static $NAME = "link";
     public static $HREF_NAME = "href";
     public static $TYPE_NAME = "type";
     public static $REL_NAME = "rel";        
@@ -371,7 +371,7 @@ class LinkElement implements Composable
     }
 
     public function name() {
-        return LinkElement::$TAG_NAME;
+        return LinkElement::$NAME;
     }
 
     public function schema() {
@@ -381,7 +381,7 @@ class LinkElement implements Composable
 
 class MetaElement implements Composable
 {
-    public static $TAG_NAME = "meta";
+    public static $NAME = "meta";
 
     public $attributes;
 
@@ -391,7 +391,7 @@ class MetaElement implements Composable
     }
 
     public function name() {
-        return MetaElement::$TAG_NAME;
+        return MetaElement::$NAME;
     }
 
     public function schema() {
@@ -401,7 +401,7 @@ class MetaElement implements Composable
 
 class PElement implements Composable
 {
-    public static $TAG_NAME = "p";
+    public static $NAME = "p";
 
     public $attributes;
     public $children;
@@ -412,7 +412,7 @@ class PElement implements Composable
     }
 
     public function name() {
-        return PElement::$TAG_NAME;
+        return PElement::$NAME;
     }
 
     public function schema() {
@@ -422,7 +422,7 @@ class PElement implements Composable
 
 class SpanElement implements Composable
 {
-    public static $TAG_NAME = "span";
+    public static $NAME = "span";
 
     public $attributes;
     public $children;
@@ -433,7 +433,7 @@ class SpanElement implements Composable
     }
 
     public function name() {
-        return SpanElement::$TAG_NAME;
+        return SpanElement::$NAME;
     }
 
     public function schema() {
@@ -443,7 +443,7 @@ class SpanElement implements Composable
 
 class ScriptElement implements Composable
 {
-    public static $TAG_NAME = "script";
+    public static $NAME = "script";
     public static $SRC_NAME = "src";
 
     public $attributes;
@@ -457,7 +457,7 @@ class ScriptElement implements Composable
     }
 
     public function name() {
-        return ScriptElement::$TAG_NAME;
+        return ScriptElement::$NAME;
     }
 
     public function schema() {
@@ -467,7 +467,7 @@ class ScriptElement implements Composable
 
 class TitleElement implements Composable
 {
-    public static $TAG_NAME = "title";
+    public static $NAME = "title";
 
     public $attributes;
     public $children;
@@ -481,7 +481,7 @@ class TitleElement implements Composable
     }
 
     public function name() {
-        return TitleElement::$TAG_NAME;
+        return TitleElement::$NAME;
     }
 
     public function schema() {

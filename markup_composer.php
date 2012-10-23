@@ -1,20 +1,23 @@
 <?php
 interface Composable
 {
-    const TEXT_ELEMENT = "text_schema";
-    const EMPTY_ELEMENT = "empty_schema";
-    const PAIRED_ELEMENT = "paired_schema";    
+    const TEXT_ELEMENT = "composition of text element";
+    const EMPTY_ELEMENT = "composition of empty element";
+    const PAIRED_ELEMENT = "composition of paired element";
+
+    const SINGLEVALUE_ATTRIBUTE = "composition of one to one attribute";
+    const MULTIVALUE_ATTRIBUTE = "composition of one to many attribute";    
 
     public function name();
     public function schema();
 }
 
-interface IndentedComposer
+interface Composer
 {
     public function indent_compose(Composable $element, $indent);
 }
 
-class TextComposer implements IndentedComposer
+class TextComposer implements Composer
 {
     public function indent_compose(Composable $element, $indent) {
         $composed_text = $indent . $element->content;
@@ -23,7 +26,7 @@ class TextComposer implements IndentedComposer
     }
 }
 
-class OpeningComposer implements IndentedComposer
+class OpeningComposer implements Composer
 {
     public function indent_compose(Composable $element, $indent) {
         $composed_opening = $indent . "<" . $element->name();
@@ -56,7 +59,7 @@ class OpeningComposer implements IndentedComposer
     }
 }
 
-class ClosingComposer implements IndentedComposer
+class ClosingComposer implements Composer
 {
     public function indent_compose(Composable $element, $indent) {
         $composed_closing = $indent . "</" . $element->name() . ">";

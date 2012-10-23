@@ -13,10 +13,6 @@ class IdAttribute
         $this->value = $id_value;
     }
 
-    public function get() {
-        return $this->value;
-    }
-
     public function compose() {
         if ($this->value == "") {
             return "";
@@ -56,6 +52,11 @@ class ClassAttribute
             return ClassAttribute::$NAME . '="' . $to_string . '"';
         }
     }
+}
+
+class SrcAttribute
+{
+
 }
 
 class OtherAttributes
