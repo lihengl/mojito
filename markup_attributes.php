@@ -144,13 +144,16 @@ class MarkupAttributes
         return $this->class->values;
     }
 
-    public function add_class($class_value) {
+    public function add_class($value_to_add) {
         $classes = $this->class->values;
 
-        if (in_array($class_value, $classes)) {
-            // class value already exists, do nothing
+        if (strpos($value_to_add, " ")) {
+            return false;
+        } else if (in_array($value_to_add, $classes)) {
+            return true;
         } else {
-            array_push($this->class->values, $class_value);
+            array_push($this->class->values, $value_to_add);
+            return true;
         }
     }
 
