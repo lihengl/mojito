@@ -2,6 +2,7 @@
 interface Hashable
 {
     public function name();
+    public function value();
 }
 
 class IdAttribute
@@ -30,7 +31,7 @@ class ActionAttribute implements Hashable
 {
     public static $NAME = "action";
 
-    public $value;
+    private $value;
 
     public function __construct($handler_url) {
         $this->value = $handler_url;
@@ -39,13 +40,17 @@ class ActionAttribute implements Hashable
     public function name() {
         return ActionAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }
 }
 
 class AltAttribute implements Hashable
 {
     public static $NAME = "alt";
 
-    public $value;
+    private $value;
 
     public function __construct($alt_value) {
         $this->value = $alt_value;
@@ -54,13 +59,17 @@ class AltAttribute implements Hashable
     public function name() {
         return AltAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }    
 }
 
 class CharsetAttribute implements Hashable
 {
     public static $NAME = "charset";
 
-    public $value;
+    private $value;
 
     public function __construct($charset_value) {
         $this->value = $charset_value;
@@ -69,13 +78,17 @@ class CharsetAttribute implements Hashable
     public function name() {
         return CharsetAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }    
 }
 
 class HrefAttribute implements Hashable
 {
     public static $NAME = "href";
 
-    public $value;
+    private $value;
 
     public function __construct($href_value) {
         $this->value = $href_value;
@@ -84,13 +97,17 @@ class HrefAttribute implements Hashable
     public function name() {
         return HrefAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }    
 }
 
 class RelAttribute implements Hashable
 {
     public static $NAME = "rel";
 
-    public $value;
+    private $value;
 
     public function __construct($rel_value) {
         $this->value = $rel_value;
@@ -99,13 +116,17 @@ class RelAttribute implements Hashable
     public function name() {
         return RelAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }    
 }
 
 class SrcAttribute implements Hashable
 {
     public static $NAME = "src";
 
-    public $value;
+    private $value;
 
     public function __construct($src_value) {
         $this->value = $src_value;
@@ -114,13 +135,17 @@ class SrcAttribute implements Hashable
     public function name() {
         return SrcAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }    
 }
 
 class TitleAttribute implements Hashable
 {
     public static $NAME = "title";
 
-    public $value;
+    private $value;
 
     public function __construct($title_value) {
         $this->value = $title_value;
@@ -129,13 +154,17 @@ class TitleAttribute implements Hashable
     public function name() {
         return TitleAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }    
 }
 
 class TypeAttribute implements Hashable
 {
     public static $NAME = "type";
 
-    public $value;
+    private $value;
 
     public function __construct($type_value) {
         $this->value = $type_value;
@@ -144,6 +173,10 @@ class TypeAttribute implements Hashable
     public function name() {
         return TypeAttribute::$NAME;
     }
+
+    public function value() {
+        return $this->value;
+    }    
 }
 
 class HtmlAttributes
@@ -189,7 +222,7 @@ class HtmlAttributes
 
     public function add(Hashable $attribute) {
         $adding_name = $attribute->name();
-        $adding_value = $attribute->value;
+        $adding_value = $attribute->value();
 
         foreach ($this->other as $existing) {
             $existing_name = $existing->name();
@@ -209,7 +242,7 @@ class HtmlAttributes
 
         foreach ($this->other as $attribute) {
             if ($attribute->name() == $target_name) {
-                return $attribute->value;
+                return $attribute->value();
             }
         }
 
