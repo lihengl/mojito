@@ -29,7 +29,7 @@ $html = new HtmlElement();
 $html->children->add($head);
 $html->children->add($body);
 
-echo MarkupComposer::$HTML5_DOCTYPE . "\n";
+echo MarkupComposer::$DOCTYPE . "\n";
 echo $composer->compose($html, 0);
 
 $_SESSION = array();

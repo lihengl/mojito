@@ -3,7 +3,7 @@ require 'markup_elements.php';
 
 class MarkupComposer
 {
-    public static $HTML5_DOCTYPE = "<!DOCTYPE html>";
+    public static $DOCTYPE = "<!DOCTYPE html>";
 
     public static $INDENT_UNIT = "    ";
     public static $SEPERATOR_CHAR = " ";
