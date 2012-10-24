@@ -425,9 +425,11 @@ class PElement implements Composable
     public $attributes;
     public $children;
 
-    public function __construct() {
+    public function __construct(TextElement $text) {
         $this->attributes = new MarkupAttributes();
         $this->children = new MarkupChildren();
+
+        $this->children->add($text);
     }
 
     public function name() {
