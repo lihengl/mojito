@@ -35,7 +35,7 @@ $html = new HtmlElement();
 $html->children->add($head);
 $html->children->add($body);
 
-echo HtmlComposer::$DOCTYPE . "\n";
+echo HtmlComposer::$DOCTYPE_MARKUP . "\n";
 echo $composer->compose($html, 0);
 
 $_SESSION = array();
