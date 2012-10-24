@@ -17,6 +17,8 @@ $heading = new H1Element($_heading);
 $body = new BodyElement();
 $body->children->add($heading);
 
+// put test code here
+
 $title_content = $_title_text . memory_get_usage();
 $title = new TitleElement($title_content);
 $meta_char = new MetaElement($_charset, $_charset_val);

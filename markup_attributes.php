@@ -101,6 +101,21 @@ class SrcAttribute implements Namable
     }
 }
 
+class TitleAttribute implements Namable
+{
+    public static $NAME = "title";
+
+    public $value;
+
+    public function __construct($title_value) {
+        $this->value = $title_value;
+    }
+
+    public function name() {
+        return TitleAttribute::$NAME;
+    }
+}
+
 class TypeAttribute implements Namable
 {
     public static $NAME = "type";
