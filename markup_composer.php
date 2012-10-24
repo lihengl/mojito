@@ -31,7 +31,17 @@ class MarkupComposer
         $attr_markup = "";
 
         foreach ($attr_names as $name) {
-            $attr_value = $element->attributes->get($name);
+
+            if ($name == IdAttribute::$NAME) {
+                $attr_value = $element->attributes->get_id();
+            } else if ($name == ClassAttribute::$NAME) {
+                $class_values = $element->attributes->get_classes();
+                $attr_value = implode(MarkupComposer::$SEPERATOR_CHAR,
+                                      $class_values);
+            } else {
+                $attr_value = $element->attributes->get($name);
+            }
+
             $attr_markup = $name . '="' . $attr_value . '"';
             array_push($attr_markups, $attr_markup);
         }
@@ -72,7 +82,6 @@ class MarkupComposer
             $formatted = $open
                          . MarkupComposer::$SEPERATOR_CHAR
                          . $attr
-                         . MarkupComposer::$SEPERATOR_CHAR
                          . $close;
         }
 

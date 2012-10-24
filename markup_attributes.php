@@ -140,12 +140,35 @@ class MarkupAttributes
         return in_array($class_value, $this->class);
     }
 
-    public function add_class($class_value) {   
-        $this->class->add($class_value);
+    public function get_classes() {
+        return $this->class->values;
+    }
+
+    public function add_class($class_value) {
+        $classes = $this->class->values;
+
+        if (in_array($class_value, $classes)) {
+            // class value already exists, do nothing
+        } else {
+            array_push($this->class->values, $class_value);
+        }
     }
 
     public function add(Namable $attribute) {
+        $adding_name = $attribute->name();
+        $adding_value = $attribute->value;
+
+        foreach ($this->other as $existing) {
+            $existing_name = $existing->name();
+
+            if ($adding_name == $existing_name) {
+                $existing->value = $adding_value;
+                return false;
+            }
+        }
+
         array_push($this->other, $attribute);
+        return true;
     }
 
     public function get($target_name) {
