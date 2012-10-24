@@ -26,6 +26,21 @@ class ClassAttribute
     }
 }
 
+class ActionAttribute implements Namable
+{
+    public static $NAME = "action";
+
+    public $value;
+
+    public function __construct($handler_url) {
+        $this->value = $handler_url;
+    }
+
+    public function name() {
+        return ActionAttribute::$NAME;
+    }
+}
+
 class AltAttribute implements Namable
 {
     public static $NAME = "alt";

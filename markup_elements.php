@@ -135,6 +135,30 @@ class DivElement implements Composable
     }
 }
 
+class FormElement implements Composable
+{
+    public static $NAME = "form";
+
+    public $attributes;
+    public $children;
+
+    public function __construct($action_handler) {
+        $this->attributes = new MarkupAttributes();
+        $this->children = new MarkupChildren();
+
+        $handler = new ActionAttribute($action_handler);
+        $this->attributes->add($handler);
+    }
+
+    public function name() {
+        return FormElement::$NAME;
+    }
+
+    public function schema() {
+        return Composable::PAIRED_ELEMENT_SCHEMA;
+    }
+}
+
 class H1Element implements Composable
 {
     public static $NAME = "h1";
