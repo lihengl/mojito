@@ -26,13 +26,13 @@ class MarkupComposer
     }
 
     private function compose_attribute(Composable $element) {
-        $attr_value = $element->attributes->all();
+        $attr_names = $element->attributes->names();
         $attr_markups = array();
         $attr_markup = "";
 
-        foreach ($attr_value as $name=>$values) {
-            $value = implode(" ", $values);
-            $attr_markup = $name . '="' . $value . '"';
+        foreach ($attr_names as $name) {
+            $attr_value = $element->attributes->get($name);
+            $attr_markup = $name . '="' . $attr_value . '"';
             array_push($attr_markups, $attr_markup);
         }
 

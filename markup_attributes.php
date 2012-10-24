@@ -1,20 +1,36 @@
 <?php
-/*
- * attributes will be accessed through name
- * TODO: do we need the value here?
- *
- */
-interface Decomposable
+interface Namable
 {
     public function name();
-    public function value();
 }
 
-class AltAttribute implements Decomposable
+class IdAttribute
+{
+    public static $NAME = "id";
+
+    public $value;
+
+    public function __construct() {
+        $this->value = "";
+    }
+}
+
+class ClassAttribute
+{
+    public static $NAME = "class";
+
+    public $values;
+
+    public function __construct() {
+        $this->values = array();
+    }
+}
+
+class AltAttribute implements Namable
 {
     public static $NAME = "alt";
 
-    private $value;
+    public $value;
 
     public function __construct($alt_value) {
         $this->value = $alt_value;
@@ -23,17 +39,13 @@ class AltAttribute implements Decomposable
     public function name() {
         return AltAttribute::$NAME;
     }
-
-    public function value() {
-        return $this->value;
-    }
 }
 
-class CharsetAttribute implements Decomposable
+class CharsetAttribute implements Namable
 {
     public static $NAME = "charset";
 
-    private $value;
+    public $value;
 
     public function __construct($charset_value) {
         $this->value = $charset_value;
@@ -42,44 +54,13 @@ class CharsetAttribute implements Decomposable
     public function name() {
         return CharsetAttribute::$NAME;
     }
-
-    public function value() {
-        return $this->value;
-    }
 }
 
-class ClassAttribute
-{
-    public static $NAME = "class";
-
-    private $values;
-
-    public function __construct() {
-        $this->values = array();
-    }
-
-    public function set($class_value) {
-        $this->values = array($class_value);
-    }
-
-    public function add($class_value) {
-        if (in_array($class_value, $this->values)) {
-            // value already exists, do nothing
-        } else {
-            array_push($this->values, $class_value);
-        }
-    }
-
-    public function all() {
-        return $this->values;
-    }
-}
-
-class HrefAttribute implements Decomposable
+class HrefAttribute implements Namable
 {
     public static $NAME = "href";
 
-    private $value;
+    public $value;
 
     public function __construct($href_value) {
         $this->value = $href_value;
@@ -88,36 +69,13 @@ class HrefAttribute implements Decomposable
     public function name() {
         return HrefAttribute::$NAME;
     }
-
-    public function value() {
-        return $this->value;
-    }    
 }
 
-class IdAttribute
-{
-    public static $NAME = "id";
-
-    private $value;
-
-    public function __construct() {
-        $this->value = "";
-    }
-
-    public function set($id_value) {
-        $this->value = $id_value;
-    }
-
-    public function get() {
-        return $this->value;
-    }
-}
-
-class RelAttribute implements Decomposable
+class RelAttribute implements Namable
 {
     public static $NAME = "rel";
 
-    private $value;
+    public $value;
 
     public function __construct($rel_value) {
         $this->value = $rel_value;
@@ -126,17 +84,13 @@ class RelAttribute implements Decomposable
     public function name() {
         return RelAttribute::$NAME;
     }
-
-    public function value() {
-        return $this->value;
-    }    
 }
 
-class SrcAttribute implements Decomposable
+class SrcAttribute implements Namable
 {
     public static $NAME = "src";
 
-    private $value;
+    public $value;
 
     public function __construct($src_value) {
         $this->value = $src_value;
@@ -145,17 +99,13 @@ class SrcAttribute implements Decomposable
     public function name() {
         return SrcAttribute::$NAME;
     }
-
-    public function value() {
-        return $this->value;
-    }    
 }
 
-class TypeAttribute implements Decomposable
+class TypeAttribute implements Namable
 {
     public static $NAME = "type";
 
-    private $value;
+    public $value;
 
     public function __construct($type_value) {
         $this->value = $type_value;
@@ -164,10 +114,6 @@ class TypeAttribute implements Decomposable
     public function name() {
         return TypeAttribute::$NAME;
     }
-
-    public function value() {
-        return $this->value;
-    }    
 }
 
 class MarkupAttributes
@@ -182,55 +128,61 @@ class MarkupAttributes
         $this->other = array();
     }
 
-    public function add_class($class_value) {
-        $this->class->add($class_value);
+    public function get_id() {
+        return $this->id->value;
+    }
+
+    public function set_id($id_value) {
+        $this->id->value = $id_value;
     }
 
     public function is_class($class_value) {
         return in_array($class_value, $this->class);
     }
 
-    public function add(Decomposable $attribute) {
+    public function add_class($class_value) {   
+        $this->class->add($class_value);
+    }
+
+    public function add(Namable $attribute) {
         array_push($this->other, $attribute);
     }
 
-    public function all() {
-        /*
-         * push attributes into name=>array(values) pair
-         * this way we get a consistent format no matter
-         * attributes have multiple values or not
-         */
-        $all_attrs = array();
+    public function get($target_name) {
+        $value = "";
 
-        $id_value = $this->id->get();
-
-        if ($id_value != "") {
-            $all_attrs[IdAttribute::$NAME] = array($id_value);
-        } else {
-            // id attribute not specified, do not push it into the array
-        }
-
-        $class_values = $this->class->all();
-
-        if (count($class_values) > 0) {
-            $all_attrs[ClassAttribute::$NAME] = $class_values;
-        } else {
-            // class attribute not specified, do not push it into the array
-        }
-
-        $other_attrs = $this->other;
-
-        if (count($other_attrs) > 0) {
-            foreach ($other_attrs as $attribute) {
-                $attr_name = $attribute->name();
-                $attr_value = $attribute->value();
-                $all_attrs[$attr_name] = array($attr_value);
+        foreach ($this->other as $attribute) {
+            if ($attribute->name() == $target_name) {
+                return $attribute->value;
             }
-        } else {
-            // no other all_attrs specified, push none into the array
         }
 
-        return $all_attrs;
+        return $value;
+    }
+
+    public function names() {
+        $all_names = array();
+
+        $id_value = $this->id->value;
+
+        if ($this->id->value != "") {
+            array_push($all_names, IdAttribute::$NAME);
+        } else {
+            // id not specified, do not push its name into the array
+        }
+
+        if (count($this->class->values) > 0) {
+            array_push($all_names, ClassAttribute::$NAME);
+        } else {
+            // class not specified, do not push it into the array
+        }
+        
+        foreach ($this->other as $attribute) {
+            $name = $attribute->name();
+            array_push($all_names, $name);
+        }
+
+        return $all_names;
     }
 }
 ?>
