@@ -1,17 +1,17 @@
 <?php
-require 'markup_attributes.php';
+require 'html_attributes.php';
 
 interface Composable
 {
     const TEXT_ELEMENT_SCHEMA = "schema for text element";
-    const EMPTY_ELEMENT_SCHEMA = "schema for empty markup element";
-    const PAIRED_ELEMENT_SCHEMA = "schema of paired markup element";
+    const EMPTY_ELEMENT_SCHEMA = "schema for empty html element";
+    const PAIRED_ELEMENT_SCHEMA = "schema of paired html element";
 
     public function name();
     public function schema();
 }
 
-class MarkupChildren
+class HtmlChildren
 {
     private $elements;
 
@@ -55,8 +55,8 @@ class AElement implements Composable
     public $children;
 
     public function __construct($href_value, $link_text) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $href_attribute = new HrefAttribute($href_value);
         $this->attributes->add($href_attribute);
@@ -82,8 +82,8 @@ class BodyElement implements Composable
     public $children;
 
     public function __construct() {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
     }
 
     public function name() {
@@ -102,7 +102,7 @@ class BrElement implements Composable
     public $attributes;
 
     public function __construct() {
-        $this->attributes = new MarkupAttributes();
+        $this->attributes = new HtmlAttributes();
     }
 
     public function name() {
@@ -122,8 +122,8 @@ class DivElement implements Composable
     public $children;
 
     public function __construct() {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
     }
 
     public function name() {
@@ -143,8 +143,8 @@ class FormElement implements Composable
     public $children;
 
     public function __construct($action_handler) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $handler = new ActionAttribute($action_handler);
         $this->attributes->add($handler);
@@ -167,8 +167,8 @@ class H1Element implements Composable
     public $children;
 
     public function __construct($content) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -191,8 +191,8 @@ class H2Element implements Composable
     public $children;
 
     public function __construct($content) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -215,8 +215,8 @@ class H3Element implements Composable
     public $children;
 
     public function __construct($content) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -239,8 +239,8 @@ class H4Element implements Composable
     public $children;
 
     public function __construct($content) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -263,8 +263,8 @@ class H5Element implements Composable
     public $children;
 
     public function __construct($content) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -287,8 +287,8 @@ class H6Element implements Composable
     public $children;
 
     public function __construct($content) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $content_element = new TextElement($content);
         $this->children->add($content_element);
@@ -311,8 +311,8 @@ class HeadElement implements Composable
     public $children;
 
     public function __construct() {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
     }
 
     public function name() {
@@ -331,7 +331,7 @@ class HrElement implements Composable
     public $attributes;
 
     public function __construct() {
-        $this->attributes = new MarkupAttributes();
+        $this->attributes = new HtmlAttributes();
     }
 
     public function name() {
@@ -351,8 +351,8 @@ class HtmlElement implements Composable
     public $children;
 
     public function __construct() {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
     }
 
     public function name() {
@@ -371,7 +371,7 @@ class ImgElement implements Composable
     public $attributes;
 
     public function __construct($src_value, $alt_value) {
-        $this->attributes = new MarkupAttributes();
+        $this->attributes = new HtmlAttributes();
 
         $src_attribute = new SrcAttribute($src_value);
         $alt_attribute = new AltAttribute($alt_value);        
@@ -396,7 +396,7 @@ class LinkElement implements Composable
     public $attributes;
 
     public function __construct($href_value, $type_value, $rel_value) {
-        $this->attributes = new MarkupAttributes();
+        $this->attributes = new HtmlAttributes();
 
         $href_attribute = new HrefAttribute($href_value);
         $type_attribute = new TypeAttribute($type_value);
@@ -423,7 +423,7 @@ class MetaElement implements Composable
     public $attributes;
 
     public function __construct($attr_name, $attr_value) {
-        $this->attributes = new MarkupAttributes();
+        $this->attributes = new HtmlAttributes();
 
         if ($attr_name == "charset") {
             $charset_attribute = new CharsetAttribute($attr_value);
@@ -450,8 +450,8 @@ class PElement implements Composable
     public $children;
 
     public function __construct($initial_text_content) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $text = new TextElement($initial_text_content);
         $this->children->add($text);
@@ -474,8 +474,8 @@ class ScriptElement implements Composable
     public $children;
 
     public function __construct($src_value) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $src_attribute = new SrcAttribute($src_value);
         $this->attributes->add($src_attribute);
@@ -498,8 +498,8 @@ class SpanElement implements Composable
     public $children;
 
     public function __construct() {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
     }
 
     public function name() {
@@ -519,8 +519,8 @@ class TitleElement implements Composable
     public $children;
 
     public function __construct($title_value) {
-        $this->attributes = new MarkupAttributes();
-        $this->children = new MarkupChildren();
+        $this->attributes = new HtmlAttributes();
+        $this->children = new HtmlChildren();
 
         $content_element = new TextElement($title_value);
         $this->children->add($content_element);

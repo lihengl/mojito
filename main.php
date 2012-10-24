@@ -1,11 +1,11 @@
 <?php
-require 'markup_composer.php';
+require 'html_composer.php';
 
 session_start();
 
 $_SESSION['user_id'] = 0;
 
-$composer = new MarkupComposer();
+$composer = new HtmlComposer();
 
 $_heading = "MOJITO";
 $_title_text = "MOJITO - memory usage: ";
@@ -35,7 +35,7 @@ $html = new HtmlElement();
 $html->children->add($head);
 $html->children->add($body);
 
-echo MarkupComposer::$DOCTYPE . "\n";
+echo HtmlComposer::$DOCTYPE . "\n";
 echo $composer->compose($html, 0);
 
 $_SESSION = array();

@@ -146,7 +146,7 @@ class TypeAttribute implements Namable
     }
 }
 
-class MarkupAttributes
+class HtmlAttributes
 {
     private $id;
     private $class;
