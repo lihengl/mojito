@@ -12,9 +12,14 @@ $_title_text = "MOJITO - memory usage: ";
 $_charset = "charset";
 $_charset_val = "UTF-8";
 
+$agent = $_SERVER['HTTP_USER_AGENT'];
+$text = new TextElement($agent);
+$paragraph = new PElement($text);
+
 $heading = new H1Element($_heading);
 
 $body = new BodyElement();
+$body->children->add($paragraph);
 $body->children->add($heading);
 
 // put test code here
