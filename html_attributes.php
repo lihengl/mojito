@@ -1,5 +1,5 @@
 <?php
-interface Namable
+interface Hashable
 {
     public function name();
 }
@@ -26,7 +26,7 @@ class ClassAttribute
     }
 }
 
-class ActionAttribute implements Namable
+class ActionAttribute implements Hashable
 {
     public static $NAME = "action";
 
@@ -41,7 +41,7 @@ class ActionAttribute implements Namable
     }
 }
 
-class AltAttribute implements Namable
+class AltAttribute implements Hashable
 {
     public static $NAME = "alt";
 
@@ -56,7 +56,7 @@ class AltAttribute implements Namable
     }
 }
 
-class CharsetAttribute implements Namable
+class CharsetAttribute implements Hashable
 {
     public static $NAME = "charset";
 
@@ -71,7 +71,7 @@ class CharsetAttribute implements Namable
     }
 }
 
-class HrefAttribute implements Namable
+class HrefAttribute implements Hashable
 {
     public static $NAME = "href";
 
@@ -86,7 +86,7 @@ class HrefAttribute implements Namable
     }
 }
 
-class RelAttribute implements Namable
+class RelAttribute implements Hashable
 {
     public static $NAME = "rel";
 
@@ -101,7 +101,7 @@ class RelAttribute implements Namable
     }
 }
 
-class SrcAttribute implements Namable
+class SrcAttribute implements Hashable
 {
     public static $NAME = "src";
 
@@ -116,7 +116,7 @@ class SrcAttribute implements Namable
     }
 }
 
-class TitleAttribute implements Namable
+class TitleAttribute implements Hashable
 {
     public static $NAME = "title";
 
@@ -131,7 +131,7 @@ class TitleAttribute implements Namable
     }
 }
 
-class TypeAttribute implements Namable
+class TypeAttribute implements Hashable
 {
     public static $NAME = "type";
 
@@ -187,7 +187,7 @@ class HtmlAttributes
         }
     }
 
-    public function add(Namable $attribute) {
+    public function add(Hashable $attribute) {
         $adding_name = $attribute->name();
         $adding_value = $attribute->value;
 
