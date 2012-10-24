@@ -1,24 +1,17 @@
 <?php
-interface Composable
-{
-    const TEXT_ELEMENT_SCHEMA = "schema for text element";
-    const EMPTY_ELEMENT_SCHEMA = "schema for empty markup element";
-    const PAIRED_ELEMENT_SCHEMA = "schema of paired markup element";
-
-    public function name();
-    public function schema();
-}
+require 'markup_elements.php';
 
 class MarkupComposer
 {
     public static $HTML5_DOCTYPE = "<!DOCTYPE html>";
 
     public static $INDENT_UNIT = "    ";
+    public static $SEPERATOR_CHAR = " ";
 
     public static $OPENING_CHAR = "<";
-    public static $CLOSING_CHAR = ">";
-    public static $EMPTYCLOSE_CHAR = " />";
-    public static $OPENCLOSE_CHAR = "</";
+    public static $OPENCLOSE_CHAR = ">";
+    public static $EMPTYCLOSE_CHAR = "/>";
+    public static $CLOSEOPEN_CHAR = "</";
 
     private function compose_text(Composable $element, $indent) {
         $markup = $element->content;
@@ -26,9 +19,13 @@ class MarkupComposer
         return $indent . $markup;
     }
 
-    private function compose_opening(Composable $element) {
+    private function compose_openopening(Composable $element) {
         $opening = MarkupComposer::$OPENING_CHAR . $element->name();
 
+        return $opening;
+    }
+
+    private function compose_attribute(Composable $element) {
         $attr_value = $element->attributes->all();
         $attr_markups = array();
         $attr_markup = "";
@@ -41,24 +38,63 @@ class MarkupComposer
 
         $attribute = implode(" ", $attr_markups);
 
-        if ($attribute == "") {
-            $markup = $opening;
-        } else {
-            $markup = $opening . " " . $attribute;
-        }
-
-        return $markup;
+        return $attribute;
     }
 
+    private function compose_empty_closing() {
+        return MarkupComposer::$EMPTYCLOSE_CHAR;
+    }    
+
+    private function compose_paired_openclosing() {
+        return MarkupComposer::$OPENCLOSE_CHAR;
+    }
+
+    private function format_empty($open, $attr, $close) {
+        if ($attr == "") {
+            $formatted = $open
+                         . MarkupComposer::$SEPERATOR_CHAR
+                         . $close;
+        } else {
+            $formatted = $open
+                         . MarkupComposer::$SEPERATOR_CHAR
+                         . $attr
+                         . MarkupComposer::$SEPERATOR_CHAR
+                         . $close;
+        }
+
+        return $formatted;
+    }
+
+    private function format_paired($open, $attr, $close) {
+        if ($attr == "") {
+            $formatted = $open . $close;
+        } else {
+            $formatted = $open
+                         . MarkupComposer::$SEPERATOR_CHAR
+                         . $attr
+                         . MarkupComposer::$SEPERATOR_CHAR
+                         . $close;
+        }
+
+        return $formatted;
+    }    
+
     private function compose_content(Composable $element, $child_level) {
-        $content = "";
         $children = $element->children->all();
+        $content = "";
 
         foreach ($children as $child) {
             $content .= $this->compose($child, $child_level);
         }
 
         return $content;
+    }
+
+    private function compose_paired_closingtag(Composable $element) {
+        $left = MarkupComposer::$CLOSEOPEN_CHAR;
+        $right = MarkupComposer::$OPENCLOSE_CHAR;
+
+        return $left . $element->name() . $right;
     }
 
     public function compose(Composable $element, $indent_level) {
@@ -68,30 +104,30 @@ class MarkupComposer
         if ($schema == Composable::TEXT_ELEMENT_SCHEMA) {
             $composed = $this->compose_text($element, $indent);
         } else if ($schema == Composable::EMPTY_ELEMENT_SCHEMA) {
-            $opening = $this->compose_opening($element);
-            $closing = MarkupComposer::$EMPTYCLOSE_CHAR;
+            $opening = $this->compose_openopening($element);
+            $attr = $this->compose_attribute($element);
+            $closing = $this->compose_empty_closing();
 
-            $composed = $indent . $opening . $closing;
+            $formatted = $this->format_empty($opening, $attr, $closing);
+
+            $composed = $indent . $formatted;
         } else if ($schema == Composable::PAIRED_ELEMENT_SCHEMA) {
-            $opening = $this->compose_opening($element);
+            $opening = $this->compose_openopening($element);
+            $attr = $this->compose_attribute($element);
+            $oclosing = $this->compose_paired_openclosing();
 
-            if (count($element->attributes->all()) > 0) {
-                $opening .= " " . MarkupComposer::$CLOSING_CHAR;
-            } else {
-                $opening .= MarkupComposer::$CLOSING_CHAR;
-            }
+            $opening_tag = $this->format_paired($opening, $attr , $oclosing);
+
+            $paired_begin = $indent . $opening_tag . "\n";            
 
             $child_level = $indent_level + 1;
-            $content = $this->compose_content($element, $child_level);
+            $paired_content = $this->compose_content($element, $child_level);
 
-            $closing = MarkupComposer::$OPENCLOSE_CHAR . $element->name();
-            $closing .= MarkupComposer::$CLOSING_CHAR;
+            $closing_tag = $this->compose_paired_closingtag($element);
 
-            $composed = "";
-
-            $composed .= $indent . $opening . "\n";
-            $composed .= $content;
-            $composed .= $indent . $closing; 
+            $paired_end = $indent . $closing_tag;
+            
+            $composed = $paired_begin . $paired_content . $paired_end;
         } else {
             echo "[MarkupComposer] Error: Unknown composite schema";
         }

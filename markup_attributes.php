@@ -1,4 +1,9 @@
 <?php
+/*
+ * attributes will be accessed through name
+ * TODO: do we need the value here?
+ *
+ */
 interface Decomposable
 {
     public function name();
