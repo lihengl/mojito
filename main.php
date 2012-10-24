@@ -13,8 +13,7 @@ $_charset = "charset";
 $_charset_val = "UTF-8";
 
 $agent = $_SERVER['HTTP_USER_AGENT'];
-$text = new TextElement($agent);
-$paragraph = new PElement($text);
+$paragraph = new PElement($agent);
 
 $heading = new H1Element($_heading);
 
