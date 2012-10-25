@@ -389,6 +389,31 @@ class ImgElement implements Composable
     }
 }
 
+class InputElement implements Composable
+{
+    public static $NAME = "input";
+
+    public $attributes;
+
+    public function __construct($type_value, $name_value) {
+        $this->attributes = new HtmlAttributes();
+
+        $type = new TypeAttribute($type_value);
+        $name = new NameAttribute($name_value);
+
+        $this->attributes->add($type);
+        $this->attributes->add($name);        
+    }
+
+    public function name() {
+        return InputElement::$NAME;
+    }
+
+    public function schema() {
+        return Composable::EMPTY_ELEMENT_SCHEMA;
+    }
+}
+
 class LinkElement implements Composable
 {
     public static $NAME = "link";      
