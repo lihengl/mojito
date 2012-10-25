@@ -65,25 +65,6 @@ class AltAttribute implements Hashable
     }    
 }
 
-class CharsetAttribute implements Hashable
-{
-    public static $NAME = "charset";
-
-    private $value;
-
-    public function __construct($charset_value) {
-        $this->value = $charset_value;
-    }
-
-    public function name() {
-        return CharsetAttribute::$NAME;
-    }
-
-    public function value() {
-        return $this->value;
-    }    
-}
-
 class HrefAttribute implements Hashable
 {
     public static $NAME = "href";
@@ -96,6 +77,33 @@ class HrefAttribute implements Hashable
 
     public function name() {
         return HrefAttribute::$NAME;
+    }
+
+    public function value() {
+        return $this->value;
+    }    
+}
+
+class MetaAttribute implements Hashable
+{
+    public static $NAMES = array("charset", "name", "content", "http-equiv");
+
+    private $name;
+    private $value;
+
+    public function __construct($name, $value) {
+        if (in_array($name, MetaAttribute::$NAMES)) {
+            $this->name = $name;
+            $this->value = $value;
+        } else {
+            echo "[html_attributes.php] Error: invalid MetaAttribute name";
+            $this->name = "";
+            $this->value = "";            
+        }
+    }
+
+    public function name() {
+        return $this->name;
     }
 
     public function value() {
