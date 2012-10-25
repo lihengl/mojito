@@ -1,5 +1,5 @@
 <?php
-require 'html_composer.php';
+require 'html_renderer.php';
 
 session_start();
 
