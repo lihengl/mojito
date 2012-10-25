@@ -6,144 +6,131 @@ class HtmlComposer
     public static $DOCTYPE_MARKUP = "<!DOCTYPE html>";
 
     public static $INDENT_UNIT = "    ";
-    public static $SEPERATOR_CHAR = " ";
+    public static $SEPARATOR = " ";
 
     public static $OPENING_CHAR = "<";
-    public static $OPENCLOSE_CHAR = ">";
-    public static $EMPTYCLOSE_CHAR = "/>";
-    public static $CLOSEOPEN_CHAR = "</";
+    public static $CLOSING_CHAR = ">";
+    public static $EMPTY_CLOSING = "/>";
+    public static $PAIRED_CLOSING = "</";
 
-    private function compose_text(Composable $element, $indent) {
+    private function compose_text(Composable $element) {
         $html = $element->content;
-
-        return $indent . $html;
+        return $html;
     }
 
-    private function compose_openopening(Composable $element) {
-        $opening = HtmlComposer::$OPENING_CHAR . $element->name();
-
-        return $opening;
+    private function compose_tagopening($element_name) {
+        $html = HtmlComposer::$OPENING_CHAR . $element_name;
+        return $html;
     }
 
-    private function compose_attribute(Composable $element) {
-        $attr_names = $element->attributes->names();
-        $attr_htmls = array();
-        $attr_html = "";
+    private function compose_attribute(HtmlAttributes $attribute) {
+        $attribute_htmls = array();
 
-        foreach ($attr_names as $name) {
+        foreach ($attribute->names() as $name) {
 
             if ($name == IdAttribute::$NAME) {
-                $attr_value = $element->attributes->get_id();
+                $value = $attribute->get_id();
             } else if ($name == ClassAttribute::$NAME) {
-                $class_values = $element->attributes->get_classes();
-                $attr_value = implode(HtmlComposer::$SEPERATOR_CHAR,
-                                      $class_values);
+                $classes = $attribute->get_classes();
+                $value = implode(HtmlComposer::$SEPARATOR, $classes);
             } else {
-                $attr_value = $element->attributes->get($name);
+                $value = $attribute->get($name);
             }
 
-            $attr_html = $name . '="' . $attr_value . '"';
-            array_push($attr_htmls, $attr_html);
+            $attribute_html = $name . '="' . $value . '"';
+            array_push($attribute_htmls, $attribute_html);
         }
 
-        $attribute = implode(" ", $attr_htmls);
+        $html = implode(HtmlComposer::$SEPARATOR, $attribute_htmls);
 
-        return $attribute;
+        return $html;
     }
 
-    private function compose_empty_closing() {
-        return HtmlComposer::$EMPTYCLOSE_CHAR;
-    }    
+    private function compose_content(HtmlChildren $children, $indent_level) {
+        $child_elements = $children->all();
+        $html = "";
 
-    private function compose_paired_openclosing() {
-        return HtmlComposer::$OPENCLOSE_CHAR;
+        foreach ($child_elements as $element) {
+            // a recursion here
+            $html .= $this->compose($element, $indent_level);
+        }
+
+        return $html;
     }
 
-    private function format_empty($open, $attr, $close) {
-        if ($attr == "") {
-            $formatted = $open
-                         . HtmlComposer::$SEPERATOR_CHAR
-                         . $close;
+    private function compose_empty(Composable $element) {
+        $opening = $this->compose_tagopening($element->name());
+        $attribute = $this->compose_attribute($element->attributes);
+        $closing = HtmlComposer::$EMPTY_CLOSING;
+
+        if ($attribute == "") {
+            $html = $opening
+                  . HtmlComposer::$SEPARATOR
+                  . HtmlComposer::$EMPTY_CLOSING;
         } else {
-            $formatted = $open
-                         . HtmlComposer::$SEPERATOR_CHAR
-                         . $attr
-                         . HtmlComposer::$SEPERATOR_CHAR
-                         . $close;
+            $html = $opening
+                  . HtmlComposer::$SEPARATOR
+                  . $attribute
+                  . HtmlComposer::$SEPARATOR
+                  . HtmlComposer::$EMPTY_CLOSING;
         }
 
-        return $formatted;
+        return $html;
     }
 
-    private function format_paired($open, $attr, $close) {
-        if ($attr == "") {
-            $formatted = $open . $close;
+    private function compose_paired(Composable $element, $indent_level) {
+        $name = $element->name();
+        $indent = str_repeat(HtmlComposer::$INDENT_UNIT, $indent_level);
+
+        $opentag_begin = $this->compose_tagopening($name);
+        $attribute = $this->compose_attribute($element->attributes);
+        $opentag_end = HtmlComposer::$CLOSING_CHAR;
+
+        $opentag = "";
+
+        if ($attribute = "") {
+            $opentag = $opentag_begin . $opentag_end;
         } else {
-            $formatted = $open
-                         . HtmlComposer::$SEPERATOR_CHAR
-                         . $attr
-                         . $close;
+            $opentag = $opentag_begin
+                     . HtmlComposer::$SEPARATOR
+                     . $attribute
+                     . $opentag_end;
         }
 
-        return $formatted;
-    }    
+        $level = $indent_level + 1;
+        $content = $this->compose_content($element->children, $level);
 
-    private function compose_content(Composable $element, $child_level) {
-        $children = $element->children->all();
-        $content = "";
+        $closetag = HtmlComposer::$PAIRED_CLOSING
+                  . $name
+                  . HtmlComposer::$CLOSING_CHAR;
 
-        foreach ($children as $child) {
-            $content .= $this->compose($child, $child_level);
-        }
+        $html = $indent . $opentag . "\n"
+              . $content
+              . $indent . $closetag;
 
-        return $content;
-    }
-
-    private function compose_paired_closingtag(Composable $element) {
-        $left = HtmlComposer::$CLOSEOPEN_CHAR;
-        $right = HtmlComposer::$OPENCLOSE_CHAR;
-
-        return $left . $element->name() . $right;
+        return $html;
     }
 
     public function compose(Composable $element, $indent_level) {
         $indent = str_repeat(HtmlComposer::$INDENT_UNIT, $indent_level);
         $schema = $element->schema();
 
-        if ($schema == Composable::TEXT_ELEMENT_SCHEMA) {
-            $composed = $this->compose_text($element, $indent);
-        } else if ($schema == Composable::EMPTY_ELEMENT_SCHEMA) {
-            $opening = $this->compose_openopening($element);
-            $attr = $this->compose_attribute($element);
-            $closing = $this->compose_empty_closing();
+        $html = "";
 
-            $formatted = $this->format_empty($opening, $attr, $closing);
-
-            $composed = $indent . $formatted;
+        if ($schema == Composable::EMPTY_ELEMENT_SCHEMA) {
+            $composed = $this->compose_empty($element);
+            $html = $indent . $composed;
         } else if ($schema == Composable::PAIRED_ELEMENT_SCHEMA) {
-            $opening = $this->compose_openopening($element);
-            $attr = $this->compose_attribute($element);
-            $oclosing = $this->compose_paired_openclosing();
-
-            $opening_tag = $this->format_paired($opening, $attr , $oclosing);
-
-            $paired_begin = $indent . $opening_tag . "\n";            
-
-            $child_level = $indent_level + 1;
-            $paired_content = $this->compose_content($element, $child_level);
-
-            $closing_tag = $this->compose_paired_closingtag($element);
-
-            $paired_end = $indent . $closing_tag;
-            
-            $composed = $paired_begin . $paired_content . $paired_end;
+            $html = $this->compose_paired($element, $indent_level);
+        } else if ($schema == Composable::TEXT_ELEMENT_SCHEMA) {
+            $html = $indent . $this->compose_text($element);            
         } else {
             echo "[HtmlComposer] Error: Unknown composite schema";
         }
 
-        $composed .= "\n";
+        $html .= "\n";
 
-        return $composed;
+        return $html;
     }
 }
 ?>

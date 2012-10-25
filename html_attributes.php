@@ -224,11 +224,11 @@ class HtmlAttributes
         $adding_name = $attribute->name();
         $adding_value = $attribute->value();
 
-        foreach ($this->other as $existing) {
-            $existing_name = $existing->name();
+        foreach ($this->other as $existing_attribute) {
+            $existing_name = $existing_attribute->name();
 
+            // do not allow attribute overwriting
             if ($adding_name == $existing_name) {
-                $existing->value = $adding_value;
                 return false;
             }
         }
@@ -237,12 +237,15 @@ class HtmlAttributes
         return true;
     }
 
-    public function get($target_name) {
+    public function get($attribute_name) {
         $value = "";
 
         foreach ($this->other as $attribute) {
-            if ($attribute->name() == $target_name) {
+
+            if ($attribute->name() == $attribute_name) {
                 return $attribute->value();
+            } else {
+                // $attribute is not the one being asked for
             }
         }
 
