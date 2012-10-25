@@ -84,9 +84,32 @@ class HrefAttribute implements Hashable
     }    
 }
 
+class NameAttribute implements Hashable
+{
+    public static $NAME = "name";
+
+    private $value;
+
+    public function __construct($name_value) {
+        $this->value = $name_value;
+    }
+
+    public function name() {
+        return NameAttribute::$NAME;
+    }
+
+    public function value() {
+        return $this->value;
+    }
+}
+
 class MetaAttribute implements Hashable
 {
-    public static $NAMES = array("charset", "name", "content", "http-equiv");
+    public static $NAMES = array(
+                           "charset",
+                           "name",
+                           "content",
+                           "http-equiv");
 
     private $name;
     private $value;

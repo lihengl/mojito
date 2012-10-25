@@ -150,12 +150,17 @@ class FormElement implements Renderable
         $this->attributes->add($handler);
     }
 
+    public function schema() {
+        return Renderable::PAIRED;
+    }    
+
     public function name() {
         return FormElement::$NAME;
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
+    public function push($input_type, $input_name) {
+        $input = new InputElement($this, $input_type, $input_name);
+        $this->children->add($input);
     }
 }
 
@@ -294,12 +299,12 @@ class H6Element implements Renderable
         $this->children->add($content_element);
     }
 
-    public function name() {
-        return H6Element::$NAME;
-    }
-
     public function schema() {
         return Renderable::PAIRED;
+    }    
+
+    public function name() {
+        return H6Element::$NAME;
     }
 }
 
@@ -403,24 +408,41 @@ class InputElement implements Renderable
 {
     public static $NAME = "input";
 
+    public static $TYPES = array(
+                           "text",
+                           "password",
+                           "radio",
+                           "checkbox",
+                           "file",
+                           "submit",
+                           "image",
+                           "hidden");
+
     public $attributes;
 
-    public function __construct($type_value, $name_value) {
+    // this should never be called explicitly. use FormElement->push() instead
+    public function __construct(FormElement $form, $type_value, $name_value) {
         $this->attributes = new HtmlAttributes();
 
-        $type = new TypeAttribute($type_value);
-        $name = new NameAttribute($name_value);
+        if (in_array($type_value, InputElement::$TYPES)) {
+            $type = new TypeAttribute($type_value);
+            $name = new NameAttribute($name_value);
+        } else {
+            echo "[InputElement] Error: invalid input type";
+            $type = new TypeAttribute("text");
+            $name = new NameAttribute("error");
+        }            
 
         $this->attributes->add($type);
-        $this->attributes->add($name);        
-    }
-
-    public function name() {
-        return InputElement::$NAME;
+        $this->attributes->add($name);   
     }
 
     public function schema() {
         return Renderable::SINGLE;
+    }    
+
+    public function name() {
+        return InputElement::$NAME;
     }
 }
 
