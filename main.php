@@ -1,29 +1,44 @@
 <?php
 require 'html_renderer.php';
 
-echo HtmlRenderer::$DOCTYPE_MARKUP . "\n";
+session_start();
 
-$title = "MOJITO - memory usage: " . memory_get_usage();
+$_SESSION['user_id'] = 0;
 
-$html = new HtmlElement();
-$head = new HeadElement($title);
-$body = new BodyElement();
+$renderer = new HtmlRenderer();
 
-$html->children->add($head);
-$html->children->add($body);
+$_heading = "MOJITO";
+$_title_text = "MOJITO - memory usage: ";
+$_charset = "charset";
+$_charset_val = "UTF-8";
 
-$heading_text = "MOJITO";
 $agent = $_SERVER['HTTP_USER_AGENT'];
-
 $paragraph = new PElement($agent);
-$heading = new H1Element($heading_text);
 
+$heading = new H1Element($_heading);
+
+$body = new BodyElement();
 $body->children->add($paragraph);
 $body->children->add($heading);
 
 // put test code here
 
-$renderer = new HtmlRenderer();
+$title_content = $_title_text . memory_get_usage();
+$title = new TitleElement($title_content);
+$meta_char = new MetaElement($_charset, $_charset_val);
 
+$head = new HeadElement();
+$head->children->add($meta_char);
+$head->children->add($title);
+
+$html = new HtmlElement();
+$html->children->add($head);
+$html->children->add($body);
+
+echo HtmlRenderer::$DOCTYPE_MARKUP . "\n";
 echo $renderer->render($html, 0);
+
+$_SESSION = array();
+
+session_destroy();
 ?>

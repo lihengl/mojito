@@ -310,16 +310,9 @@ class HeadElement implements Renderable
     public $attributes;
     public $children;
 
-    public function __construct($title_text) {
+    public function __construct() {
         $this->attributes = new HtmlAttributes();
         $this->children = new HtmlChildren();
-
-        $charset_attribute = new MetaAttribute("charset", "UTF-8");
-        $charset_meta = new MetaElement($charset_attribute);
-        $this->children->add($charset_meta);
-
-        $title = new TitleElement($title_text);
-        $this->children->add($title);
     }
 
     public function name() {
@@ -454,9 +447,15 @@ class MetaElement implements Renderable
 
     public $attributes;
 
-    public function __construct(MetaAttribute $attribute) {
+    public function __construct($attr_name, $attr_value) {
         $this->attributes = new HtmlAttributes();
-        $this->attributes->add($attribute);
+
+        if ($attr_name == "charset") {
+            $charset_attribute = new CharsetAttribute($attr_value);
+            $this->attributes->add($charset_attribute);
+        } else {
+            echo "[MetaElement] Error: Unknown attribute name";
+        }
     }
 
     public function name() {
