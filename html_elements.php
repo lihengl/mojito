@@ -357,9 +357,12 @@ class HtmlElement implements Renderable
     public $attributes;
     public $children;
 
-    public function __construct() {
+    public function __construct(HeadElement $head, BodyElement $body) {
         $this->attributes = new HtmlAttributes();
         $this->children = new HtmlChildren();
+
+        $this->children->add($head);
+        $this->children->add($body);
     }
 
     public function name() {
