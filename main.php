@@ -5,7 +5,7 @@ session_start();
 
 $_SESSION['user_id'] = 0;
 
-$composer = new HtmlComposer();
+$renderer = new HtmlRenderer();
 
 $_heading = "MOJITO";
 $_title_text = "MOJITO - memory usage: ";
@@ -35,8 +35,8 @@ $html = new HtmlElement();
 $html->children->add($head);
 $html->children->add($body);
 
-echo HtmlComposer::$DOCTYPE_MARKUP . "\n";
-echo $composer->compose($html, 0);
+echo HtmlRenderer::$DOCTYPE_MARKUP . "\n";
+echo $renderer->render($html, 0);
 
 $_SESSION = array();
 

@@ -1,7 +1,7 @@
 <?php
 require 'html_attributes.php';
 
-interface Composable
+interface Renderable
 {
     const TEXT_ELEMENT_SCHEMA = "schema for text element";
     const EMPTY_ELEMENT_SCHEMA = "schema for empty html element";
@@ -19,7 +19,7 @@ class HtmlChildren
         $this->elements = array();
     }
 
-    public function add(Composable $element) {
+    public function add(Renderable $element) {
         array_push($this->elements, $element);
     }
 
@@ -28,7 +28,7 @@ class HtmlChildren
     }
 }
 
-class TextElement implements Composable
+class TextElement implements Renderable
 {
     public static $NAME = "#";
 
@@ -43,11 +43,11 @@ class TextElement implements Composable
     }
 
     public function schema() {
-        return Composable::TEXT_ELEMENT_SCHEMA;
+        return Renderable::TEXT_ELEMENT_SCHEMA;
     }
 }
 
-class AElement implements Composable
+class AElement implements Renderable
 {
     public static $NAME = "a";
 
@@ -70,11 +70,11 @@ class AElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class BodyElement implements Composable
+class BodyElement implements Renderable
 {
     public static $NAME = "body";
 
@@ -91,11 +91,11 @@ class BodyElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class BrElement implements Composable
+class BrElement implements Renderable
 {
     public static $NAME = "br";
 
@@ -110,11 +110,11 @@ class BrElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
-class DivElement implements Composable
+class DivElement implements Renderable
 {
     public static $NAME = "div";
 
@@ -131,11 +131,11 @@ class DivElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class FormElement implements Composable
+class FormElement implements Renderable
 {
     public static $NAME = "form";
 
@@ -155,11 +155,11 @@ class FormElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class H1Element implements Composable
+class H1Element implements Renderable
 {
     public static $NAME = "h1";
 
@@ -179,11 +179,11 @@ class H1Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class H2Element implements Composable
+class H2Element implements Renderable
 {
     public static $NAME = "h2";
 
@@ -203,11 +203,11 @@ class H2Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class H3Element implements Composable
+class H3Element implements Renderable
 {
     public static $NAME = "h3";
 
@@ -227,11 +227,11 @@ class H3Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class H4Element implements Composable
+class H4Element implements Renderable
 {
     public static $NAME = "h4";
 
@@ -251,11 +251,11 @@ class H4Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class H5Element implements Composable
+class H5Element implements Renderable
 {
     public static $NAME = "h5";
 
@@ -275,11 +275,11 @@ class H5Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class H6Element implements Composable
+class H6Element implements Renderable
 {
     public static $NAME = "h6";
 
@@ -299,11 +299,11 @@ class H6Element implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class HeadElement implements Composable
+class HeadElement implements Renderable
 {
     public static $NAME = "head";
 
@@ -320,11 +320,11 @@ class HeadElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class HrElement implements Composable
+class HrElement implements Renderable
 {
     public static $NAME = "hr";
 
@@ -339,11 +339,11 @@ class HrElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
-class HtmlElement implements Composable
+class HtmlElement implements Renderable
 {
     public static $NAME = "html";
 
@@ -360,11 +360,11 @@ class HtmlElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class ImgElement implements Composable
+class ImgElement implements Renderable
 {
     public static $NAME = "img";
 
@@ -385,11 +385,11 @@ class ImgElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
-class InputElement implements Composable
+class InputElement implements Renderable
 {
     public static $NAME = "input";
 
@@ -410,11 +410,11 @@ class InputElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
-class LinkElement implements Composable
+class LinkElement implements Renderable
 {
     public static $NAME = "link";      
 
@@ -437,11 +437,11 @@ class LinkElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
-class MetaElement implements Composable
+class MetaElement implements Renderable
 {
     public static $NAME = "meta";
 
@@ -463,11 +463,11 @@ class MetaElement implements Composable
     }
 
     public function schema() {
-        return Composable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::EMPTY_ELEMENT_SCHEMA;
     }
 }
 
-class PElement implements Composable
+class PElement implements Renderable
 {
     public static $NAME = "p";
 
@@ -487,11 +487,11 @@ class PElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class ScriptElement implements Composable
+class ScriptElement implements Renderable
 {
     public static $NAME = "script";
 
@@ -511,11 +511,11 @@ class ScriptElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class SpanElement implements Composable
+class SpanElement implements Renderable
 {
     public static $NAME = "span";
 
@@ -532,11 +532,11 @@ class SpanElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 
-class TitleElement implements Composable
+class TitleElement implements Renderable
 {
     public static $NAME = "title";
 
@@ -556,7 +556,7 @@ class TitleElement implements Composable
     }
 
     public function schema() {
-        return Composable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED_ELEMENT_SCHEMA;
     }
 }
 ?>
