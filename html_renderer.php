@@ -88,9 +88,9 @@ class HtmlRenderer
 
         $opentag = "";
 
-        if ($attribute = "") {
+        if ($attribute == "") {
             $opentag = $opentag_begin . $opentag_end;
-        } else {
+        } else {            
             $opentag = $opentag_begin
                      . HtmlRenderer::$SEPARATOR
                      . $attribute
