@@ -117,12 +117,12 @@ class HtmlRenderer
 
         $html = "";
 
-        if ($schema == Renderable::EMPTY_ELEMENT_SCHEMA) {
+        if ($schema == Renderable::SINGLE) {
             $renderd = $this->render_empty($element);
             $html = $indent . $renderd;
-        } else if ($schema == Renderable::PAIRED_ELEMENT_SCHEMA) {
+        } else if ($schema == Renderable::PAIRED) {
             $html = $this->render_paired($element, $indent_level);
-        } else if ($schema == Renderable::TEXT_ELEMENT_SCHEMA) {
+        } else if ($schema == Renderable::TEXT) {
             $html = $indent . $this->render_text($element);            
         } else {
             echo "[HtmlRenderer] Error: Unknown composite schema";

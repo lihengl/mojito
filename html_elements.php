@@ -3,9 +3,9 @@ require 'html_attributes.php';
 
 interface Renderable
 {
-    const TEXT_ELEMENT_SCHEMA = "schema for text element";
-    const EMPTY_ELEMENT_SCHEMA = "schema for empty html element";
-    const PAIRED_ELEMENT_SCHEMA = "schema of paired html element";
+    const TEXT = "schema for text element";
+    const SINGLE = "schema for empty html element";
+    const PAIRED = "schema of paired html element";
 
     public function name();
     public function schema();
@@ -43,7 +43,7 @@ class TextElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::TEXT_ELEMENT_SCHEMA;
+        return Renderable::TEXT;
     }
 }
 
@@ -70,7 +70,7 @@ class AElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -91,7 +91,7 @@ class BodyElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -110,7 +110,7 @@ class BrElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::SINGLE;
     }
 }
 
@@ -131,7 +131,7 @@ class DivElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -155,7 +155,7 @@ class FormElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -179,7 +179,7 @@ class H1Element implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -203,7 +203,7 @@ class H2Element implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -227,7 +227,7 @@ class H3Element implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -251,7 +251,7 @@ class H4Element implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -275,7 +275,7 @@ class H5Element implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -299,7 +299,7 @@ class H6Element implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -327,7 +327,7 @@ class HeadElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -346,7 +346,7 @@ class HrElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::SINGLE;
     }
 }
 
@@ -370,7 +370,7 @@ class HtmlElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -395,7 +395,7 @@ class ImgElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::SINGLE;
     }
 }
 
@@ -420,7 +420,7 @@ class InputElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::SINGLE;
     }
 }
 
@@ -447,7 +447,7 @@ class LinkElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::SINGLE;
     }
 }
 
@@ -467,7 +467,7 @@ class MetaElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::EMPTY_ELEMENT_SCHEMA;
+        return Renderable::SINGLE;
     }
 }
 
@@ -491,7 +491,7 @@ class PElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -515,7 +515,7 @@ class ScriptElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -536,7 +536,7 @@ class SpanElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 
@@ -560,7 +560,7 @@ class TitleElement implements Renderable
     }
 
     public function schema() {
-        return Renderable::PAIRED_ELEMENT_SCHEMA;
+        return Renderable::PAIRED;
     }
 }
 ?>
