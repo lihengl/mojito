@@ -22,7 +22,7 @@ class HtmlRenderer
     }
 
     private function render_tagopening($element_name) {
-        $html = HtmlRenderer::$OPENING_CHAR . $element_name;
+        $html = self::$OPENING_CHAR . $element_name;
         return $html;
     }
 
@@ -31,13 +31,13 @@ class HtmlRenderer
 
         foreach ($attributes as $name=>$value) {
             $attribute_html = $name
-                            . HtmlRenderer::$ATTRVALUE_BEFORE
+                            . self::$ATTRVALUE_BEFORE
                             . $value
-                            . HtmlRenderer::$ATTRVALUE_AFTER;
+                            . self::$ATTRVALUE_AFTER;
             array_push($attribute_htmls, $attribute_html);
         }
 
-        $html = implode(HtmlRenderer::$SEPARATOR, $attribute_htmls);
+        $html = implode(self::$SEPARATOR, $attribute_htmls);
 
         return $html;
     }
@@ -57,18 +57,18 @@ class HtmlRenderer
     private function render_empty(Renderable $element) {
         $opening = $this->render_tagopening($element->name());
         $attribute = $this->render_attribute($element->attributes());
-        $closing = HtmlRenderer::$EMPTY_CLOSING;
+        $closing = self::$EMPTY_CLOSING;
 
         if ($attribute == "") {
             $html = $opening
-                  . HtmlRenderer::$SEPARATOR
-                  . HtmlRenderer::$EMPTY_CLOSING;
+                  . self::$SEPARATOR
+                  . self::$EMPTY_CLOSING;
         } else {
             $html = $opening
-                  . HtmlRenderer::$SEPARATOR
+                  . self::$SEPARATOR
                   . $attribute
-                  . HtmlRenderer::$SEPARATOR
-                  . HtmlRenderer::$EMPTY_CLOSING;
+                  . self::$SEPARATOR
+                  . self::$EMPTY_CLOSING;
         }
 
         return $html;
@@ -76,11 +76,11 @@ class HtmlRenderer
 
     private function render_paired(Renderable $element, $indent_level) {
         $name = $element->name();
-        $indent = str_repeat(HtmlRenderer::$INDENT_UNIT, $indent_level);
+        $indent = str_repeat(self::$INDENT_UNIT, $indent_level);
 
         $opentag_begin = $this->render_tagopening($name);
         $attribute = $this->render_attribute($element->attributes());
-        $opentag_end = HtmlRenderer::$CLOSING_CHAR;
+        $opentag_end = self::$CLOSING_CHAR;
 
         $opentag = "";
 
@@ -88,7 +88,7 @@ class HtmlRenderer
             $opentag = $opentag_begin . $opentag_end;
         } else {            
             $opentag = $opentag_begin
-                     . HtmlRenderer::$SEPARATOR
+                     . self::$SEPARATOR
                      . $attribute
                      . $opentag_end;
         }
@@ -96,9 +96,9 @@ class HtmlRenderer
         $level = $indent_level + 1;
         $content = $this->render_content($element->children, $level);
 
-        $closetag = HtmlRenderer::$PAIRED_CLOSING
+        $closetag = self::$PAIRED_CLOSING
                   . $name
-                  . HtmlRenderer::$CLOSING_CHAR;
+                  . self::$CLOSING_CHAR;
 
         $html = $indent . $opentag . "\n"
               . $content
@@ -108,7 +108,7 @@ class HtmlRenderer
     }
 
     public function render(Renderable $element, $indent_level) {
-        $indent = str_repeat(HtmlRenderer::$INDENT_UNIT, $indent_level);
+        $indent = str_repeat(self::$INDENT_UNIT, $indent_level);
         $schema = $element->schema();
 
         $html = "";

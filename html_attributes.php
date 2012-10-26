@@ -19,8 +19,8 @@ class HtmlAttributes
 
         // every element should be able to have id and class attribute
         // put them as the first two entries of the valid names array
-        $this->valid_name_values[HtmlAttributes::$ID] = "";
-        $this->valid_name_values[HtmlAttributes::$CLASS] = "";
+        $this->valid_name_values[self::$ID] = "";
+        $this->valid_name_values[self::$CLASS] = "";
 
         // have all the valid attribute names first
         // the values will be optionally filled in through belonging element 
@@ -30,22 +30,22 @@ class HtmlAttributes
     }
 
     public function get_id() {
-        return $this->valid_name_values[HtmlAttributes::$ID];
+        return $this->valid_name_values[self::$ID];
     }
 
     public function set_id($id_value) {
-        $this->valid_name_values[HtmlAttributes::$ID] = $id_value;
+        $this->valid_name_values[self::$ID] = $id_value;
         return true;
     }
 
     public function get_class() {
-        return $this->valid_name_values[HtmlAttributes::$CLASS];
+        return $this->valid_name_values[self::$CLASS];
     }
 
     // takes an array of class values and overwrites current classes with it
     public function set_classes($class_values) {
-        $combined = implode(HtmlAttributes::$VALUE_SEPARATOR, $class_values);
-        $this->valid_name_values[HtmlAttributes::$CLASS] = $combined;
+        $combined = implode(self::$VALUE_SEPARATOR, $class_values);
+        $this->valid_name_values[self::$CLASS] = $combined;
     }
 
     public function get($name) {

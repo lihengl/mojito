@@ -63,10 +63,10 @@ class AElement implements Renderable
     public $children;
 
     public function __construct($href_value, $link_text) {
-        $valid_attributes = array(AElement::$HREF, AElement::$TARGET);
+        $valid_attributes = array(self::$HREF, self::$TARGET);
         $this->attributes = new HtmlAttributes($valid_attributes);
 
-        $this->attributes->set(AElement::$HREF, $href_value);
+        $this->attributes->set(self::$HREF, $href_value);
 
         $content_element = new TextElement($link_text);
         $this->children = new HtmlChildren();
@@ -78,7 +78,7 @@ class AElement implements Renderable
     }    
 
     public function name() {
-        return AElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -104,7 +104,7 @@ class BodyElement implements Renderable
     }    
 
     public function name() {
-        return BodyElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -127,7 +127,7 @@ class BrElement implements Renderable
     }
 
     public function name() {
-        return BrElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -152,7 +152,7 @@ class DivElement implements Renderable
     }    
 
     public function name() {
-        return DivElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -171,9 +171,9 @@ class FormElement implements Renderable
     public $children;
 
     public function __construct($handler_url) {
-        $valid_attributes = array(FormElement::$ACTION, FormElement::$METHOD);
+        $valid_attributes = array(self::$ACTION, self::$METHOD);
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(FormElement::$ACTION, $handler_url);
+        $this->attributes->set(self::$ACTION, $handler_url);
 
         $this->children = new HtmlChildren();        
     }
@@ -181,7 +181,7 @@ class FormElement implements Renderable
     public function push($input_type, $input_name) {
         $input = NULL;
 
-        if ($input_type == InputTextElement::$INPUT) {
+        if ($input_type == InputTextElement::$TYPENAME) {
             $input = new InputTextElement($this, $input_name);            
         } else {
             echo "TODO FormElement";
@@ -195,7 +195,7 @@ class FormElement implements Renderable
     }    
 
     public function name() {
-        return FormElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -223,7 +223,7 @@ class H1Element implements Renderable
     }    
 
     public function name() {
-        return H1Element::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -259,7 +259,7 @@ class H2Element implements Renderable
     }    
 
     public function name() {
-        return H2Element::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -287,7 +287,7 @@ class H3Element implements Renderable
     }    
 
     public function name() {
-        return H3Element::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -315,7 +315,7 @@ class H4Element implements Renderable
     }    
 
     public function name() {
-        return H4Element::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -343,7 +343,7 @@ class H5Element implements Renderable
     }    
 
     public function name() {
-        return H5Element::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -371,7 +371,7 @@ class H6Element implements Renderable
     }    
 
     public function name() {
-        return H6Element::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -402,7 +402,7 @@ class HeadElement implements Renderable
     }    
 
     public function name() {
-        return HeadElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -425,7 +425,7 @@ class HrElement implements Renderable
     }    
 
     public function name() {
-        return HrElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -459,7 +459,7 @@ class HtmlElement implements Renderable
     }    
 
     public function name() {
-        return HtmlElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -486,15 +486,15 @@ class ImgElement implements Renderable
     private $attributes;
 
     public function __construct($src_value, $alt_value) {
-        $valid_attributes = array(ImgElement::$SRC, ImgElement::$ALT,
-                                  ImgElement::$TITLE);
+        $valid_attributes = array(self::$SRC, self::$ALT,
+                                  self::$TITLE);
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(ImgElement::$SRC, $src_value);
-        $this->attributes->set(ImgElement::$ALT, $alt_value);
+        $this->attributes->set(self::$SRC, $src_value);
+        $this->attributes->set(self::$ALT, $alt_value);
     }
 
     public function name() {
-        return ImgElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function schema() {
@@ -520,15 +520,15 @@ class InputTextElement implements Renderable
 
     // this should never be called explicitly. use FormElement->push() instead
     public function __construct(FormElement $form, $name_value) {
-        $valid_attributes = array(InputTextElement::$TYPE,
-                                  InputTextElement::$NAME,
-                                  InputTextElement::$VALUE,                                  
-                                  InputTextElement::$MAXLENGTH);
+        $valid_attributes = array(self::$TYPE,
+                                  self::$NAME,
+                                  self::$VALUE,                                  
+                                  self::$MAXLENGTH);
 
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(InputTextElement::$TYPE,
-                               InputTextElement::$TYPENAME);
-        $this->attributes->set(InputTextElement::$NAME, $name_value);
+        $this->attributes->set(self::$TYPE,
+                               self::$TYPENAME);
+        $this->attributes->set(self::$NAME, $name_value);
     }
 
     public function schema() {
@@ -536,7 +536,7 @@ class InputTextElement implements Renderable
     }    
 
     public function name() {
-        return InputElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -555,14 +555,14 @@ class LinkElement implements Renderable
     private $attributes;
 
     public function __construct($href_value, $type_value, $rel_value) {
-        $valid_attributes = array(LinkElement::$HREF,
-                                  LinkElement::$TYPE,
-                                  LinkElement::$REL);
+        $valid_attributes = array(self::$HREF,
+                                  self::$TYPE,
+                                  self::$REL);
         $this->attributes = new HtmlAttributes($valid_attributes);
 
-        $this->attributes->set(LinkElement::$HREF, $href_value);
-        $this->attributes->set(LinkElement::$TYPE, $type_value);
-        $this->attributes->set(LinkElement::$REL, $rel_value); 
+        $this->attributes->set(self::$HREF, $href_value);
+        $this->attributes->set(self::$TYPE, $type_value);
+        $this->attributes->set(self::$REL, $rel_value); 
     }
 
     public function schema() {
@@ -570,7 +570,7 @@ class LinkElement implements Renderable
     }    
 
     public function name() {
-        return LinkElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -587,9 +587,9 @@ class MetaCharsetElement implements Renderable
     private $attributes;
 
     public function __construct(HeadElement $parent, $charset_value) {
-        $valid_attributes = array(MetaCharsetElement::$CHARSET);
+        $valid_attributes = array(self::$CHARSET);
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(MetaCharsetElement::$CHARSET, $charset_value);
+        $this->attributes->set(self::$CHARSET, $charset_value);
     }
 
     public function schema() {
@@ -597,7 +597,7 @@ class MetaCharsetElement implements Renderable
     }    
 
     public function name() {
-        return MetaCharsetElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -625,7 +625,7 @@ class PElement implements Renderable
     }    
 
     public function name() {
-        return PElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -645,7 +645,7 @@ class ScriptElement implements Renderable
     public function __construct($src_value) {
         $valid_attributes = array("arc");
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(ScriptElement::$SRC, $src_value);        
+        $this->attributes->set(self::$SRC, $src_value);        
 
         $this->children = new HtmlChildren();
     }
@@ -655,7 +655,7 @@ class ScriptElement implements Renderable
     }    
 
     public function name() {
-        return ScriptElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -680,7 +680,7 @@ class SpanElement implements Renderable
     }    
 
     public function name() {
-        return SpanElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
@@ -708,7 +708,7 @@ class TitleElement implements Renderable
     }    
 
     public function name() {
-        return TitleElement::$TAGNAME;
+        return self::$TAGNAME;
     }
 
     public function attributes() {
