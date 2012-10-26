@@ -3,11 +3,6 @@ require 'html_attributes.php';
 
 interface Renderable
 {
-    const TEXT = "schema for text element";
-    const SINGLE = "schema for empty html element";
-    const PAIRED = "schema of paired html element";
-
-    public function schema();
     public function name();
     public function attributes();
     public function children();
@@ -21,23 +16,16 @@ class TextElement implements Renderable
         $this->content = htmlentities($text_content);
     }
 
-    public function schema() {
-        return Renderable::TEXT;
-    }    
-
     public function name() {
-        echo "[TextElement] Error: tried to get tag name from TextElement";
-        return "";
+        return NULL;
     }
 
     public function attributes() {
-        echo "[TextElement] Error: tried to get attributes from TextElement";
-        return "";
+        return NULL;
     }
 
     public function children() {
-        echo "[TextElement] Error: tried to get children from TextElement";
-        return "";
+        return NULL;
     }
 }
 
@@ -60,10 +48,6 @@ class AElement implements Renderable
         $this->children = array();
         array_push($this->children, $content_element);
     }
-
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
 
     public function name() {
         return self::$TAGNAME;
@@ -90,10 +74,6 @@ class BodyElement implements Renderable
         $this->children = array();
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -102,14 +82,14 @@ class BodyElement implements Renderable
         return $this->attributes->all_specified();
     }
 
+    public function children() {
+        return $this->children;
+    }        
+
     public function push(Renderable $element) {
         array_push($this->children, $element);
         return $element;
     }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
 class BrElement implements Renderable
@@ -122,10 +102,6 @@ class BrElement implements Renderable
         $this->attributes = new HtmlAttributes(array());
     }
 
-    public function schema() {
-        return Renderable::SINGLE;
-    }
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -135,8 +111,7 @@ class BrElement implements Renderable
     }
 
     public function children() {
-        echo "[BrElement] Error: tried to get children from br element";
-        return "";
+        return NULL;
     }
 }
 
@@ -152,10 +127,6 @@ class DivElement implements Renderable
         $this->children = array();
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -164,14 +135,14 @@ class DivElement implements Renderable
         return $this->attributes->all_specified();
     }
 
+    public function children() {
+        return $this->children;
+    }        
+
     public function push(Renderable $element) {
         array_push($this->children, $element);
         return $element;
     }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
 class FormElement implements Renderable
@@ -191,10 +162,6 @@ class FormElement implements Renderable
 
         $this->children = array();        
     }
-
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
 
     public function name() {
         return self::$TAGNAME;
@@ -242,10 +209,6 @@ class H1Element implements Renderable
         array_push($this->children, $content_text);
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -282,10 +245,6 @@ class H2Element implements Renderable
         array_push($this->children, $content_element);
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -313,10 +272,6 @@ class H3Element implements Renderable
         $this->children = array();        
         array_push($this->children, $content_element);
     }
-
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
 
     public function name() {
         return self::$TAGNAME;
@@ -346,10 +301,6 @@ class H4Element implements Renderable
         array_push($this->children, $content_element);
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -378,10 +329,6 @@ class H5Element implements Renderable
         array_push($this->children, $content_element);
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -409,10 +356,6 @@ class H6Element implements Renderable
         $this->children = array();
         array_push($this->children, $content_element);
     }
-
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
 
     public function name() {
         return self::$TAGNAME;
@@ -445,10 +388,6 @@ class HeadElement implements Renderable
         array_push($this->children, $title);
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -472,10 +411,6 @@ class HrElement implements Renderable
         $this->attributes = new HtmlAttributes(array());
     }
 
-    public function schema() {
-        return Renderable::SINGLE;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -485,8 +420,7 @@ class HrElement implements Renderable
     }
 
     public function children() {
-        echo "[HrElement] Error: tried to get children from hr element";
-        return "";
+        return NULL;
     }    
 }
 
@@ -499,8 +433,8 @@ class HtmlElement implements Renderable
     private $attributes;
     private $children;
 
-    private $head;
-    private $body;
+    public $head;
+    public $body;
 
     public function __construct($title_text) {
         $this->attributes = new HtmlAttributes(array());
@@ -513,10 +447,6 @@ class HtmlElement implements Renderable
         array_push($this->children, $this->body);
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -527,14 +457,6 @@ class HtmlElement implements Renderable
 
     public function children() {
         return $this->children;
-    }    
-
-    public function head() {
-        return $this->head;
-    }
-
-    public function body() {
-        return $this->body;
     }
 }
 
@@ -560,17 +482,12 @@ class ImgElement implements Renderable
         return self::$TAGNAME;
     }
 
-    public function schema() {
-        return Renderable::SINGLE;
-    }
-
     public function attributes() {
         return $this->attributes->all_specified();
     }
 
     public function children() {
-        echo "[ImgElement] Error: tried to get children from img element";
-        return ""; 
+        return NULL; 
     }    
 }
 
@@ -599,10 +516,6 @@ class InputTextElement implements Renderable
         $this->attributes->set(self::$NAMEATTR, $name_value);
     }
 
-    public function schema() {
-        return Renderable::SINGLE;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -612,8 +525,7 @@ class InputTextElement implements Renderable
     }
 
     public function children() {
-        echo "[InputTextElement] Error: tried to get children from input element";
-        return "";
+        return NULL;
     }
 }
 
@@ -638,10 +550,6 @@ class LinkElement implements Renderable
         $this->attributes->set(self::$RELATTR, $rel_value); 
     }
 
-    public function schema() {
-        return Renderable::SINGLE;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -651,7 +559,7 @@ class LinkElement implements Renderable
     }
 
     public function children() {
-        echo "[LinkElement] Error: tried to get children from link element";
+        return NULL;
     }
 }
 
@@ -669,10 +577,6 @@ class MetaCharsetElement implements Renderable
         $this->attributes->set(self::$CHARSETATTR, $charset_value);
     }
 
-    public function schema() {
-        return Renderable::SINGLE;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -682,8 +586,7 @@ class MetaCharsetElement implements Renderable
     }
 
     public function children() {
-        echo "[MetaCharsetElement] Error: tried to get children from meta element";
-        return "";
+        return NULL;
     }
 }
 
@@ -701,10 +604,6 @@ class PElement implements Renderable
         $this->children = array();        
         array_push($this->children, $text);
     }
-
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
 
     public function name() {
         return self::$TAGNAME;
@@ -744,10 +643,6 @@ class ScriptElement implements Renderable
         $this->children = array();
     }
 
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
-
     public function name() {
         return self::$TAGNAME;
     }
@@ -772,10 +667,6 @@ class SpanElement implements Renderable
         $this->attributes = new HtmlAttributes(array());
         $this->children = array();
     }
-
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
 
     public function name() {
         return self::$TAGNAME;
@@ -804,10 +695,6 @@ class TitleElement implements Renderable
         $this->children = array();        
         array_push($this->children, $content_element);
     }
-
-    public function schema() {
-        return Renderable::PAIRED;
-    }    
 
     public function name() {
         return self::$TAGNAME;

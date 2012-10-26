@@ -7,7 +7,7 @@ $html = new HtmlElement($title);
 
 $heading_text = "THE FIRST INSURANCE CO., LTD.";
 $heading = new H1Element($heading_text);
-$html->body()->push($heading);
+$html->body->push($heading);
 
 // put test code here
 

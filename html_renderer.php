@@ -116,19 +116,16 @@ class HtmlRenderer
 
     public function render(Renderable $element, $indent_level) {
         $indent = str_repeat(self::$INDENT_UNIT, $indent_level);
-        $schema = $element->schema();
 
         $html = "";
 
-        if ($schema == Renderable::SINGLE) {
+        if ($element->attributes() === NULL) {
+            $html = $indent . $this->render_text($element);
+        } else if ($element->children() === NULL) {
             $renderd = $this->render_empty($element);
             $html = $indent . $renderd;
-        } else if ($schema == Renderable::PAIRED) {
-            $html = $this->render_paired($element, $indent_level);
-        } else if ($schema == Renderable::TEXT) {
-            $html = $indent . $this->render_text($element);            
         } else {
-            echo "[HtmlRenderer] Error: Unknown composite schema";
+            $html = $this->render_paired($element, $indent_level);   
         }
 
         $html .= "\n";
