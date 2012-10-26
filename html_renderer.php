@@ -13,6 +13,9 @@ class HtmlRenderer
     public static $EMPTY_CLOSING = "/>";
     public static $PAIRED_CLOSING = "</";
 
+    public static $ATTRVALUE_BEFORE = '="';
+    public static $ATTRVALUE_AFTER = '"';    
+
     private function render_text(Renderable $element) {
         $html = $element->content;
         return $html;
@@ -23,21 +26,14 @@ class HtmlRenderer
         return $html;
     }
 
-    private function render_attribute(HtmlAttributes $attribute) {
+    private function render_attribute($attributes) {
         $attribute_htmls = array();
 
-        foreach ($attribute->names() as $name) {
-
-            if ($name == IdAttribute::$NAME) {
-                $value = $attribute->get_id();
-            } else if ($name == ClassAttribute::$NAME) {
-                $classes = $attribute->get_classes();
-                $value = implode(HtmlRenderer::$SEPARATOR, $classes);
-            } else {
-                $value = $attribute->get($name);
-            }
-
-            $attribute_html = $name . '="' . $value . '"';
+        foreach ($attributes as $name=>$value) {
+            $attribute_html = $name
+                            . HtmlRenderer::$ATTRVALUE_BEFORE
+                            . $value
+                            . HtmlRenderer::$ATTRVALUE_AFTER;
             array_push($attribute_htmls, $attribute_html);
         }
 
@@ -60,7 +56,7 @@ class HtmlRenderer
 
     private function render_empty(Renderable $element) {
         $opening = $this->render_tagopening($element->name());
-        $attribute = $this->render_attribute($element->attributes);
+        $attribute = $this->render_attribute($element->attributes());
         $closing = HtmlRenderer::$EMPTY_CLOSING;
 
         if ($attribute == "") {
@@ -83,7 +79,7 @@ class HtmlRenderer
         $indent = str_repeat(HtmlRenderer::$INDENT_UNIT, $indent_level);
 
         $opentag_begin = $this->render_tagopening($name);
-        $attribute = $this->render_attribute($element->attributes);
+        $attribute = $this->render_attribute($element->attributes());
         $opentag_end = HtmlRenderer::$CLOSING_CHAR;
 
         $opentag = "";

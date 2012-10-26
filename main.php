@@ -1,21 +1,20 @@
 <?php
 require 'html_renderer.php';
 
-echo HtmlRenderer::$DOCTYPE_MARKUP . "\n";
+$title = "memory usage: " . memory_get_usage();
 
-$body = new BodyElement();
+$html = new HtmlElement("UTF-8", $title);
 
-$heading_text = "MOJITO";
+$heading_text = "THE FIRST INSURANCE CO., <LTD.>";
 $heading = new H1Element($heading_text);
-$body->children->add($heading);
+$heading->set_classes(array("test", "ahead"));
+$heading->set_id("identifier");
+$html->body()->children->add($heading);
 
 // put test code here
 
-$title = "memory usage: " . memory_get_usage();
-$head = new HeadElement($title);
-
-$html = new HtmlElement($head, $body);
+// output to browser
 $renderer = new HtmlRenderer();
-
+echo HtmlRenderer::$DOCTYPE_MARKUP . "\n";
 echo $renderer->render($html, 0);
 ?>
