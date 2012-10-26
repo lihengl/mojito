@@ -35,7 +35,7 @@ class HtmlAttributes
 
     public function set_id($id_value) {
         $this->valid_name_values[self::$ID] = $id_value;
-        return true;
+        return TRUE;
     }
 
     public function get_class() {
@@ -64,10 +64,10 @@ class HtmlAttributes
 
         if (array_key_exists($name, $this->valid_name_values)) {
             $this->valid_name_values[$name] = $value;
-            return true;
+            return TRUE;
         } else {
             echo "[HtmlAttributes] Error: invalid attribute name";
-            return false;
+            return FALSE;
         }
 
     }

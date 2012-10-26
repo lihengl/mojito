@@ -16,7 +16,7 @@ class HtmlRenderer
     public static $ATTRVALUE_BEFORE = '="';
     public static $ATTRVALUE_AFTER = '"';
 
-    private static $INSTANCE = null;
+    private static $INSTANCE = NULL;
 
     // only have one static instance of HtmlRenderer at all time
     private function __construct() {
@@ -49,13 +49,12 @@ class HtmlRenderer
         return $html;
     }
 
-    private function render_content(HtmlChildren $children, $indent_level) {
-        $child_elements = $children->all();
+    private function render_content($children, $indent_level) {
         $html = "";
 
-        foreach ($child_elements as $element) {
+        foreach ($children as $child_element) {
             // a recursion here
-            $html .= $this->render($element, $indent_level);
+            $html .= $this->render($child_element, $indent_level);
         }
 
         return $html;
@@ -101,7 +100,7 @@ class HtmlRenderer
         }
 
         $level = $indent_level + 1;
-        $content = $this->render_content($element->children, $level);
+        $content = $this->render_content($element->children(), $level);
 
         $closetag = self::$PAIRED_CLOSING
                   . $name
@@ -138,7 +137,7 @@ class HtmlRenderer
 
     public static function instance() {
 
-        if (self::$INSTANCE == null) {
+        if (self::$INSTANCE == NULL) {
             self::$INSTANCE = new HtmlRenderer();
         } else {
             // already instantiated
