@@ -14,7 +14,14 @@ class HtmlRenderer
     public static $PAIRED_CLOSING = "</";
 
     public static $ATTRVALUE_BEFORE = '="';
-    public static $ATTRVALUE_AFTER = '"';    
+    public static $ATTRVALUE_AFTER = '"';
+
+    private static $INSTANCE = null;
+
+    // only have one static instance of HtmlRenderer at all time
+    private function __construct() {
+
+    }
 
     private function render_text(Renderable $element) {
         $html = $element->content;
@@ -128,5 +135,16 @@ class HtmlRenderer
 
         return $html;
     }
+
+    public static function instance() {
+
+        if (self::$INSTANCE == null) {
+            self::$INSTANCE = new HtmlRenderer();
+        } else {
+            // already instantiated
+        }
+
+        return self::$INSTANCE;
+    }    
 }
 ?>
