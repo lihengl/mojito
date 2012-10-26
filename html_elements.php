@@ -56,17 +56,17 @@ class AElement implements Renderable
 {
     public static $TAGNAME = "a";
 
-    public static $HREF = "href";
-    public static $TARGET = "target";
+    public static $HREFATTR = "href";
+    public static $TARGETATTR = "target";
 
     private $attributes;
     public $children;
 
     public function __construct($href_value, $link_text) {
-        $valid_attributes = array(self::$HREF, self::$TARGET);
+        $valid_attributes = array(self::$HREFATTR, self::$TARGETATTR);
         $this->attributes = new HtmlAttributes($valid_attributes);
 
-        $this->attributes->set(self::$HREF, $href_value);
+        $this->attributes->set(self::$HREFATTR, $href_value);
 
         $content_element = new TextElement($link_text);
         $this->children = new HtmlChildren();
@@ -164,16 +164,16 @@ class FormElement implements Renderable
 {
     public static $TAGNAME = "form";
 
-    public static $ACTION = "action";
-    public static $METHOD = "method";
+    public static $ACTIONATTR = "action";
+    public static $METHODATTR = "method";
 
     private $attributes;
     public $children;
 
     public function __construct($handler_url) {
-        $valid_attributes = array(self::$ACTION, self::$METHOD);
+        $valid_attributes = array(self::$ACTIONATTR, self::$METHODATTR);
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$ACTION, $handler_url);
+        $this->attributes->set(self::$ACTIONATTR, $handler_url);
 
         $this->children = new HtmlChildren();        
     }
@@ -481,18 +481,18 @@ class ImgElement implements Renderable
 {
     public static $TAGNAME = "img";
 
-    public static $SRC = "src";
-    public static $ALT = "alt";
-    public static $TITLE = "title";
+    public static $SRCATTR = "src";
+    public static $ALTATTR = "alt";
+    public static $TITLEATTR = "title";
 
     private $attributes;
 
     public function __construct($src_value, $alt_value) {
-        $valid_attributes = array(self::$SRC, self::$ALT,
-                                  self::$TITLE);
+        $valid_attributes = array(self::$SRCATTR, self::$ALTATTR,
+                                  self::$TITLEATTR);
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$SRC, $src_value);
-        $this->attributes->set(self::$ALT, $alt_value);
+        $this->attributes->set(self::$SRCATTR, $src_value);
+        $this->attributes->set(self::$ALTATTR, $alt_value);
     }
 
     public function name() {
@@ -513,24 +513,24 @@ class InputTextElement implements Renderable
     public static $TAGNAME = "input";
     public static $TYPENAME = "text";
 
-    public static $TYPE = "type";
-    public static $NAME = "name";
-    public static $VALUE = "value";
-    public static $MAXLENGTH = "maxlength";
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+    public static $MAXLENGTHATTR = "maxlength";
 
     private $attributes;
 
     // this should never be called explicitly. use FormElement->push() instead
     public function __construct(FormElement $form, $name_value) {
-        $valid_attributes = array(self::$TYPE,
-                                  self::$NAME,
-                                  self::$VALUE,                                  
-                                  self::$MAXLENGTH);
+        $valid_attributes = array(self::$TYPEATTR,
+                                  self::$NAMEATTR,
+                                  self::$VALUEATTR,                                  
+                                  self::$MAXLENGTHATTR);
 
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$TYPE,
+        $this->attributes->set(self::$TYPEATTR,
                                self::$TYPENAME);
-        $this->attributes->set(self::$NAME, $name_value);
+        $this->attributes->set(self::$NAMEATTR, $name_value);
     }
 
     public function schema() {
@@ -550,21 +550,21 @@ class LinkElement implements Renderable
 {
     public static $TAGNAME = "link";
 
-    public static $HREF = "href";
-    public static $TYPE = "type";
-    public static $REL = "rel";
+    public static $HREFATTR = "href";
+    public static $TYPEATTR = "type";
+    public static $RELATTR = "rel";
 
     private $attributes;
 
     public function __construct($href_value, $type_value, $rel_value) {
-        $valid_attributes = array(self::$HREF,
-                                  self::$TYPE,
-                                  self::$REL);
+        $valid_attributes = array(self::$HREFATTR,
+                                  self::$TYPEATTR,
+                                  self::$RELATTR);
         $this->attributes = new HtmlAttributes($valid_attributes);
 
-        $this->attributes->set(self::$HREF, $href_value);
-        $this->attributes->set(self::$TYPE, $type_value);
-        $this->attributes->set(self::$REL, $rel_value); 
+        $this->attributes->set(self::$HREFATTR, $href_value);
+        $this->attributes->set(self::$TYPEATTR, $type_value);
+        $this->attributes->set(self::$RELATTR, $rel_value); 
     }
 
     public function schema() {
@@ -584,14 +584,14 @@ class MetaCharsetElement implements Renderable
 {
     public static $TAGNAME = "meta";
 
-    public static $CHARSET = "charset";
+    public static $CHARSETATTR = "charset";
 
     private $attributes;
 
     public function __construct(HeadElement $parent, $charset_value) {
-        $valid_attributes = array(self::$CHARSET);
+        $valid_attributes = array(self::$CHARSETATTR);
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$CHARSET, $charset_value);
+        $this->attributes->set(self::$CHARSETATTR, $charset_value);
     }
 
     public function schema() {
@@ -639,7 +639,7 @@ class ScriptElement implements Renderable
 {
     public static $TAGNAME = "script";
 
-    public static $SRC = "src";
+    public static $SRCATTR = "src";
 
     private $attributes;
     public $children;
@@ -647,7 +647,7 @@ class ScriptElement implements Renderable
     public function __construct($src_value) {
         $valid_attributes = array("arc");
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$SRC, $src_value);        
+        $this->attributes->set(self::$SRCATTR, $src_value);        
 
         $this->children = new HtmlChildren();
     }
