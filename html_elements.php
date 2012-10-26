@@ -434,8 +434,10 @@ class HrElement implements Renderable
 }
 
 class HtmlElement implements Renderable
-{
+{   
     public static $TAGNAME = "html";
+
+    public static $CHARSET = "UTF-8";    
 
     private $attributes;
     public $children;
@@ -443,11 +445,11 @@ class HtmlElement implements Renderable
     private $head;
     private $body;
 
-    public function __construct($charset_value, $title_text) {
+    public function __construct($title_text) {
         $this->attributes = new HtmlAttributes(array());
         $this->children = new HtmlChildren();
 
-        $this->head = new HeadElement($this, $charset_value, $title_text);
+        $this->head = new HeadElement($this, self::$CHARSET, $title_text);
         $this->body = new BodyElement($this);
 
         $this->children->add($this->head);

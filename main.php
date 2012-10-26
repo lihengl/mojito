@@ -1,10 +1,9 @@
 <?php
 require 'html_renderer.php';
 
-$charset = "UTF-8";
 $title = "memory usage: " . memory_get_usage();
 
-$html = new HtmlElement($charset, $title);
+$html = new HtmlElement($title);
 
 $heading_text = "THE FIRST INSURANCE CO., LTD.";
 $heading = new H1Element($heading_text);
