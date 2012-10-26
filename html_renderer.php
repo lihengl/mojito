@@ -23,7 +23,7 @@ class HtmlRenderer
 
     }
 
-    private function render_text(Renderable $element) {
+    private function render_text(TextElement $element) {
         $html = $element->content;
         return $html;
     }
@@ -82,7 +82,6 @@ class HtmlRenderer
 
     private function render_paired(Renderable $element, $indent_level) {
         $name = $element->name();
-        $indent = str_repeat(self::$INDENT_UNIT, $indent_level);
 
         $opentag_begin = $this->render_tagopening($name);
         $attribute = $this->render_attribute($element->attributes());
@@ -105,6 +104,8 @@ class HtmlRenderer
         $closetag = self::$PAIRED_CLOSING
                   . $name
                   . self::$CLOSING_CHAR;
+
+        $indent = str_repeat(self::$INDENT_UNIT, $indent_level);
 
         $html = $indent . $opentag . "\n"
               . $content
