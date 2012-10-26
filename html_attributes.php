@@ -72,10 +72,6 @@ class HtmlAttributes
 
     }
 
-    public function names() {
-        return array_keys($this->valid_name_values);
-    }
-
     public function all_specified() {
         $specified = array();
 
