@@ -1,58 +1,7 @@
 <?php
-require 'html_attributes.php';
-
 interface Renderable
 {
-    public function name();
-    public function attributes();
-    public function children();
-}
-
-abstract class EmptyElement implements Renderable
-{
-    protected $attributes;
-
-    abstract public function name();
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return NULL;
-    }
-
-    public function set_id($id_value) {
-        $this->attributes->set_id($id_value);
-    }
-
-    public function set_classes($class_values) {
-        $this->attributes->set_classes($class_values);
-    }        
-}
-
-abstract class PairedElement implements Renderable
-{
-    protected $attributes;
-    protected $children;
-
-    abstract public function name();
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }
-
-    public function set_id($id_value) {
-        $this->attributes->set_id($id_value);
-    }
-
-    public function set_classes($class_values) {
-        $this->attributes->set_classes($class_values);
-    }    
+    public function render($indent_unit, $indent_level);
 }
 
 class TextElement implements Renderable
@@ -63,20 +12,143 @@ class TextElement implements Renderable
         $this->content = htmlentities($text_content);
     }
 
-    public function name() {
-        return NULL;
-    }
-
-    public function attributes() {
-        return NULL;
-    }
-
-    public function children() {
-        return NULL;
+    public function render($indent_unit, $indent_level) {
+        $indent = str_repeat($indent_unit, $indent_level);
+        $output = $indent . $this->content . "\n";
+        return $output;
     }
 }
 
-class AElement extends PairedElement
+abstract class MarkupElement implements Renderable
+{
+    public static $OPENING = "<";
+    public static $CLOSING = ">";
+
+    public static $EMPTYCLOSING = " />";
+    public static $PAIREDCLOSING = "</";
+
+    public static $ATTROPEN = '="';
+    public static $ATTRCLOSE = '"';
+
+    public static $IDATTR = "id";
+    public static $CLASSATTR = "class";
+
+    public static $SEPARATOR = " ";
+
+    protected $name;
+    protected $attributes;
+    protected $children;
+
+    public function __construct() {
+        $this->name = NULL;
+        $this->attributes = array(self::$IDATTR=>"", self::$CLASSATTR=>"");
+        $this->children = NULL;
+    }
+
+    private function render_attributes() {
+        $attribute_pieces = array();
+        foreach ($this->attributes as $name=>$value) {
+            $attr = "";
+
+            if ($value != "") {
+                $attr = $name . self::$ATTROPEN . $value . self::$ATTRCLOSE;
+            } else {
+                // attribute value not specified, render nothing
+            }
+
+            array_push($attribute_pieces, $attr);
+        }
+        $attribute_rendering = implode(self::$SEPARATOR, $attribute_pieces);
+        return $attribute_rendering;
+    }
+
+    private function render_empty($opening, $indent) {
+        $rendering = $opening . self::$EMPTYCLOSING;
+        $formatted = $indent . $rendering . "\n";
+        return $formatted;
+    }
+
+    private function render_paired($opening, $indent_unit, $indent_level) {
+        $indent = str_repeat($indent_unit, $indent_level);
+
+        $openline = $opening . self::$CLOSING;
+
+        $midlines = "";
+        $child_level = $indent_level + 1;
+
+        foreach ($this->children as $child) {
+            $midlines .= $child->render($indent_unit, $child_level);
+        }
+
+        $closeline = self::$PAIREDCLOSING . $this->name . self::$CLOSING;
+
+        $formatted_open = $indent . $openline . "\n";
+        $formatted_mid = $midlines;
+        $formatted_close = $indent . $closeline . "\n";
+
+        $formatted = $formatted_open . $formatted_mid . $formatted_close;        
+        return $formatted;
+    }
+
+    public function render($indent_unit, $indent_level) {
+        $indent = str_repeat($indent_unit, $indent_level);
+        $name = $this->name;
+
+        $opening = self::$OPENING . $name;
+        $attribute = $this->render_attributes();
+
+        if ($attribute != "") {
+            $opening .= self::$SEPARATOR . $attribute;
+        } else {
+            // attribute is empty and has nothing te be put into opening
+            $opening = $opening; 
+        }
+
+        if ($this->children === NULL) {
+            $output = $this->render_empty($opening, $indent);
+            return $output;
+        } else {
+            // shorten variable names to follow the 80-column rule
+            $unit = $indent_unit;
+            $level = $indent_level;
+            $output = $this->render_paired($opening, $unit, $level);
+            return $output;
+        }
+    }
+
+    public function set_id($value_string) {
+        $value = htmlentities($value_string);
+        $this->attributes[self::$IDATTR] = $value;
+    }
+
+    public function add_class($value_string) {
+        $value = htmlentities($value_string);
+        $existing = $this->attributes[self::$CLASSATTR];
+
+        if (strpos($value, self::$SEPARATOR)) {
+            // class value cannot contain space, do not add it
+            return FALSE;
+        } else if (strpos($existing, $value_string)) {
+            // class already exists, do nothing
+            return FALSE;
+        } else {
+            $added = $existing . self::$SEPARATOR . $value;
+            $existing = $added;
+            return TRUE;
+        }
+    }
+
+    public function push(Renderable $element) {
+
+        if ($this->children == NULL) {
+            // this is an empty element and cannot have children
+        } else {
+            array_push($this->children, $element);
+        }
+    }    
+}
+
+class AElement extends MarkupElement
 {
     public static $TAGNAME = "a";
 
@@ -84,270 +156,215 @@ class AElement extends PairedElement
     public static $TARGETATTR = "target";
 
     public function __construct($href_url, $link_text) {
-        $valid_attributes = array(self::$HREFATTR, self::$TARGETATTR);
-        $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$HREFATTR, $href_url);
+        $this->name = self::$TAGNAME;
+        $this->children = array();        
+
+        $this->attributes[self::$HREFATTR] = $href_url;
+        $this->attributes[self::$TARGETATTR] = "";
 
         $content_element = new TextElement($link_text);
-        $this->children = array();
         array_push($this->children, $content_element);
-    }
-
-    public function name() {
-        return self::$TAGNAME;
     }
 }
 
-class BodyElement extends PairedElement
+class BodyElement extends MarkupElement
 {
     public static $TAGNAME = "body";
 
-    public function __construct(HtmlElement $parent) {
-        $this->attributes = new HtmlAttributes(array());
+    public function __construct(MarkupElement $parent) {
+        $this->name = self::$TAGNAME;
         $this->children = array();
-    }
-
-    public function name() {
-        return self::$TAGNAME;
-    }
-
-    public function push(Renderable $element) {
-        array_push($this->children, $element);
-        return $element;
     }
 }
 
-class BrElement extends EmptyElement
+class BrElement extends MarkupElement
 {
     public static $TAGNAME = "br";
 
     public function __construct() {
-        $this->attributes = new HtmlAttributes(array());
-    }
-
-    public function name() {
-        return self::$TAGNAME;
+        $this->name = self::$TAGNAME;
     }
 }
 
-class DivElement extends PairedElement
+class CharsetMetaElement extends MarkupElement
+{
+    public static $TAGNAME = "meta";
+
+    public static $CHARSETATTR = "charset";
+
+    public function __construct(HeadElement $parent, $charset_value) {
+        $this->name = self::$TAGNAME;
+        $this->attributes[self::$CHARSETATTR] = $charset_value;
+    }
+}
+
+class DivElement extends MarkupElement
 {
     public static $TAGNAME = "div";
 
     public function __construct() {
-        $this->attributes = new HtmlAttributes(array());
+        $this->name = self::$TAGNAME;
         $this->children = array();
-    }
-
-    public function name() {
-        return self::$TAGNAME;
-    }
-
-    public function push(Renderable $element) {
-        array_push($this->children, $element);
-        return $element;
     }
 }
 
-class FormElement extends PairedElement
+class FormElement extends MarkupElement
 {
     public static $TAGNAME = "form";
 
     public static $ACTIONATTR = "action";
     public static $METHODATTR = "method";
+    public static $ENCTYPEATTR = "enctype";
 
     public function __construct($handler_url) {
-        $valid_attributes = array(self::$ACTIONATTR, self::$METHODATTR);
-        $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$ACTIONATTR, $handler_url);
+        $this->name = self::$TAGNAME;
+        $this->children = array();
 
-        $this->children = array();        
+        $this->attributes[self::$ACTIONATTR] = $handler_url;
+        $this->attributes[self::$METHODATTR] = "";
+        $this->attributes[self::$ENCTYPEATTR] = "";        
     }
 
-    public function name() {
-        return self::$TAGNAME;
-    }
-
-    public function push(Renderable $element) {
-        array_push($this->children, $element);
-        return $element;
-    }
-
-    public function push_input($input_type, $input_name) {
-        $input = NULL;
-
-        if ($input_type == InputTextElement::$TYPENAME) {
-            $input = new InputTextElement($this, $input_name);
-            array_push($this->children, $input);            
-        } else {
-            echo "[FormElement] Error: unknown input type specified";
-        }
-
+    public function push_textinput($input_name, $input_value) {
+        $input = new TextInputElement($this, $input_name, $input_value);
+        array_push($this->children, $input);
         return $input;
-    }        
+    }
 }
 
-class H1Element extends PairedElement
+class H1Element extends MarkupElement
 {
     public static $TAGNAME = "h1";
 
-    public function __construct($content) {
-        $this->attributes = new HtmlAttributes(array());
-
-        $content_text = new TextElement($content);
+    public function __construct($content_string) {
+        $this->name = self::$TAGNAME;
         $this->children = array();
-        array_push($this->children, $content_text);
-    }
 
-    public function name() {
-        return self::$TAGNAME;
+        $content = new TextElement($content_string);
+        array_push($this->children, $content);
     }
 }
 
-class H2Element extends PairedElement
+class H2Element extends MarkupElement
 {
     public static $TAGNAME = "h2";
 
-    public function __construct($content) {
-        $this->attributes = new HtmlAttributes(array());
+    public function __construct($content_string) {
+        $this->name = self::$TAGNAME;
+        $this->children = array();        
 
-        $content_element = new TextElement($content);
-        $this->children = array();
-        array_push($this->children, $content_element);
+        $content = new TextElement($content_string);
+        array_push($this->children, $content);
     }
-
-    public function name() {
-        return self::$TAGNAME;
-    }   
 }
 
-class H3Element extends PairedElement
+class H3Element extends MarkupElement
 {
     public static $TAGNAME = "h3";
 
-    public function __construct($content) {
-        $this->attributes = new HtmlAttributes(array());
+    public function __construct($content_string) {
+        $this->name = self::$TAGNAME;
+        $this->children = array();           
 
-        $content_element = new TextElement($content);
-        $this->children = array();        
-        array_push($this->children, $content_element);
-    }
-
-    public function name() {
-        return self::$TAGNAME;
+        $content = new TextElement($content_string);
+        array_push($this->children, $content);
     }
 }
 
-class H4Element extends PairedElement
+class H4Element extends MarkupElement
 {
     public static $TAGNAME = "h4";
 
-    public function __construct($content) {
-        $this->attributes = new HtmlAttributes(array());
-
-        $content_element = new TextElement($content);
+    public function __construct($content_string) {
+        $this->name = self::$TAGNAME;
         $this->children = array();
-        array_push($this->children, $content_element);
-    }
 
-    public function name() {
-        return self::$TAGNAME;
+        $content = new TextElement($content_string);
+        array_push($this->children, $content);
     }
 }
 
-class H5Element extends PairedElement
+class H5Element extends MarkupElement
 {
     public static $TAGNAME = "h5";
 
-    public function __construct($content) {
-        $this->attributes = new HtmlAttributes(array());
+    public function __construct($content_string) {
+        $this->name = self::$TAGNAME;
+        $this->children = array();
 
-        $content_element = new TextElement($content);
-        $this->children = array();        
-        array_push($this->children, $content_element);
-    }
-
-    public function name() {
-        return self::$TAGNAME;
+        $content = new TextElement($content_string);
+        array_push($this->children, $content);
     }
 }
 
-class H6Element extends PairedElement
+class H6Element extends MarkupElement
 {
     public static $TAGNAME = "h6";
 
-    public function __construct($content) {
-        $this->attributes = new HtmlAttributes(array());
-
-        $content_element = new TextElement($content);
+    public function __construct($content_string) {
+        $this->name = self::$TAGNAME;
         $this->children = array();
-        array_push($this->children, $content_element);
-    }
 
-    public function name() {
-        return self::$TAGNAME;
+        $content = new TextElement($content_string);
+        array_push($this->children, $content);
     }
 }
 
-class HeadElement extends PairedElement
+class HeadElement extends MarkupElement
 {
     public static $TAGNAME = "head";
 
-    public function __construct(HtmlElement $parent, $charset, $title) {
-        $this->attributes = new HtmlAttributes(array());
+    public function __construct(MarkupElement $parent, $charset, $title) {
+        $this->name = self::$TAGNAME;
+        $this->children = array();        
 
-        $charset = new MetaCharsetElement($this, $charset);
+        $charset = new CharsetMetaElement($this, $charset);
         $title = new TitleElement($this, $title);
 
-        $this->children = array();
         array_push($this->children, $charset);
         array_push($this->children, $title);
     }
-
-    public function name() {
-        return self::$TAGNAME;
-    }
 }
 
-class HrElement extends EmptyElement
+class HrElement extends MarkupElement
 {
     public static $TAGNAME = "hr";
 
     public function __construct() {
-        $this->attributes = new HtmlAttributes(array());
-    }
-
-    public function name() {
-        return self::$TAGNAME;
+        $this->name = self::$TAGNAME;
     }
 }
 
-class HtmlElement extends PairedElement
+class HtmlElement extends MarkupElement
 {   
     public static $TAGNAME = "html";
 
     public static $CHARSET = "UTF-8";
 
-    public $head;
-    public $body;
+    private $head;
+    private $body;
 
-    public function __construct($title_text) {
-        $this->attributes = new HtmlAttributes(array());
+    public function __construct($title_string) {
+        $this->name = self::$TAGNAME;
+        $this->children = array();        
 
-        $this->head = new HeadElement($this, self::$CHARSET, $title_text);
+        $this->head = new HeadElement($this, self::$CHARSET, $title_string);
         $this->body = new BodyElement($this);
 
-        $this->children = array();
         array_push($this->children, $this->head);
         array_push($this->children, $this->body);
     }
 
-    public function name() {
-        return self::$TAGNAME;
+    public function head_push(Renderable $element) {
+        $this->head->push($element);
+    }
+
+    public function body_push(Renderable $element) {
+        $this->body->push($element);
     }
 }
 
-class ImgElement extends EmptyElement
+class ImgElement extends MarkupElement
 {
     public static $TAGNAME = "img";
 
@@ -356,19 +373,14 @@ class ImgElement extends EmptyElement
     public static $TITLEATTR = "title";
 
     public function __construct($src_value, $alt_value) {
-        $valid_attributes = array(self::$SRCATTR, self::$ALTATTR,
-                                  self::$TITLEATTR);
-        $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$SRCATTR, $src_value);
-        $this->attributes->set(self::$ALTATTR, $alt_value);
-    }
+        $this->name = self::$TAGNAME;
 
-    public function name() {
-        return self::$TAGNAME;
+        $this->attributes[self::$SRCATTR] = $src_value;
+        $this->attributes[self::$ALTATTR] = $alt_value;
     }
 }
 
-class InputTextElement extends EmptyElement
+class TextInputElement extends MarkupElement
 {
     public static $TAGNAME = "input";
     public static $TYPENAME = "text";
@@ -378,25 +390,21 @@ class InputTextElement extends EmptyElement
     public static $VALUEATTR = "value";
     public static $MAXLENGTHATTR = "maxlength";
 
-    // this should never be called explicitly. use FormElement->push() instead
-    public function __construct(FormElement $form, $name_value) {
-        $valid_attributes = array(self::$TYPEATTR,
-                                  self::$NAMEATTR,
-                                  self::$VALUEATTR,                                  
-                                  self::$MAXLENGTHATTR);
+    public function __construct(FormElement $form, $name_value, $init_value) {
+        $this->name = self::$TAGNAME;
 
-        $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$TYPEATTR,
-                               self::$TYPENAME);
-        $this->attributes->set(self::$NAMEATTR, $name_value);
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name_value;
+        $this->attributes[self::$VALUEATTR] = $init_value;
+        $this->attributes[self::$MAXLENGTHATTR] = "";        
     }
 
-    public function name() {
-        return self::$TAGNAME;
+    public function set_maxlength($integer_value) {
+        $this->attributes[self::$MAXLENGTHATTR] = $integer_value;
     }
 }
 
-class LinkElement extends EmptyElement
+class LinkElement extends MarkupElement
 {
     public static $TAGNAME = "link";
 
@@ -405,110 +413,71 @@ class LinkElement extends EmptyElement
     public static $RELATTR = "rel";
 
     public function __construct($href_value, $type_value, $rel_value) {
-        $valid_attributes = array(self::$HREFATTR,
-                                  self::$TYPEATTR,
-                                  self::$RELATTR);
-        $this->attributes = new HtmlAttributes($valid_attributes);
+        $this->name = self::$TAGNAME;
 
-        $this->attributes->set(self::$HREFATTR, $href_value);
-        $this->attributes->set(self::$TYPEATTR, $type_value);
-        $this->attributes->set(self::$RELATTR, $rel_value); 
-    }
-
-    public function name() {
-        return self::$TAGNAME;
+        $this->attributes[self::$HREFATTR] = $href_value;
+        $this->attributes[self::$TYPEATTR] = $type_value;
+        $this->attributes[self::$RELATTR] = $rel_value;
     }
 }
 
-class MetaCharsetElement extends EmptyElement
-{
-    public static $TAGNAME = "meta";
-
-    public static $CHARSETATTR = "charset";
-
-    public function __construct(HeadElement $parent, $charset_value) {
-        $valid_attributes = array(self::$CHARSETATTR);
-        $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$CHARSETATTR, $charset_value);
-    }
-
-    public function name() {
-        return self::$TAGNAME;
-    }
-}
-
-class PElement extends PairedElement
+class PElement extends MarkupElement
 {
     public static $TAGNAME = "p";
 
-    public function __construct($text_content) {
-        $this->attributes = new HtmlAttributes(array());
-
-        $text = new TextElement($initial_text_content);
+    public function __construct($content_string) {
+        $this->name = self::$TAGNAME;
         $this->children = array();        
+
+        $text = new TextElement($content_string);     
         array_push($this->children, $text);
     }
 
-    public function name() {
-        return self::$TAGNAME;
-    }
-
-    public function push_text(TextElement $text) {
+    public function push_text($content_string) {
+        $text = new TextElement($content_string);
         array_push($this->children, $text);
     }
 
-    public function push_break(BrElement $break) {
+    public function push_break() {
+        $break = new BrElement();
         array_push($this->children, $break);
     }
 }
 
-class ScriptElement extends PairedElement
+class ScriptElement extends MarkupElement
 {
     public static $TAGNAME = "script";
 
     public static $SRCATTR = "src";
 
     public function __construct($script_url) {
-        $valid_attributes = array(self::$SRCATTR);
-        $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$SRCATTR, $script_url);        
-
+        $this->name = self::$TAGNAME;
         $this->children = array();
-    }
 
-    public function name() {
-        return self::$TAGNAME;
+        $this->attributes[self::$SRCATTR] = $script_url;
     }
 }
 
-class SpanElement extends PairedElement
+class SpanElement extends MarkupElement
 {
     public static $TAGNAME = "span";
 
     public function __construct() {
-        $this->attributes = new HtmlAttributes(array());
+        $this->name = self::$TAGNAME;
         $this->children = array();
-    }
-
-    public function name() {
-        return self::$TAGNAME;
     }
 }
 
-class TitleElement extends PairedElement
+class TitleElement extends MarkupElement
 {
     public static $TAGNAME = "title";
 
-    public function __construct(HeadElement $parent, $title_value) {
-        $this->attributes = new HtmlAttributes(array());
-
-        $content_element = new TextElement($title_value);
+    public function __construct(HeadElement $parent, $title_string) {
+        $this->name = self::$TAGNAME;
         $this->children = array();        
-        array_push($this->children, $content_element);
-    }
 
-    public function name() {
-        return self::$TAGNAME;
+        $content_element = new TextElement($title_string);
+        array_push($this->children, $content_element);
     }
 }
 ?>
