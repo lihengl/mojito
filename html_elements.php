@@ -8,6 +8,53 @@ interface Renderable
     public function children();
 }
 
+abstract class EmptyElement implements Renderable
+{
+    protected $attributes;
+
+    abstract public function name();
+
+    public function attributes() {
+        return $this->attributes->all_specified();
+    }
+
+    public function children() {
+        return NULL;
+    }
+
+    public function set_id($id_value) {
+        $this->attributes->set_id($id_value);
+    }
+
+    public function set_classes($class_values) {
+        $this->attributes->set_classes($class_values);
+    }        
+}
+
+abstract class PairedElement implements Renderable
+{
+    protected $attributes;
+    protected $children;
+
+    abstract public function name();
+
+    public function attributes() {
+        return $this->attributes->all_specified();
+    }
+
+    public function children() {
+        return $this->children;
+    }
+
+    public function set_id($id_value) {
+        $this->attributes->set_id($id_value);
+    }
+
+    public function set_classes($class_values) {
+        $this->attributes->set_classes($class_values);
+    }    
+}
+
 class TextElement implements Renderable
 {
     public $content;
@@ -29,20 +76,17 @@ class TextElement implements Renderable
     }
 }
 
-class AElement implements Renderable
+class AElement extends PairedElement
 {
     public static $TAGNAME = "a";
 
     public static $HREFATTR = "href";
     public static $TARGETATTR = "target";
 
-    private $attributes;
-    private $children;
-
-    public function __construct($href_value, $link_text) {
+    public function __construct($href_url, $link_text) {
         $valid_attributes = array(self::$HREFATTR, self::$TARGETATTR);
         $this->attributes = new HtmlAttributes($valid_attributes);
-        $this->attributes->set(self::$HREFATTR, $href_value);
+        $this->attributes->set(self::$HREFATTR, $href_url);
 
         $content_element = new TextElement($link_text);
         $this->children = array();
@@ -52,22 +96,11 @@ class AElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }
 }
 
-class BodyElement implements Renderable
+class BodyElement extends PairedElement
 {
     public static $TAGNAME = "body";
-
-    private $attributes;
-    private $children;
 
     public function __construct(HtmlElement $parent) {
         $this->attributes = new HtmlAttributes(array());
@@ -78,25 +111,15 @@ class BodyElement implements Renderable
         return self::$TAGNAME;
     }
 
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }        
-
     public function push(Renderable $element) {
         array_push($this->children, $element);
         return $element;
     }
 }
 
-class BrElement implements Renderable
+class BrElement extends EmptyElement
 {
     public static $TAGNAME = "br";
-
-    private $attributes;
 
     public function __construct() {
         $this->attributes = new HtmlAttributes(array());
@@ -105,22 +128,11 @@ class BrElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return NULL;
-    }
 }
 
-class DivElement implements Renderable
+class DivElement extends PairedElement
 {
     public static $TAGNAME = "div";
-
-    private $attributes;
-    private $children;
 
     public function __construct() {
         $this->attributes = new HtmlAttributes(array());
@@ -131,29 +143,18 @@ class DivElement implements Renderable
         return self::$TAGNAME;
     }
 
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }        
-
     public function push(Renderable $element) {
         array_push($this->children, $element);
         return $element;
     }
 }
 
-class FormElement implements Renderable
+class FormElement extends PairedElement
 {
     public static $TAGNAME = "form";
 
     public static $ACTIONATTR = "action";
     public static $METHODATTR = "method";
-
-    private $attributes;
-    private $children;
 
     public function __construct($handler_url) {
         $valid_attributes = array(self::$ACTIONATTR, self::$METHODATTR);
@@ -166,14 +167,6 @@ class FormElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 
     public function push(Renderable $element) {
         array_push($this->children, $element);
@@ -194,12 +187,9 @@ class FormElement implements Renderable
     }        
 }
 
-class H1Element implements Renderable
+class H1Element extends PairedElement
 {
     public static $TAGNAME = "h1";
-
-    private $attributes;
-    private $children;
 
     public function __construct($content) {
         $this->attributes = new HtmlAttributes(array());
@@ -212,31 +202,12 @@ class H1Element implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
-
-    public function set_id($id_value) {
-        $this->attributes->set_id($id_value);
-    }
-
-    public function set_classes($class_values) {
-        $this->attributes->set_classes($class_values);
-    }
 }
 
-class H2Element implements Renderable
+class H2Element extends PairedElement
 {
     public static $TAGNAME = "h2";
 
-    private $attributes;
-    private $children;
-
     public function __construct($content) {
         $this->attributes = new HtmlAttributes(array());
 
@@ -247,24 +218,13 @@ class H2Element implements Renderable
 
     public function name() {
         return self::$TAGNAME;
-    }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
+    }   
 }
 
-class H3Element implements Renderable
+class H3Element extends PairedElement
 {
     public static $TAGNAME = "h3";
 
-    private $attributes;
-    private $children;
-
     public function __construct($content) {
         $this->attributes = new HtmlAttributes(array());
 
@@ -276,23 +236,12 @@ class H3Element implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
-class H4Element implements Renderable
+class H4Element extends PairedElement
 {
     public static $TAGNAME = "h4";
 
-    private $attributes;
-    private $children;
-
     public function __construct($content) {
         $this->attributes = new HtmlAttributes(array());
 
@@ -304,22 +253,11 @@ class H4Element implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
-class H5Element implements Renderable
+class H5Element extends PairedElement
 {
     public static $TAGNAME = "h5";
-
-    private $attributes;
-    private $children;
 
     public function __construct($content) {
         $this->attributes = new HtmlAttributes(array());
@@ -332,22 +270,11 @@ class H5Element implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
-class H6Element implements Renderable
+class H6Element extends PairedElement
 {
     public static $TAGNAME = "h6";
-
-    private $attributes;
-    private $children;
 
     public function __construct($content) {
         $this->attributes = new HtmlAttributes(array());
@@ -360,22 +287,11 @@ class H6Element implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
-class HeadElement implements Renderable
+class HeadElement extends PairedElement
 {
     public static $TAGNAME = "head";
-
-    private $attributes;
-    private $children;
 
     public function __construct(HtmlElement $parent, $charset, $title) {
         $this->attributes = new HtmlAttributes(array());
@@ -391,21 +307,11 @@ class HeadElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
-class HrElement implements Renderable
+class HrElement extends EmptyElement
 {
     public static $TAGNAME = "hr";
-
-    private $attributes;
 
     public function __construct() {
         $this->attributes = new HtmlAttributes(array());
@@ -414,24 +320,13 @@ class HrElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return NULL;
-    }    
 }
 
-class HtmlElement implements Renderable
+class HtmlElement extends PairedElement
 {   
     public static $TAGNAME = "html";
 
-    public static $CHARSET = "UTF-8";    
-
-    private $attributes;
-    private $children;
+    public static $CHARSET = "UTF-8";
 
     public $head;
     public $body;
@@ -450,25 +345,15 @@ class HtmlElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }
 }
 
-class ImgElement implements Renderable
+class ImgElement extends EmptyElement
 {
     public static $TAGNAME = "img";
 
     public static $SRCATTR = "src";
     public static $ALTATTR = "alt";
     public static $TITLEATTR = "title";
-
-    private $attributes;
 
     public function __construct($src_value, $alt_value) {
         $valid_attributes = array(self::$SRCATTR, self::$ALTATTR,
@@ -481,17 +366,9 @@ class ImgElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return NULL; 
-    }    
 }
 
-class InputTextElement implements Renderable
+class InputTextElement extends EmptyElement
 {
     public static $TAGNAME = "input";
     public static $TYPENAME = "text";
@@ -500,8 +377,6 @@ class InputTextElement implements Renderable
     public static $NAMEATTR = "name";
     public static $VALUEATTR = "value";
     public static $MAXLENGTHATTR = "maxlength";
-
-    private $attributes;
 
     // this should never be called explicitly. use FormElement->push() instead
     public function __construct(FormElement $form, $name_value) {
@@ -519,25 +394,15 @@ class InputTextElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return NULL;
-    }
 }
 
-class LinkElement implements Renderable
+class LinkElement extends EmptyElement
 {
     public static $TAGNAME = "link";
 
     public static $HREFATTR = "href";
     public static $TYPEATTR = "type";
     public static $RELATTR = "rel";
-
-    private $attributes;
 
     public function __construct($href_value, $type_value, $rel_value) {
         $valid_attributes = array(self::$HREFATTR,
@@ -553,23 +418,13 @@ class LinkElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return NULL;
-    }
 }
 
-class MetaCharsetElement implements Renderable
+class MetaCharsetElement extends EmptyElement
 {
     public static $TAGNAME = "meta";
 
     public static $CHARSETATTR = "charset";
-
-    private $attributes;
 
     public function __construct(HeadElement $parent, $charset_value) {
         $valid_attributes = array(self::$CHARSETATTR);
@@ -580,22 +435,11 @@ class MetaCharsetElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return NULL;
-    }
 }
 
-class PElement implements Renderable
+class PElement extends PairedElement
 {
     public static $TAGNAME = "p";
-
-    private $attributes;
-    private $children;
 
     public function __construct($text_content) {
         $this->attributes = new HtmlAttributes(array());
@@ -609,14 +453,6 @@ class PElement implements Renderable
         return self::$TAGNAME;
     }
 
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
-
     public function push_text(TextElement $text) {
         array_push($this->children, $text);
     }
@@ -626,14 +462,11 @@ class PElement implements Renderable
     }
 }
 
-class ScriptElement implements Renderable
+class ScriptElement extends PairedElement
 {
     public static $TAGNAME = "script";
 
     public static $SRCATTR = "src";
-
-    private $attributes;
-    private $children;
 
     public function __construct($script_url) {
         $valid_attributes = array(self::$SRCATTR);
@@ -646,22 +479,11 @@ class ScriptElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
-class SpanElement implements Renderable
+class SpanElement extends PairedElement
 {
     public static $TAGNAME = "span";
-
-    private $attributes;
-    private $children;
 
     public function __construct() {
         $this->attributes = new HtmlAttributes(array());
@@ -671,22 +493,11 @@ class SpanElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 
-class TitleElement implements Renderable
+class TitleElement extends PairedElement
 {
     public static $TAGNAME = "title";
-
-    private $attributes;
-    private $children;
 
     public function __construct(HeadElement $parent, $title_value) {
         $this->attributes = new HtmlAttributes(array());
@@ -699,13 +510,5 @@ class TitleElement implements Renderable
     public function name() {
         return self::$TAGNAME;
     }
-
-    public function attributes() {
-        return $this->attributes->all_specified();
-    }
-
-    public function children() {
-        return $this->children;
-    }    
 }
 ?>
