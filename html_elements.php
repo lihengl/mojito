@@ -19,7 +19,7 @@ class TextElement implements Renderable
     }
 }
 
-abstract class MarkupElement implements Renderable
+abstract class HtmlMarkup implements Renderable
 {
     public static $OPENING = "<";
     public static $CLOSING = ">";
@@ -46,19 +46,18 @@ abstract class MarkupElement implements Renderable
     }
 
     private function render_attributes() {
-        $attribute_pieces = array();
+        $rendering_pieces = array();
         foreach ($this->attributes as $name=>$value) {
-            $attr = "";
+            $rendering_piece = "";
 
             if ($value != "") {
-                $attr = $name . self::$ATTROPEN . $value . self::$ATTRCLOSE;
+                $rendering_piece = $name . self::$ATTROPEN . $value . self::$ATTRCLOSE;
+                array_push($rendering_pieces, $rendering_piece);                
             } else {
-                // attribute value not specified, render nothing
+                $rendering_piece = "";
             }
-
-            array_push($attribute_pieces, $attr);
         }
-        $attribute_rendering = implode(self::$SEPARATOR, $attribute_pieces);
+        $attribute_rendering = implode(self::$SEPARATOR, $rendering_pieces);
         return $attribute_rendering;
     }
 
@@ -140,7 +139,7 @@ abstract class MarkupElement implements Renderable
 
     public function push(Renderable $element) {
 
-        if ($this->children == NULL) {
+        if ($this->children === NULL) {
             // this is an empty element and cannot have children
         } else {
             array_push($this->children, $element);
@@ -148,7 +147,7 @@ abstract class MarkupElement implements Renderable
     }    
 }
 
-class AElement extends MarkupElement
+class AElement extends HtmlMarkup
 {
     public static $TAGNAME = "a";
 
@@ -156,6 +155,7 @@ class AElement extends MarkupElement
     public static $TARGETATTR = "target";
 
     public function __construct($href_url, $link_text) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();        
 
@@ -167,48 +167,52 @@ class AElement extends MarkupElement
     }
 }
 
-class BodyElement extends MarkupElement
+class BodyElement extends HtmlMarkup
 {
     public static $TAGNAME = "body";
 
-    public function __construct(MarkupElement $parent) {
+    public function __construct(HtmlMarkup $parent) {        
+        parent::__construct();
         $this->name = self::$TAGNAME;
         $this->children = array();
     }
 }
 
-class BrElement extends MarkupElement
+class BrElement extends HtmlMarkup
 {
     public static $TAGNAME = "br";
 
     public function __construct() {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
     }
 }
 
-class CharsetMetaElement extends MarkupElement
+class CharsetMetaElement extends HtmlMarkup
 {
     public static $TAGNAME = "meta";
 
     public static $CHARSETATTR = "charset";
 
     public function __construct(HeadElement $parent, $charset_value) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->attributes[self::$CHARSETATTR] = $charset_value;
     }
 }
 
-class DivElement extends MarkupElement
+class DivElement extends HtmlMarkup
 {
     public static $TAGNAME = "div";
 
     public function __construct() {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
     }
 }
 
-class FormElement extends MarkupElement
+class FormElement extends HtmlMarkup
 {
     public static $TAGNAME = "form";
 
@@ -217,6 +221,7 @@ class FormElement extends MarkupElement
     public static $ENCTYPEATTR = "enctype";
 
     public function __construct($handler_url) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
 
@@ -232,11 +237,12 @@ class FormElement extends MarkupElement
     }
 }
 
-class H1Element extends MarkupElement
+class H1Element extends HtmlMarkup
 {
     public static $TAGNAME = "h1";
 
     public function __construct($content_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
 
@@ -245,11 +251,12 @@ class H1Element extends MarkupElement
     }
 }
 
-class H2Element extends MarkupElement
+class H2Element extends HtmlMarkup
 {
     public static $TAGNAME = "h2";
 
     public function __construct($content_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();        
 
@@ -258,11 +265,12 @@ class H2Element extends MarkupElement
     }
 }
 
-class H3Element extends MarkupElement
+class H3Element extends HtmlMarkup
 {
     public static $TAGNAME = "h3";
 
     public function __construct($content_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();           
 
@@ -271,11 +279,12 @@ class H3Element extends MarkupElement
     }
 }
 
-class H4Element extends MarkupElement
+class H4Element extends HtmlMarkup
 {
     public static $TAGNAME = "h4";
 
     public function __construct($content_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
 
@@ -284,11 +293,12 @@ class H4Element extends MarkupElement
     }
 }
 
-class H5Element extends MarkupElement
+class H5Element extends HtmlMarkup
 {
     public static $TAGNAME = "h5";
 
     public function __construct($content_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
 
@@ -297,11 +307,12 @@ class H5Element extends MarkupElement
     }
 }
 
-class H6Element extends MarkupElement
+class H6Element extends HtmlMarkup
 {
     public static $TAGNAME = "h6";
 
     public function __construct($content_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
 
@@ -310,11 +321,12 @@ class H6Element extends MarkupElement
     }
 }
 
-class HeadElement extends MarkupElement
+class HeadElement extends HtmlMarkup
 {
     public static $TAGNAME = "head";
 
-    public function __construct(MarkupElement $parent, $charset, $title) {
+    public function __construct(HtmlMarkup $parent, $charset, $title) {        
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();        
 
@@ -326,16 +338,17 @@ class HeadElement extends MarkupElement
     }
 }
 
-class HrElement extends MarkupElement
+class HrElement extends HtmlMarkup
 {
     public static $TAGNAME = "hr";
 
     public function __construct() {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
     }
 }
 
-class HtmlElement extends MarkupElement
+class HtmlElement extends HtmlMarkup
 {   
     public static $TAGNAME = "html";
 
@@ -344,7 +357,8 @@ class HtmlElement extends MarkupElement
     private $head;
     private $body;
 
-    public function __construct($title_string) {
+    public function __construct($title_string) {        
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();        
 
@@ -364,7 +378,7 @@ class HtmlElement extends MarkupElement
     }
 }
 
-class ImgElement extends MarkupElement
+class ImgElement extends HtmlMarkup
 {
     public static $TAGNAME = "img";
 
@@ -373,6 +387,7 @@ class ImgElement extends MarkupElement
     public static $TITLEATTR = "title";
 
     public function __construct($src_value, $alt_value) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
 
         $this->attributes[self::$SRCATTR] = $src_value;
@@ -380,7 +395,7 @@ class ImgElement extends MarkupElement
     }
 }
 
-class TextInputElement extends MarkupElement
+class TextInputElement extends HtmlMarkup
 {
     public static $TAGNAME = "input";
     public static $TYPENAME = "text";
@@ -391,6 +406,7 @@ class TextInputElement extends MarkupElement
     public static $MAXLENGTHATTR = "maxlength";
 
     public function __construct(FormElement $form, $name_value, $init_value) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
 
         $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
@@ -404,7 +420,7 @@ class TextInputElement extends MarkupElement
     }
 }
 
-class LinkElement extends MarkupElement
+class LinkElement extends HtmlMarkup
 {
     public static $TAGNAME = "link";
 
@@ -413,6 +429,7 @@ class LinkElement extends MarkupElement
     public static $RELATTR = "rel";
 
     public function __construct($href_value, $type_value, $rel_value) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
 
         $this->attributes[self::$HREFATTR] = $href_value;
@@ -421,11 +438,12 @@ class LinkElement extends MarkupElement
     }
 }
 
-class PElement extends MarkupElement
+class PElement extends HtmlMarkup
 {
     public static $TAGNAME = "p";
 
     public function __construct($content_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();        
 
@@ -444,13 +462,14 @@ class PElement extends MarkupElement
     }
 }
 
-class ScriptElement extends MarkupElement
+class ScriptElement extends HtmlMarkup
 {
     public static $TAGNAME = "script";
 
     public static $SRCATTR = "src";
 
     public function __construct($script_url) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
 
@@ -458,21 +477,23 @@ class ScriptElement extends MarkupElement
     }
 }
 
-class SpanElement extends MarkupElement
+class SpanElement extends HtmlMarkup
 {
     public static $TAGNAME = "span";
 
     public function __construct() {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();
     }
 }
 
-class TitleElement extends MarkupElement
+class TitleElement extends HtmlMarkup
 {
     public static $TAGNAME = "title";
 
     public function __construct(HeadElement $parent, $title_string) {
+        parent::__construct();        
         $this->name = self::$TAGNAME;
         $this->children = array();        
 

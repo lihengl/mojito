@@ -5,12 +5,12 @@ $title = "memory usage: " . memory_get_usage();
 
 $html = new HtmlElement($title);
 
-$heading_text = "THE FIRST INSURANCE CO., LTD.";
-$heading = new H1Element($heading_text);
+$heading = new H1Element("MOJITO");
 $html->body_push($heading);
 
 // put test code here
 
 // output to browser
+echo "<!DOCTYPE html>\n";
 echo $html->render("    ", 0);
 ?>
