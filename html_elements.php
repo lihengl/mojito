@@ -125,7 +125,7 @@ abstract class HtmlMarkup implements Renderable
         $existing = $this->attributes[self::$CLASSATTR];
 
         if (strpos($value, self::$SEPARATOR)) {
-            // class value cannot contain space, do not add it
+            // class value cannot contain space, if so do not add it
             return FALSE;
         } else if (strpos($existing, $value_string)) {
             // class already exists, do nothing
