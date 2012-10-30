@@ -4,12 +4,17 @@ interface Renderable
     public function render($indent_unit, $indent_level);
 }
 
+interface Labelable
+{
+    public function label_first();
+}
+
 class TextElement implements Renderable
 {
     public $content;
 
     public function __construct($text_content) {
-        $this->content = htmlentities($text_content);
+        $this->content = $text_content;
     }
 
     public function render($indent_unit, $indent_level) {
@@ -120,12 +125,12 @@ abstract class HtmlMarkup implements Renderable
     }
 
     public function set_id($value_string) {
-        $value = htmlentities($value_string);
+        $value = $value_string;
         $this->attributes[self::$IDATTR] = $value;
     }
 
     public function add_class($value_string) {
-        $value = htmlentities($value_string);
+        $value = $value_string;
         $existing = $this->attributes[self::$CLASSATTR];
 
         if (strpos($value, self::$SEPARATOR)) {
@@ -296,22 +301,297 @@ class FormElement extends HtmlMarkup
         $this->attributes[self::$ENCTYPEATTR] = $type;
     }
 
-    public function push_textinput($name, $default_value) {
-        $input = new TextInputElement($this, $name, $default_value);
-        array_push($this->children, $input);
+    public function push_text_input($name, $value, $label_text) {
+        $input = new TextInputElement($this, $name, $value);
+        $label = new LabelElement($input, $label_text);
+        array_push($this->children, $label);
         return $input;
     }
 
-    public function push_passwordinput($name, $default_value) {
-        $input = new PasswordInputElement($this, $name, $default_value);
-        array_push($this->children, $input);
+    public function push_password_input($name, $value, $label_text) {
+        $input = new PasswordInputElement($this, $name, $value);
+        $label = new LabelElement($input, $label_text);
+        array_push($this->children, $label);
         return $input;
     }
 
-    public function push_textarea($name, $default_value) {
-        $area = new TextareaElement($this, $name, $default_value);
-        array_push($this->children, $area);
+    public function push_radio_input($name, $value, $label_text) {
+        $input = new RadioInputElement($this, $name, $value);
+        $label = new LabelElement($input, $label_text);
+        array_push($this->children, $label);
+        return $input;
+    }
+
+    public function push_checkbox_input($name, $value, $label_text) {
+        $input = new CheckboxInputElement($this, $name, $value);
+        $label = new LabelElement($input, $label_text);
+        array_push($this->children, $label);
+        return $input;
+    }
+
+    public function push_select($name, $label_text,
+                                $first_value, $first_text,
+                                $second_value, $second_text) {
+        $selection = new SelectElement($this, $name,
+                                       $first_value, $first_text,
+                                       $second_value, $second_text);
+        $label = new LabelElement($selection, $label_text);
+        array_push($this->children, $label);
+        return $selection;
+    }
+
+    public function push_textarea($name, $value, $label_text) {
+        $area = new TextareaElement($this, $name, $value);
+        $label = new LabelElement($area, $label_text);
+        array_push($this->children, $label);
         return $area;
+    }
+}
+
+class CheckboxInputElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "input";
+    public static $TYPENAME = "checkbox";
+
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+    public static $CHECKATTR = "checked";
+
+    public static $CHECKEDVALUE = "checked";
+
+    public function __construct(FormElement $host, $name, $value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = $value;
+        $this->attributes[self::$CHECKATTR] = "";        
+
+        $this->children = NULL;
+    }
+
+    public function label_first() {
+        return FALSE;
+    }
+
+    public function check() {
+        $this->attributes[self::$CHECKATTR] = self::$CHECKEDVALUE;
+    }
+
+    public function uncheck() {
+        $this->attributes[self::$CHECKATTR] = "";
+    }
+}
+
+class PasswordInputElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "input";
+    public static $TYPENAME = "password";
+
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+    public static $MAXLENGTHATTR = "maxlength";
+    
+    public function __construct(FormElement $host, $name, $default_value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = $default_value;
+        $this->attributes[self::$MAXLENGTHATTR] = "";
+
+        $this->children = NULL;
+    }
+
+    public function label_first() {
+        return TRUE;
+    }    
+
+    public function set_maxlength($integer_value) {
+        $this->attriubutes[self::$MAXLENGTHATTR] = $integer_value;
+    }
+}
+
+class RadioInputElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "input";
+    public static $TYPENAME = "radio";
+
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+    public static $CHECKATTR = "checked";
+
+    public static $CHECKEDVALUE = "checked";
+
+    public function __construct(FormElement $host, $name, $value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = $value;
+        $this->attributes[self::$CHECKATTR] = "";
+
+        $this->children = NULL;
+    }
+
+    public function label_first() {
+        return FALSE;
+    }
+
+    public function check() {
+        $this->attributes[self::$CHECKATTR] = self::$CHECKEDVALUE;
+    }
+
+    public function uncheck() {
+        $this->attributes[self::$CHECKATTR] = "";
+    }
+}
+
+class TextInputElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "input";
+    public static $TYPENAME = "text";
+
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+    public static $MAXLENGTHATTR = "maxlength";
+
+    public function __construct(FormElement $host, $name, $default_value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = $default_value;
+        $this->attributes[self::$MAXLENGTHATTR] = "";        
+
+        $this->children = NULL;
+    }
+
+    public function label_first() {
+        return TRUE;
+    }    
+
+    public function set_maxlength($integer_value) {
+        $this->attributes[self::$MAXLENGTHATTR] = $integer_value;
+    }
+}
+
+class OptionElement extends HtmlMarkup
+{
+    public static $TAGNAME = "option";
+
+    public static $VALUEATTR = "value";
+    public static $SELECTATTR = "selected";
+
+    public static $SELECTEDVALUE = "selected";
+
+    public function __construct(FormElement $host, $value, $option_text) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$VALUEATTR] = $value;
+        $this->attributes[self::$SELECTATTR] = "";
+
+        $this->children = array();
+        $text = new TextElement($option_text);
+        array_push($this->children, $text);
+    }
+
+    public function select() {
+        $this->attributes[self::$SELECTATTR] = self::$SELECTEDVALUE;
+    }
+}
+
+class SelectElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "select";
+
+    public static $NAMEATTR = "";
+
+    public function __construct(FormElement $host, $name,
+                                $value_first, $text_first,
+                                $value_second, $text_second) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$NAMEATTR] = $name;
+        
+        $this->children = array();
+        $option_first = new OptionElement($host, $value_first, $text_first);
+        $option_second = new OptionElement($host, $value_second, $text_second);
+        array_push($this->children, $option_first);
+        array_push($this->children, $option_second);
+    }
+
+    public function label_first() {
+        return TRUE;
+    }
+
+    public function select_default($option_index) {
+        $default_selection = NULL;
+        
+        try {
+            $default_selection = $this->children[$option_index];
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+
+        $default_selection->select();
+    }
+}
+
+class TextareaElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "textarea";
+
+    public function __construct(FormElement $host, $name, $init_value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+
+        $this->children = array();
+        $initial_text = new TextElement($init_value);
+        array_push($this->children, $initial_text);
+    }
+
+    // children of textarea has to be rendered without indent
+    // because it will be accounted for layout of its content
+    public function render($indent_unit, $indent_level) {
+        $unindented_output = parent::render("", 0);
+        return $unindented_output;
+    }
+
+    public function label_first() {
+        return TRUE;
+    }
+}
+
+class LabelElement extends HtmlMarkup
+{
+    public static $TAGNAME = "label";
+
+    public function __construct(Labelable $input, $text) {
+        $this->name = self::$TAGNAME;
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->children = array();
+
+        $label_text = new TextElement($text);
+
+        if ($input->label_first()) {
+            array_push($this->children, $label_text);
+            array_push($this->children, $input);
+        } else {
+            array_push($this->children, $input);
+            array_push($this->children, $label_text);
+        }
     }
 }
 
@@ -460,67 +740,13 @@ class ImgElement extends HtmlMarkup
     }
 
     public function set_alternative($info_text) {
-        $encoded_text = htmlentities($info_text);
+        $encoded_text = $info_text;
         $this->attributes[self::$ALTATTR] = $encoded_text;
     }
 
     public function set_title($text) {
-        $encoded_text = htmlentities($text);
+        $encoded_text = $text;
         $this->attriubutes[self::$TITLEATTR] = $encoded_text;
-    }
-}
-
-class TextInputElement extends HtmlMarkup
-{
-    public static $TAGNAME = "input";
-    public static $TYPENAME = "text";
-
-    public static $TYPEATTR = "type";
-    public static $NAMEATTR = "name";
-    public static $VALUEATTR = "value";
-    public static $MAXLENGTHATTR = "maxlength";
-
-    public function __construct(FormElement $form, $name, $default_value) {
-        $this->name = self::$TAGNAME;
-
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
-        $this->attributes[self::$NAMEATTR] = $name;
-        $this->attributes[self::$VALUEATTR] = $default_value;
-        $this->attributes[self::$MAXLENGTHATTR] = "";        
-
-        $this->children = NULL;
-    }
-
-    public function set_maxlength($integer_value) {
-        $this->attributes[self::$MAXLENGTHATTR] = $integer_value;
-    }
-}
-
-class PasswordInputElement extends HtmlMarkup
-{
-    public static $TAGNAME = "input";
-    public static $TYPENAME = "password";
-
-    public static $TYPEATTR = "type";
-    public static $NAMEATTR = "name";
-    public static $VALUEATTR = "value";
-    public static $MAXLENGTHATTR = "maxlength";
-    
-    public function __construct(FormElement $form, $name, $default_value) {
-        $this->name = self::$TAGNAME;
-
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
-        $this->attributes[self::$NAMEATTR] = $name;
-        $this->attributes[self::$VALUEATTR] = $default_value;
-        $this->attributes[self::$MAXLENGTHATTR] = "";
-
-        $this->children = NULL;
-    }
-
-    public function set_maxlength($integer_value) {
-        $this->attriubutes[self::$MAXLENGTHATTR] = $integer_value;
     }
 }
 
@@ -609,28 +835,6 @@ class SpanElement extends HtmlMarkup
         $this->name = self::$TAGNAME;
         $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         $this->children = array();
-    }
-}
-
-class TextareaElement extends HtmlMarkup
-{
-    public static $TAGNAME = "textarea";
-
-    public function __construct(FormElement $parent, $name, $init_value) {
-        $this->name = self::$TAGNAME;
-
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-
-        $this->children = array();
-        $initial_text = new TextElement($init_value);
-        array_push($this->children, $initial_text);
-    }
-
-    // children of textarea has to be rendered without indent
-    // because it will be accounted for layout of its content
-    public function render($indent_unit, $indent_level) {
-        $unindented_output = parent::render("", 0);
-        return $unindented_output;
     }
 }
 
