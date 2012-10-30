@@ -14,7 +14,15 @@ class TextElement implements Renderable
 
     public function render($indent_unit, $indent_level) {
         $indent = str_repeat($indent_unit, $indent_level);
-        $output = $indent . $this->content . "\n";
+        $output = "";
+        $text_content = $this->content;
+
+        if ($text_content == "") {
+            $output = "";
+        } else {
+            $output = $indent . $text_content . "\n";
+        }
+        
         return $output;
     }
 }
@@ -46,7 +54,7 @@ abstract class HtmlMarkup implements Renderable
 
             if ($value != "") {
                 $rendering_piece = $name . self::$ATTROPEN . $value . self::$ATTRCLOSE;
-                array_push($rendering_pieces, $rendering_piece);                
+                array_push($rendering_pieces, $rendering_piece);
             } else {
                 $rendering_piece = "";
             }
@@ -79,7 +87,7 @@ abstract class HtmlMarkup implements Renderable
         $formatted_mid = $midlines;
         $formatted_close = $indent . $closeline . "\n";
 
-        $formatted = $formatted_open . $formatted_mid . $formatted_close;        
+        $formatted = $formatted_open . $formatted_mid . $formatted_close;
         return $formatted;
     }
 
@@ -97,16 +105,18 @@ abstract class HtmlMarkup implements Renderable
             $opening = $opening; 
         }
 
+        $output = "";
+
         if ($this->children === NULL) {
             $output = $this->render_empty($opening, $indent);
-            return $output;
         } else {
             // shorten variable names to follow the 80-column rule
             $unit = $indent_unit;
             $level = $indent_level;
             $output = $this->render_paired($opening, $unit, $level);
-            return $output;
         }
+
+        return $output;
     }
 
     public function set_id($value_string) {
@@ -133,15 +143,6 @@ abstract class HtmlMarkup implements Renderable
             return TRUE;
         }
     }
-
-    public function push(Renderable $element) {
-
-        if ($this->children === NULL) {
-            // this is an empty element and cannot have children
-        } else {
-            array_push($this->children, $element);
-        }
-    }    
 }
 
 class HtmlElement extends HtmlMarkup
@@ -153,10 +154,10 @@ class HtmlElement extends HtmlMarkup
     private $head;
     private $body;
 
-    public function __construct($title_string) {         
+    public function __construct($title_string) {
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         
         $this->children = array();        
         $this->head = new HeadElement($this, self::$CHARSET, $title_string);
@@ -181,7 +182,7 @@ class AElement extends HtmlMarkup
     public static $HREFATTR = "href";
     public static $TARGETATTR = "target";
 
-    public static $BLNKWIN = "_blank";
+    public static $BLNKWINDOW = "_blank";
 
     public function __construct($href_url, $link_text) { 
         $this->name = self::$TAGNAME;
@@ -200,7 +201,7 @@ class AElement extends HtmlMarkup
     }
 
     public function use_blankwindow() {
-        $this->attributes[self::$TARGETATTR] = self::$BLNKWIN;
+        $this->attributes[self::$TARGETATTR] = self::$BLNKWINDOW;
     }
 }
 
@@ -210,8 +211,12 @@ class BodyElement extends HtmlMarkup
 
     public function __construct(HtmlMarkup $parent) {
         $this->name = self::$TAGNAME;
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         $this->children = array();
+    }
+
+    public function push(Renderable $element) {
+        array_push($this->children, $element);
     }
 }
 
@@ -252,7 +257,7 @@ class DivElement extends HtmlMarkup
 
     public function __construct() {      
         $this->name = self::$TAGNAME;
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");      
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         $this->children = array();
     }
 }
@@ -265,14 +270,14 @@ class FormElement extends HtmlMarkup
     public static $METHODATTR = "method";
     public static $ENCTYPEATTR = "enctype";
 
-    public static $GETMTHD = "GET";
-    public static $POSTMTHD = "POST";
+    public static $GETMTHD = "get";
+    public static $POSTMTHD = "post";
 
-    public function __construct($handler_url) {
+    public function __construct($action_handler) {
         $this->name = self::$TAGNAME;
 
         $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$ACTIONATTR] = $handler_url;
+        $this->attributes[self::$ACTIONATTR] = $action_handler;
         $this->attributes[self::$METHODATTR] = self::$GETMTHD;
         $this->attributes[self::$ENCTYPEATTR] = "";
 
@@ -291,10 +296,22 @@ class FormElement extends HtmlMarkup
         $this->attributes[self::$ENCTYPEATTR] = $type;
     }
 
-    public function push_textinput($input_name, $input_value) {
-        $input = new TextInputElement($this, $input_name, $input_value);
+    public function push_textinput($name, $default_value) {
+        $input = new TextInputElement($this, $name, $default_value);
         array_push($this->children, $input);
         return $input;
+    }
+
+    public function push_passwordinput($name, $default_value) {
+        $input = new PasswordInputElement($this, $name, $default_value);
+        array_push($this->children, $input);
+        return $input;
+    }
+
+    public function push_textarea($name, $default_value) {
+        $area = new TextareaElement($this, $name, $default_value);
+        array_push($this->children, $area);
+        return $area;
     }
 }
 
@@ -305,7 +322,7 @@ class H1Element extends HtmlMarkup
     public function __construct($content_string) { 
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         
         $this->children = array();
         $content = new TextElement($content_string);
@@ -320,7 +337,7 @@ class H2Element extends HtmlMarkup
     public function __construct($content_string) {
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         
         $this->children = array();        
         $content = new TextElement($content_string);
@@ -350,7 +367,7 @@ class H4Element extends HtmlMarkup
     public function __construct($content_string) {
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
 
         $this->children = array();
         $content = new TextElement($content_string);
@@ -380,7 +397,7 @@ class H6Element extends HtmlMarkup
     public function __construct($content_string) { 
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         
         $this->children = array();
         $content = new TextElement($content_string);
@@ -392,16 +409,20 @@ class HeadElement extends HtmlMarkup
 {
     public static $TAGNAME = "head";
 
-    public function __construct(HtmlMarkup $parent, $charset, $title) {            
+    public function __construct(HtmlMarkup $parent, $charset, $title) {
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         
         $this->children = array();
         $charset = new CharsetMetaElement($this, $charset);
         $title = new TitleElement($this, $title);
         array_push($this->children, $charset);
         array_push($this->children, $title);
+    }
+
+    public function push(Renderable $element) {
+        array_push($this->children, $element);
     }
 }
 
@@ -459,13 +480,13 @@ class TextInputElement extends HtmlMarkup
     public static $VALUEATTR = "value";
     public static $MAXLENGTHATTR = "maxlength";
 
-    public function __construct(FormElement $form, $name_value, $init_value) {
+    public function __construct(FormElement $form, $name, $default_value) {
         $this->name = self::$TAGNAME;
 
         $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
-        $this->attributes[self::$NAMEATTR] = $name_value;
-        $this->attributes[self::$VALUEATTR] = $init_value;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = $default_value;
         $this->attributes[self::$MAXLENGTHATTR] = "";        
 
         $this->children = NULL;
@@ -473,6 +494,33 @@ class TextInputElement extends HtmlMarkup
 
     public function set_maxlength($integer_value) {
         $this->attributes[self::$MAXLENGTHATTR] = $integer_value;
+    }
+}
+
+class PasswordInputElement extends HtmlMarkup
+{
+    public static $TAGNAME = "input";
+    public static $TYPENAME = "password";
+
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+    public static $MAXLENGTHATTR = "maxlength";
+    
+    public function __construct(FormElement $form, $name, $default_value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = $default_value;
+        $this->attributes[self::$MAXLENGTHATTR] = "";
+
+        $this->children = NULL;
+    }
+
+    public function set_maxlength($integer_value) {
+        $this->attriubutes[self::$MAXLENGTHATTR] = $integer_value;
     }
 }
 
@@ -515,7 +563,7 @@ class PElement extends HtmlMarkup
     public function __construct($content_string) {
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
         
         $this->children = array();
         $text = new TextElement($content_string);     
@@ -542,8 +590,8 @@ class ScriptElement extends HtmlMarkup
     public function __construct($script_url) { 
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");        
-        $this->attributes[self::$SRCATTR] = $script_url;        
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$SRCATTR] = $script_url;
 
         $this->children = array();
     }
@@ -564,6 +612,34 @@ class SpanElement extends HtmlMarkup
     }
 }
 
+class TextareaElement extends HtmlMarkup
+{
+    public static $TAGNAME = "textarea";
+
+    public function __construct(FormElement $parent, $name, $init_value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+
+        $this->children = array();
+        $initial_text = new TextElement($init_value);
+        array_push($this->children, $initial_text);
+    }
+
+    // TODO: figure out how to comment on this....
+    // need to render this in the form of <textarea>formatted_text</textarea>
+    public function render($indent_unit, $indent_level) {
+        $original_output = parent::render($indent_unit, $indent_level);
+        $closetag = parent::$PAIREDCLOSING . $this->name . parent::$CLOSING;
+        $closetag_position = strpos($original_output, $closetag);
+
+        // TODO: remove linebreak and spaces before and after child content
+        $output = $original_output;
+
+        return $output;
+    }
+}
+
 class TitleElement extends HtmlMarkup
 {
     public static $TAGNAME = "title";
@@ -571,9 +647,9 @@ class TitleElement extends HtmlMarkup
     public function __construct(HeadElement $parent, $title_string) {
         $this->name = self::$TAGNAME;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");              
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
 
-        $this->children = array();        
+        $this->children = array();
         $content_element = new TextElement($title_string);
         array_push($this->children, $content_element);
     }
