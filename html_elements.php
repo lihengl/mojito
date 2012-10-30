@@ -626,17 +626,11 @@ class TextareaElement extends HtmlMarkup
         array_push($this->children, $initial_text);
     }
 
-    // TODO: figure out how to comment on this....
-    // need to render this in the form of <textarea>formatted_text</textarea>
+    // children of textarea has to be rendered without indent
+    // because it will be accounted for layout of its content
     public function render($indent_unit, $indent_level) {
-        $original_output = parent::render($indent_unit, $indent_level);
-        $closetag = parent::$PAIREDCLOSING . $this->name . parent::$CLOSING;
-        $closetag_position = strpos($original_output, $closetag);
-
-        // TODO: remove linebreak and spaces before and after child content
-        $output = $original_output;
-
-        return $output;
+        $unindented_output = parent::render("", 0);
+        return $unindented_output;
     }
 }
 
