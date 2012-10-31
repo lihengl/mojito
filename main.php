@@ -1,9 +1,10 @@
 <?php
-require 'html_elements.php';
+require 'inline_elements.php';
+require 'block_elements.php';
 
 $title = "memory usage: " . memory_get_usage();
 
-$html = new HtmlElement($title);
+$html = new HtmlRootElement($title);
 
 $heading = new H1Element("MOJITO");
 $html->body_push($heading);
