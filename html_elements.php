@@ -359,6 +359,12 @@ class FormElement extends HtmlMarkup
         $area = new TextareaElement($this, $name, $value);
         return $this->push_with_label($input, $label_text);
     }
+
+    public function push_fieldset($legend_text) {
+        $fieldset = new FieldsetElement($this, $legend_text);
+        array_push($this->children, $fieldset);
+        return $fieldset;
+    }
 }
 
 class CheckboxInputElement extends HtmlMarkup implements Labelable
@@ -659,6 +665,38 @@ class LabelElement extends HtmlMarkup
         } else {
             array_push($this->children, $input);
             array_push($this->children, $label_text);
+        }
+    }
+}
+
+class LegendElement extends HtmlMarkup
+{
+    public static $TAGNAME = "legend";
+
+    public function __construct(FieldsetElement $host, $content_text) {
+        $this->name = self::$TAGNAME;
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        
+        $this->children = array();
+        $text = new TextElement($content_text);
+        array_push($this->children, $text);
+    }
+}
+
+class FieldsetElement extends HtmlMarkup
+{
+    public static $TAGNAME = "fieldset";
+
+    public function __construct(FormElement $host, $legend_text) {
+        $this->name = self::$TAGNAME;
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->children = array();
+
+        if ($legend_text == "") {
+            // fieldset with no legend
+        } else {
+            $legend = new LegendElement($this, $legend_text);
+            array_push($this->children, $legend);
         }
     }
 }
