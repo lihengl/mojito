@@ -277,6 +277,7 @@ class FormElement extends HtmlMarkup
 
     public static $GETMTHD = "get";
     public static $POSTMTHD = "post";
+    public static $FILEENCTYPE = "multipart/form-data";
 
     public function __construct($action_handler) {
         $this->name = self::$TAGNAME;
@@ -297,36 +298,34 @@ class FormElement extends HtmlMarkup
         $this->attributes[self::$METHODATTR] = self::$POSTMTHD;
     }
 
-    public function set_encryption($type) {
-        $this->attributes[self::$ENCTYPEATTR] = $type;
+    public function set_encryption() {
+        $this->attributes[self::$ENCTYPEATTR] = self::$FILEENCTYPE;
     }
 
-    public function push_text_input($name, $value, $label_text) {
+    private function push_with_label(Labelable $input, $label_text) {
+        $label = new LabelElement($input, $label_text);
+        array_push($this->children, $label);
+        return $input;        
+    }
+
+    public function push_textinput($name, $value, $label_text) {
         $input = new TextInputElement($this, $name, $value);
-        $label = new LabelElement($input, $label_text);
-        array_push($this->children, $label);
-        return $input;
+        return $this->push_with_label($input, $label_text);
     }
 
-    public function push_password_input($name, $value, $label_text) {
+    public function push_passwordinput($name, $value, $label_text) {
         $input = new PasswordInputElement($this, $name, $value);
-        $label = new LabelElement($input, $label_text);
-        array_push($this->children, $label);
-        return $input;
+        return $this->push_with_label($input, $label_text);
     }
 
-    public function push_radio_input($name, $value, $label_text) {
+    public function push_radioinput($name, $value, $label_text) {
         $input = new RadioInputElement($this, $name, $value);
-        $label = new LabelElement($input, $label_text);
-        array_push($this->children, $label);
-        return $input;
+        return $this->push_with_label($input, $label_text);
     }
 
-    public function push_checkbox_input($name, $value, $label_text) {
+    public function push_checkboxinput($name, $value, $label_text) {
         $input = new CheckboxInputElement($this, $name, $value);
-        $label = new LabelElement($input, $label_text);
-        array_push($this->children, $label);
-        return $input;
+        return $this->push_with_label($input, $label_text);
     }
 
     public function push_selection($name, $label_text,
@@ -335,16 +334,30 @@ class FormElement extends HtmlMarkup
         $selection = new SelectElement($this, $name,
                                        $first_value, $first_text,
                                        $second_value, $second_text);
-        $label = new LabelElement($selection, $label_text);
-        array_push($this->children, $label);
-        return $selection;
+        return $this->push_with_label($input, $label_text);
+    }
+
+    public function push_fileinput($name, $label_text) {
+        if ($this->attributes[self::$METHODATTR] != self::$POSTMTHD) {
+            echo "[FormElement] Error: method must be post to push file input";
+            return NULL;
+        } else if ($this->attributes[self::$ENCTYPEATTR] != self::$FILEENCTYPE) {
+            echo "[FormElement] Error: invalid enctype to push file input";
+            return NULL;
+        } else {
+            $input = new FileInputElement($this, $name);
+            return $this->push_with_label($input, $label_text);
+        }
+    }
+
+    public function push_submitinput($name, $value, $label_text) {
+        $input = new SubmitInputElement($this, $name, $value);
+        return $this->push_with_label($input, $label_text);
     }
 
     public function push_textarea($name, $value, $label_text) {
         $area = new TextareaElement($this, $name, $value);
-        $label = new LabelElement($area, $label_text);
-        array_push($this->children, $label);
-        return $area;
+        return $this->push_with_label($input, $label_text);
     }
 }
 
@@ -550,6 +563,56 @@ class SelectElement extends HtmlMarkup implements Labelable
     public function push_option($value, $text) {
         $option = new OptionElement($this, $value, $text);
         array_push($this->children, $option);
+    }
+}
+
+class FileInputElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "input";
+    public static $TYPENAME = "file";
+
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+
+    public function __construct(FormElement $host, $name) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = "";
+
+        $this->children = NULL;
+    }
+
+    public function label_first() {
+        return TRUE;
+    }
+}
+
+class SubmitInputElement extends HtmlMarkup implements Labelable
+{
+    public static $TAGNAME = "input";
+    public static $TYPENAME = "submit";
+
+    public static $TYPEATTR = "type";
+    public static $NAMEATTR = "name";
+    public static $VALUEATTR = "value";
+
+    public function __construct(FormElement $host, $name, $value) {
+        $this->name = self::$TAGNAME;
+
+        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes[self::$TYPEATTR] = self::$TYPENAME;
+        $this->attributes[self::$NAMEATTR] = $name;
+        $this->attributes[self::$VALUEATTR] = $value;
+
+        $this->children = NULL;
+    }
+
+    public function label_first() {
+        return TRUE;
     }
 }
 
