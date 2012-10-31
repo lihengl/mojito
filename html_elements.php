@@ -329,9 +329,9 @@ class FormElement extends HtmlMarkup
         return $input;
     }
 
-    public function push_select($name, $label_text,
-                                $first_value, $first_text,
-                                $second_value, $second_text) {
+    public function push_selection($name, $label_text,
+                                   $first_value, $first_text,
+                                   $second_value, $second_text) {
         $selection = new SelectElement($this, $name,
                                        $first_value, $first_text,
                                        $second_value, $second_text);
@@ -493,7 +493,7 @@ class OptionElement extends HtmlMarkup
 
     public static $SELECTEDVALUE = "selected";
 
-    public function __construct(FormElement $host, $value, $option_text) {
+    public function __construct(SelectElement $host, $value, $option_text) {
         $this->name = self::$TAGNAME;
 
         $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
@@ -525,8 +525,8 @@ class SelectElement extends HtmlMarkup implements Labelable
         $this->attributes[self::$NAMEATTR] = $name;
         
         $this->children = array();
-        $option_first = new OptionElement($host, $value_first, $text_first);
-        $option_second = new OptionElement($host, $value_second, $text_second);
+        $option_first = new OptionElement($this, $value_first, $text_first);
+        $option_second = new OptionElement($this, $value_second, $text_second);
         array_push($this->children, $option_first);
         array_push($this->children, $option_second);
     }
@@ -535,16 +535,21 @@ class SelectElement extends HtmlMarkup implements Labelable
         return TRUE;
     }
 
-    public function select_default($option_index) {
-        $default_selection = NULL;
+    public function select($option_index) {
+        $selection = NULL;
         
         try {
-            $default_selection = $this->children[$option_index];
+            $selection = $this->children[$option_index];
         } catch (Exception $e) {
             echo $e->getMessage();
         }
 
-        $default_selection->select();
+        $selection->select();
+    }
+
+    public function push_option($value, $text) {
+        $option = new OptionElement($this, $value, $text);
+        array_push($this->children, $option);
     }
 }
 
