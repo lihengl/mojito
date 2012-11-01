@@ -385,7 +385,7 @@ class FormElement extends HtmlBase
             $textinput = new TextInputElement($this, $name, $value);
         }
         
-        $labeled = $textinput->label($instruction);
+        $labeled = $textinput->enlabel($instruction);
         array_push($this->children, $labeled);
 
         return $textinput;
@@ -393,7 +393,7 @@ class FormElement extends HtmlBase
 
     public function push_checkbox($name, $value, $instruction) {
         $checkbox = new CheckboxInputElement($this, $name, $value);
-        $labeled = $checkbox->label($instruction);
+        $labeled = $checkbox->enlabel($instruction);
         
         array_push($this->children, $labeled);
         
@@ -405,7 +405,7 @@ class FormElement extends HtmlBase
 
         foreach ($values as $value=>$instruction) {
              $last_radio = new RadioInputElement($this, $name, $value);
-             $labeled = $last_radio->label($instruction);
+             $labeled = $last_radio->enlabel($instruction);
              array_push($this->children, $labeled);       
         }
 
@@ -419,7 +419,7 @@ class FormElement extends HtmlBase
             echo "[FormElement] Error: options must be than two";
         } else {
             $selection = new SelectElement($this, $name, $options);
-            $labeled = $selection->label($instruction);
+            $labeled = $selection->enlabel($instruction);
             array_push($this->children, $labeled);            
         }
         
@@ -435,7 +435,7 @@ class FormElement extends HtmlBase
             echo "[FormElement] Error: invalid enctype to push file input";
         } else {
             $fileinput = new FileInputElement($this, $name);
-            $labeled = $fileinput->label($instruction);
+            $labeled = $fileinput->enlabel($instruction);
             array_push($this->children, $labeled);
         }
 
@@ -444,7 +444,7 @@ class FormElement extends HtmlBase
 
     public function push_submitinput($name, $value, $instruction) {
         $submitinput = new SubmitInputElement($this, $name, $value);
-        $labeled = $submitinput->label($instruction);
+        $labeled = $submitinput->enlabel($instruction);
         
         array_push($this->children, $labeled);
         
@@ -453,7 +453,7 @@ class FormElement extends HtmlBase
 
     public function push_textarea($name, $value, $instruction) {
         $textarea = new TextareaElement($this, $name, $value);
-        $labeled = $textarea->label($instruction);
+        $labeled = $textarea->enlabel($instruction);
         
         array_push($this->children, $labeled);
         
