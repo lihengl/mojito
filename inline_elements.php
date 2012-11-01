@@ -1,32 +1,32 @@
 <?php
 require_once 'html_base.php';
 
-class SpanElement extends HtmlElement
+class SpanElement extends HtmlBase
 {
-    public static $TAGNAME = "span";
+    public static $tag = "span";
 
     public function __construct() { 
-        $this->name = self::$TAGNAME;
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->tagname = self::$tag;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         $this->children = array();
     }
 }
 
-class AElement extends HtmlElement
+class AElement extends HtmlBase
 {
-    public static $TAGNAME = "a";
+    public static $tag = "a";
 
-    public static $HREFATTR = "href";
-    public static $TARGETATTR = "target";
+    public static $href = "href";
+    public static $target = "target";
 
-    public static $BLNKWINDOW = "_blank";
+    public static $blankwin_value = "_blank";
 
     public function __construct($href_url, $link_text) { 
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$HREFATTR] = $href_url;
-        $this->attributes[self::$TARGETATTR] = "";
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$href] = $href_url;
+        $this->attributes[self::$target] = "";
 
         $this->children = array();
         $content_element = new TextElement($link_text);
@@ -34,44 +34,44 @@ class AElement extends HtmlElement
     }
 
     public function set_hyperlink($reference_url) {
-        $this->attributes[self::$HREFATTR] = $reference_url;
+        $this->attributes[self::$href] = $reference_url;
     }
 
     public function use_blankwindow() {
-        $this->attributes[self::$TARGETATTR] = self::$BLNKWINDOW;
+        $this->attributes[self::$target] = self::$blankwin_value;
     }
 }
 
-class ImgElement extends HtmlElement
+class ImgElement extends HtmlBase
 {
-    public static $TAGNAME = "img";
+    public static $tag = "img";
 
-    public static $SRCATTR = "src";
-    public static $ALTATTR = "alt";
-    public static $TITLEATTR = "title";
+    public static $src = "src";
+    public static $alt = "alt";
+    public static $title = "title";
 
     public function __construct($src_value, $alt_value) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$SRCATTR] = $src_value;
-        $this->attributes[self::$ALTATTR] = $alt_value;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$src] = $src_value;
+        $this->attributes[self::$alt] = $alt_value;
 
         $this->children = NULL;
     }
 
     public function set_source($image_url) {
-        $this->attriubutes[self::$SRCATTR] = $image_url;
+        $this->attriubutes[self::$src] = $image_url;
     }
 
     public function set_alternative($info_text) {
         $encoded_text = $info_text;
-        $this->attributes[self::$ALTATTR] = $encoded_text;
+        $this->attributes[self::$alt] = $encoded_text;
     }
 
     public function set_title($text) {
         $encoded_text = $text;
-        $this->attriubutes[self::$TITLEATTR] = $encoded_text;
+        $this->attriubutes[self::$title] = $encoded_text;
     }
 }
 ?>

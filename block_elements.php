@@ -1,25 +1,25 @@
 <?php
 require_once 'html_base.php';
 
-class DivElement extends HtmlElement
+class DivElement extends HtmlBase
 {
-    public static $TAGNAME = "div";
+    public static $tag = "div";
 
     public function __construct() {      
-        $this->name = self::$TAGNAME;
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->tagname = self::$tag;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         $this->children = array();
     }
 }
 
-class PElement extends HtmlElement
+class PElement extends HtmlBase
 {
-    public static $TAGNAME = "p";
+    public static $tag = "p";
 
     public function __construct($content_string) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         
         $this->children = array();
         $text = new TextElement($content_string);     
@@ -37,36 +37,25 @@ class PElement extends HtmlElement
     }
 }
 
-class BrElement extends HtmlElement
+class HrElement extends HtmlBase
 {
-    public static $TAGNAME = "br";
-
-    public function __construct() {
-        $this->name = self::$TAGNAME;
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->children = NULL;
-    }
-}
-
-class HrElement extends HtmlElement
-{
-    public static $TAGNAME = "hr";
+    public static $tag = "hr";
 
     public function __construct() {        
-        $this->name = self::$TAGNAME;
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>""); 
+        $this->tagname = self::$tag;
+        $this->attributes = array(parent::$id=>"", parent::$class=>""); 
         $this->children = NULL;    
     }
 }
 
-class H1Element extends HtmlElement
+class H1Element extends HtmlBase
 {
-    public static $TAGNAME = "h1";
+    public static $tag = "h1";
 
     public function __construct($content_string) { 
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         
         $this->children = array();
         $content = new TextElement($content_string);
@@ -74,14 +63,14 @@ class H1Element extends HtmlElement
     }
 }
 
-class H2Element extends HtmlElement
+class H2Element extends HtmlBase
 {
-    public static $TAGNAME = "h2";
+    public static $tag = "h2";
 
     public function __construct($content_string) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         
         $this->children = array();        
         $content = new TextElement($content_string);
@@ -89,14 +78,14 @@ class H2Element extends HtmlElement
     }
 }
 
-class H3Element extends HtmlElement
+class H3Element extends HtmlBase
 {
-    public static $TAGNAME = "h3";
+    public static $tag = "h3";
 
     public function __construct($content_string) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
 
         $this->children = array();           
         $content = new TextElement($content_string);
@@ -104,14 +93,14 @@ class H3Element extends HtmlElement
     }
 }
 
-class H4Element extends HtmlElement
+class H4Element extends HtmlBase
 {
-    public static $TAGNAME = "h4";
+    public static $tag = "h4";
 
     public function __construct($content_string) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
 
         $this->children = array();
         $content = new TextElement($content_string);
@@ -119,14 +108,14 @@ class H4Element extends HtmlElement
     }
 }
 
-class H5Element extends HtmlElement
+class H5Element extends HtmlBase
 {
-    public static $TAGNAME = "h5";
+    public static $tag = "h5";
 
     public function __construct($content_string) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
 
         $this->children = array();
         $content = new TextElement($content_string);
@@ -134,14 +123,14 @@ class H5Element extends HtmlElement
     }
 }
 
-class H6Element extends HtmlElement
+class H6Element extends HtmlBase
 {
-    public static $TAGNAME = "h6";
+    public static $tag = "h6";
 
     public function __construct($content_string) { 
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         
         $this->children = array();
         $content = new TextElement($content_string);

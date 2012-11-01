@@ -27,23 +27,23 @@ class TextElement implements Renderable
     }
 }
 
-abstract class HtmlElement implements Renderable
+abstract class HtmlBase implements Renderable
 {
-    public static $OPENING = "<";
-    public static $CLOSING = ">";
+    public static $tag_opening = "<";
+    public static $tag_closing = ">";
 
-    public static $EMPTYCLOSING = " />";
-    public static $PAIREDCLOSING = "</";
+    public static $empty_closing = " />";
+    public static $paired_closing = "</";
 
-    public static $ATTROPEN = '="';
-    public static $ATTRCLOSE = '"';
+    public static $attrval_opening = '="';
+    public static $attrval_closing = '"';
 
-    public static $IDATTR = "id";
-    public static $CLASSATTR = "class";
+    public static $id = "id";
+    public static $class = "class";
 
-    public static $SEPARATOR = " ";
+    public static $separator_char = " ";
 
-    protected $name;
+    protected $tagname;
     protected $attributes;
     protected $children;
 
@@ -53,18 +53,18 @@ abstract class HtmlElement implements Renderable
             $rendering_piece = "";
 
             if ($value != "") {
-                $rendering_piece = $name . self::$ATTROPEN . $value . self::$ATTRCLOSE;
+                $rendering_piece = $name . self::$attrval_opening . $value . self::$attrval_closing;
                 array_push($rendering_pieces, $rendering_piece);
             } else {
                 $rendering_piece = "";
             }
         }
-        $attribute_rendering = implode(self::$SEPARATOR, $rendering_pieces);
+        $attribute_rendering = implode(self::$separator_char, $rendering_pieces);
         return $attribute_rendering;
     }
 
     private function render_empty($opening, $indent) {
-        $rendering = $opening . self::$EMPTYCLOSING;
+        $rendering = $opening . self::$empty_closing;
         $formatted = $indent . $rendering . "\n";
         return $formatted;
     }
@@ -72,7 +72,7 @@ abstract class HtmlElement implements Renderable
     private function render_paired($opening, $indent_unit, $indent_level) {
         $indent = str_repeat($indent_unit, $indent_level);
 
-        $openline = $opening . self::$CLOSING;
+        $openline = $opening . self::$tag_closing;
 
         $midlines = "";
         $child_level = $indent_level + 1;
@@ -81,7 +81,7 @@ abstract class HtmlElement implements Renderable
             $midlines .= $child->render($indent_unit, $child_level);
         }
 
-        $closeline = self::$PAIREDCLOSING . $this->name . self::$CLOSING;
+        $closeline = self::$paired_closing . $this->tagname . self::$tag_closing;
 
         $formatted_open = $indent . $openline . "\n";
         $formatted_mid = $midlines;
@@ -93,13 +93,13 @@ abstract class HtmlElement implements Renderable
 
     public function render($indent_unit, $indent_level) {
         $indent = str_repeat($indent_unit, $indent_level);
-        $name = $this->name;
 
-        $opening = self::$OPENING . $name;
+        $opening = self::$tag_opening . $this->tagname;
+        
         $attribute = $this->render_attributes();
 
         if ($attribute != "") {
-            $opening .= self::$SEPARATOR . $attribute;
+            $opening .= self::$separator_char . $attribute;
         } else {
             // attribute is empty and has nothing te be put into opening
             $opening = $opening; 
@@ -121,46 +121,46 @@ abstract class HtmlElement implements Renderable
 
     public function set_id($value_string) {
         $value = $value_string;
-        $this->attributes[self::$IDATTR] = $value;
+        $this->attributes[self::$id] = $value;
     }
 
     public function add_class($value_string) {
         $value = $value_string;
-        $existing = $this->attributes[self::$CLASSATTR];
+        $existing = $this->attributes[self::$class];
 
-        if (strpos($value, self::$SEPARATOR)) {
+        if (strpos($value, self::$separator_char)) {
             // class value cannot contain space, if so do not add it
             return FALSE;
         } else if ($existing == "") {
-            $this->attributes[self::$CLASSATTR] = $value;
+            $this->attributes[self::$class] = $value;
             return TRUE;
         } else if (strpos($existing, $value_string)) {
             // class already exists, do nothing
             return FALSE;
         } else {
-            $added = $existing . self::$SEPARATOR . $value;
-            $this->attributes[self::$CLASSATTR] = $added;
+            $added = $existing . self::$separator_char . $value;
+            $this->attributes[self::$class] = $added;
             return TRUE;
         }
     }
 }
 
-class HtmlRootElement extends HtmlElement
+class HtmlElement extends HtmlBase
 {   
-    public static $TAGNAME = "html";
+    public static $tag = "html";
 
-    public static $CHARSET = "UTF-8";
+    public static $charset_value = "UTF-8";
 
     private $head;
     private $body;
 
     public function __construct($title_string) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         
         $this->children = array();        
-        $this->head = new HeadElement($this, self::$CHARSET, $title_string);
+        $this->head = new HeadElement($this, self::$charset_value, $title_string);
         $this->body = new BodyElement($this);
         array_push($this->children, $this->head);
         array_push($this->children, $this->body);
@@ -175,14 +175,14 @@ class HtmlRootElement extends HtmlElement
     }
 }
 
-class HeadElement extends HtmlElement
+class HeadElement extends HtmlBase
 {
-    public static $TAGNAME = "head";
+    public static $tag = "head";
 
-    public function __construct(HtmlElement $parent, $charset, $title) {
-        $this->name = self::$TAGNAME;
+    public function __construct(HtmlBase $parent, $charset, $title) {
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         
         $this->children = array();
         $charset = new CharsetMetaElement($this, $charset);
@@ -196,13 +196,24 @@ class HeadElement extends HtmlElement
     }
 }
 
-class BodyElement extends HtmlElement
+class BrElement extends HtmlBase
 {
-    public static $TAGNAME = "body";
+    public static $tag = "br";
 
-    public function __construct(HtmlElement $parent) {
-        $this->name = self::$TAGNAME;
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+    public function __construct() {        
+        $this->tagname = self::$tag;
+        $this->attributes = array(parent::$id=>"", parent::$class=>""); 
+        $this->children = NULL;    
+    }
+}
+
+class BodyElement extends HtmlBase
+{
+    public static $tag = "body";
+
+    public function __construct(HtmlBase $parent) {
+        $this->tagname = self::$tag;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
         $this->children = array();
     }
 
@@ -211,66 +222,66 @@ class BodyElement extends HtmlElement
     }
 }
 
-class CharsetMetaElement extends HtmlElement
+class CharsetMetaElement extends HtmlBase
 {
-    public static $TAGNAME = "meta";
+    public static $tag = "meta";
 
-    public static $CHARSETATTR = "charset";
+    public static $charset = "charset";
 
     public function __construct(HeadElement $parent, $charset_value) { 
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
         
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$CHARSETATTR] = $charset_value;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$charset] = $charset_value;
 
         $this->children = NULL;        
     }
 
     public function set_charset($value) {
-        $this->attributes[self::$CHARSETATTR] = $$value;
+        $this->attributes[self::$charset] = $value;
     }
 }
 
-class LinkElement extends HtmlElement
+class LinkElement extends HtmlBase
 {
-    public static $TAGNAME = "link";
+    public static $tag = "link";
 
-    public static $HREFATTR = "href";
-    public static $TYPEATTR = "type";
-    public static $RELATTR = "rel";
+    public static $href = "href";
+    public static $type = "type";
+    public static $rel = "rel";
 
     public function __construct($href_value, $type_value, $rel_value) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$HREFATTR] = $href_value;
-        $this->attributes[self::$TYPEATTR] = $type_value;
-        $this->attributes[self::$RELATTR] = $rel_value;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$href] = $href_value;
+        $this->attributes[self::$type] = $type_value;
+        $this->attributes[self::$rel] = $rel_value;
 
         $this->children = NULL;
     }
 
     public function set_hyperlink($reference_url) {
-        $this->attriubutes[self::$HREFATTR] = $reference_url;
+        $this->attriubutes[self::$href] = $reference_url;
     }
 
     public function set_linktype($value) {
-        $this->attributes[self::$TYPEATTR] = $value;
+        $this->attributes[self::$type] = $value;
     }
 
     public function set_relationship($type) {
-        $this->attributes[self::$RELATTR] = $type;
+        $this->attributes[self::$rel] = $type;
     }
 }
 
-class TitleElement extends HtmlElement
+class TitleElement extends HtmlBase
 {
-    public static $TAGNAME = "title";
+    public static $tag = "title";
 
     public function __construct(HeadElement $parent, $title_string) {
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
 
         $this->children = array();
         $content_element = new TextElement($title_string);
@@ -278,23 +289,23 @@ class TitleElement extends HtmlElement
     }
 }
 
-class ScriptElement extends HtmlElement
+class ScriptElement extends HtmlBase
 {
-    public static $TAGNAME = "script";
+    public static $tag = "script";
 
-    public static $SRCATTR = "src";
+    public static $src = "src";
 
     public function __construct($script_url) { 
-        $this->name = self::$TAGNAME;
+        $this->tagname = self::$tag;
 
-        $this->attributes = array(parent::$IDATTR=>"", parent::$CLASSATTR=>"");
-        $this->attributes[self::$SRCATTR] = $script_url;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$src] = $script_url;
 
         $this->children = array();
     }
 
     public function set_source($script_url) {
-        $this->attributes[self::$SRCATTR] = $script_url;
+        $this->attributes[self::$src] = $script_url;
     }
 
     public function render($indent_unit, $indent_level) {
