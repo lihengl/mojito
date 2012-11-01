@@ -1,9 +1,9 @@
 <?php
 require_once 'html_base.php';
 
-interface Labelable
+interface Enlabelable
 {
-    public function label($text);
+    public function enlabel($text);
 }
 
 class LabelElement extends HtmlBase
@@ -50,7 +50,7 @@ class LabelElement extends HtmlBase
     }
 }
 
-class TextInputElement extends HtmlBase implements Labelable
+class TextInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
     public static $type_value = "text";
@@ -72,7 +72,7 @@ class TextInputElement extends HtmlBase implements Labelable
         $this->children = NULL;
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_ahead($this);
         return $label;
@@ -83,7 +83,7 @@ class TextInputElement extends HtmlBase implements Labelable
     }
 }
 
-class PasswordInputElement extends HtmlBase implements Labelable
+class PasswordInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
     public static $type_value = "password";
@@ -105,7 +105,7 @@ class PasswordInputElement extends HtmlBase implements Labelable
         $this->children = NULL;
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_ahead($this);
         return $label;
@@ -116,7 +116,7 @@ class PasswordInputElement extends HtmlBase implements Labelable
         $this->attriubutes[self::$maxlength] = $value;
     }
 }
-class CheckboxInputElement extends HtmlBase implements Labelable
+class CheckboxInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
     public static $type_value = "checkbox";
@@ -141,7 +141,7 @@ class CheckboxInputElement extends HtmlBase implements Labelable
         $this->children = NULL;
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_behind($this);
         return $label;
@@ -156,7 +156,7 @@ class CheckboxInputElement extends HtmlBase implements Labelable
     }
 }
 
-class RadioInputElement extends HtmlBase implements Labelable
+class RadioInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
     public static $type_value = "radio";
@@ -180,7 +180,7 @@ class RadioInputElement extends HtmlBase implements Labelable
         $this->children = NULL;
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_behind($this);
         return $label;
@@ -195,7 +195,7 @@ class RadioInputElement extends HtmlBase implements Labelable
     }
 }
 
-class SelectElement extends HtmlBase implements Labelable
+class SelectElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "select";
 
@@ -215,7 +215,7 @@ class SelectElement extends HtmlBase implements Labelable
         }
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_ahead($this);
         return $label;
@@ -261,7 +261,7 @@ class OptionElement extends HtmlBase
     }
 }
 
-class FileInputElement extends HtmlBase implements Labelable
+class FileInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
     public static $type_value = "file";
@@ -281,14 +281,14 @@ class FileInputElement extends HtmlBase implements Labelable
         $this->children = NULL;
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_ahead($this);
         return $label;
     }
 }
 
-class SubmitInputElement extends HtmlBase implements Labelable
+class SubmitInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
     public static $type_value = "submit";
@@ -308,14 +308,14 @@ class SubmitInputElement extends HtmlBase implements Labelable
         $this->children = NULL;
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_ahead($this);
         return $label;
     }
 }
 
-class TextareaElement extends HtmlBase implements Labelable
+class TextareaElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "textarea";
 
@@ -332,7 +332,7 @@ class TextareaElement extends HtmlBase implements Labelable
         array_push($this->children, $initial_text);
     }
 
-    public function label($text) {
+    public function enlabel($text) {
         $label = new LabelElement($text);
         $label->put_ahead($this);
         return $label;
