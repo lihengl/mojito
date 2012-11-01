@@ -30,24 +30,6 @@ class LabelElement extends HtmlBase
         array_push($this->children, $input);
         array_push($this->children, $this->text);
     }
-
-    public function put_above($input) {
-        $break = new BrElement();
-        array_push($this->children, $break);        
-        array_push($this->children, $this->text);
-        array_push($this->children, $break);
-        array_push($this->children, $input);
-        array_push($this->children, $break);
-    }
-
-    public function put_below($input) {
-        $break = new BrElement();
-        array_push($this->children, $break);        
-        array_push($this->children, $input);
-        array_push($this->children, $break);
-        array_push($this->children, $this->text);
-        array_push($this->children, $break);        
-    }
 }
 
 class TextInputElement extends HtmlBase implements Enlabelable
