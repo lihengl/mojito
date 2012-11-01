@@ -58,15 +58,18 @@ class TextInputElement extends HtmlBase implements Enlabelable
     public static $type = "type";
     public static $name = "name";
     public static $value = "value";
+
     public static $maxlength = "maxlength";
 
     public function __construct(FormElement $host, $name, $default_value) {
         $this->tagname = self::$tag;
 
         $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        
         $this->attributes[self::$type] = self::$type_value;
         $this->attributes[self::$name] = $name;
         $this->attributes[self::$value] = $default_value;
+        
         $this->attributes[self::$maxlength] = "";        
 
         $this->children = NULL;
@@ -78,7 +81,7 @@ class TextInputElement extends HtmlBase implements Enlabelable
         return $label;
     }
 
-    public function set_maxlength($integer_value) {
+    public function max($integer_value) {
         $this->attributes[self::$maxlength] = $integer_value;
     }
 }
@@ -91,15 +94,18 @@ class PasswordInputElement extends HtmlBase implements Enlabelable
     public static $type = "type";
     public static $name = "name";
     public static $value = "value";
+
     public static $maxlength = "maxlength";
     
     public function __construct(FormElement $host, $name, $default_value) {
         $this->tagname = self::$tag;
 
         $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        
         $this->attributes[self::$type] = self::$type_value;
         $this->attributes[self::$name] = $name;
         $this->attributes[self::$value] = $default_value;
+        
         $this->attributes[self::$maxlength] = "";
 
         $this->children = NULL;
@@ -116,6 +122,35 @@ class PasswordInputElement extends HtmlBase implements Enlabelable
         $this->attriubutes[self::$maxlength] = $value;
     }
 }
+
+class ButtonInputElement extends HtmlBase implements Enlabelable
+{
+    public static $tag = "input";
+    public static $type_value = "button";
+
+    public static $type = "type";
+    public static $name = "name";
+    public static $value = "value";
+
+    public function __construct(FormElement $host, $name, $value) {
+        $this->tagname = self::$tag;
+
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+
+        $this->attributes[self::$type] = self::$type_value;
+        $this->attributes[self::$name] = $name;
+        $this->attributes[self::$value] = $value;
+
+        $this->children = NULL;
+    }
+
+    public function enlabel($text) {
+        $label = new LabelElement($text);
+        $label->put_behind($this);
+        return $label;
+    }
+}   
+
 class CheckboxInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
@@ -136,6 +171,7 @@ class CheckboxInputElement extends HtmlBase implements Enlabelable
         $this->attributes[self::$type] = self::$type_value;
         $this->attributes[self::$name] = $name;
         $this->attributes[self::$value] = $value;
+        
         $this->attributes[self::$checked] = "";        
 
         $this->children = NULL;
@@ -164,17 +200,19 @@ class RadioInputElement extends HtmlBase implements Enlabelable
     public static $type = "type";
     public static $name = "name";
     public static $value = "value";
-    public static $checked = "checked";
 
+    public static $checked = "checked";
     public static $checked_value = "checked";
 
     public function __construct(FormElement $host, $name, $value) {
         $this->tagname = self::$tag;
 
         $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        
         $this->attributes[self::$type] = self::$type_value;
         $this->attributes[self::$name] = $name;
         $this->attributes[self::$value] = $value;
+        
         $this->attributes[self::$checked] = "";
 
         $this->children = NULL;
@@ -195,88 +233,22 @@ class RadioInputElement extends HtmlBase implements Enlabelable
     }
 }
 
-class SelectElement extends HtmlBase implements Enlabelable
-{
-    public static $tag = "select";
-
-    public static $name = "name";
-
-    public function __construct(FormElement $host, $name, $options) {
-        $this->tagname = self::$tag;
-
-        $this->attributes = array(parent::$id=>"", parent::$class=>"");
-        $this->attributes[self::$name] = $name;
-        
-        $this->children = array();
-
-        foreach ($options as $value=>$text) {
-            $option = new OptionElement($this, $value, $text);
-            array_push($this->children, $option);
-        }
-    }
-
-    public function enlabel($text) {
-        $label = new LabelElement($text);
-        $label->put_ahead($this);
-        return $label;
-    }
-
-    public function select($option_index) {
-        $option_to_select = NULL;
-        
-        try {
-            $option_to_select = $this->children[$option_index];
-        } catch (Exception $e) {
-            // TODO: make this an index_out_of_bound exception
-            echo $e->getMessage();
-        }
-
-        $option_to_select->select();
-    }
-}
-
-class OptionElement extends HtmlBase
-{
-    public static $tag = "option";
-
-    public static $value = "value";
-    public static $selected = "selected";
-
-    public static $selected_value = "selected";
-
-    public function __construct(SelectElement $host, $value, $option_text) {
-        $this->tagname = self::$tag;
-
-        $this->attributes = array(parent::$id=>"", parent::$class=>"");
-        $this->attributes[self::$value] = $value;
-        $this->attributes[self::$selected] = "";
-
-        $this->children = array();
-        $text = new TextElement($option_text);
-        array_push($this->children, $text);
-    }
-
-    public function select() {
-        $this->attributes[self::$selected] = self::$selected_value;
-    }
-}
-
-class FileInputElement extends HtmlBase implements Enlabelable
+class HiddenInputElement extends HtmlBase implements Enlabelable
 {
     public static $tag = "input";
-    public static $type_value = "file";
+    public static $type_value = "hidden";
 
     public static $type = "type";
     public static $name = "name";
     public static $value = "value";
 
-    public function __construct(FormElement $host, $name) {
+    public function __construct(FormElement $host, $name, $value) {
         $this->tagname = self::$tag;
 
         $this->attributes = array(parent::$id=>"", parent::$class=>"");
         $this->attributes[self::$type] = self::$type_value;
         $this->attributes[self::$name] = $name;
-        $this->attributes[self::$value] = "";
+        $this->attributes[self::$value] = $value;
 
         $this->children = NULL;
     }
@@ -312,6 +284,89 @@ class SubmitInputElement extends HtmlBase implements Enlabelable
         $label = new LabelElement($text);
         $label->put_ahead($this);
         return $label;
+    }
+}
+
+class SelectElement extends HtmlBase implements Enlabelable
+{
+    public static $tag = "select";
+
+    public static $name = "name";
+
+    private $grouped;
+
+    public function __construct(FormElement $host, $name, $options) {
+        $this->tagname = self::$tag;
+
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$name] = $name;
+        
+        $this->children = array();
+
+        foreach ($options as $value=>$text) {
+            $option = new OptionElement($this, $value, $text);
+            array_push($this->children, $option);
+        }
+
+        $this->grouped = FALSE;
+    }
+
+    public function enlabel($text) {
+        $label = new LabelElement($text);
+        $label->put_ahead($this);
+        return $label;
+    }
+
+    public function push_optgroup($groups) {
+        $optgroup = NULL;
+
+        if ($this->grouped === TRUE) {
+            echo "[SelectElement] Error: selection already grouped";
+        } else if (count($groups) < 0) {
+            echo "[SelectElement] Error: number of groups must be positive";
+        } else if (count($groups) > count($this->children)) {
+            echo "[SelectElement] Error: number of groups must be smaller";
+        } else {
+            $group_index = 0;
+
+            foreach ($groups as $label=>$count) {
+                $optgroup = new OptgroupElement($this, $label);
+                $set = array_splice($this->children, $group_index, $count, array($optgroup));
+                $optgroup->push($set);
+
+                $group_index += 1;
+            }
+        }
+
+        $this->grouped = TRUE;
+        
+        return $optgroup;
+    }    
+}
+
+class OptionElement extends HtmlBase
+{
+    public static $tag = "option";
+
+    public static $value = "value";
+    public static $selected = "selected";
+
+    public static $selected_value = "selected";
+
+    public function __construct(SelectElement $host, $value, $option_text) {
+        $this->tagname = self::$tag;
+
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$value] = $value;
+        $this->attributes[self::$selected] = "";
+
+        $this->children = array();
+        $text = new TextElement($option_text);
+        array_push($this->children, $text);
+    }
+
+    public function select() {
+        $this->attributes[self::$selected] = self::$selected_value;
     }
 }
 
@@ -400,16 +455,13 @@ class FormElement extends HtmlBase
         return $checkbox;
     }    
 
-    public function push_radioset($name, $values) {
-        $last_radio = NULL;
+    public function push_radioinput($name, $value, $instruction) {
+        $radioinput = new RadioInputElement($this, $name, $value);
+        $labeled = $radioinput->enlabel($instruction);
 
-        foreach ($values as $value=>$instruction) {
-             $last_radio = new RadioInputElement($this, $name, $value);
-             $labeled = $last_radio->enlabel($instruction);
-             array_push($this->children, $labeled);       
-        }
-
-        return $last_radio;
+        array_push($this->children, $labeled);
+        
+        return $radioinput;
     }
 
     public function push_selection($name, $options, $instruction) {
@@ -420,7 +472,7 @@ class FormElement extends HtmlBase
         } else {
             $selection = new SelectElement($this, $name, $options);
             $labeled = $selection->enlabel($instruction);
-            array_push($this->children, $labeled);            
+            array_push($this->children, $labeled);          
         }
         
         return $selection;
@@ -440,6 +492,24 @@ class FormElement extends HtmlBase
         }
 
         return $fileinput;
+    }
+
+    public function push_hiddeninput($name, $value, $instruction) {
+        $hiddeninput = new HiddenInputElement($this, $name, $value);
+        $labeled = $hiddeninput->enlabel($instruction);
+
+        array_push($this->children, $labeled);
+
+        return $hiddeninput;
+    }
+
+    public function push_buttoninput($name, $value, $instruction) {
+        $buttoninput = new ButtonInputElement($this, $name, $value);
+        $labeled = $buttoninput->enlabel($instruction);
+        
+        array_push($this->children, $labeled);
+        
+        return $buttoninput;        
     }
 
     public function push_submitinput($name, $value, $instruction) {
@@ -479,6 +549,36 @@ class FormElement extends HtmlBase
     }
 }
 
+class OptgroupElement extends HtmlBase
+{
+    public static $tag = "optgroup";
+
+    public static $label = "label";
+    public static $disabled = "disabled";
+
+    public static $disabled_value = "disabled";
+
+    public function __construct(SelectElement $host, $label_text) {
+        $this->tagname = self::$tag;
+
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->attributes[self::$label] = $label_text;
+        $this->attributes[self::$disabled] = "";
+        
+        $this->children = array();
+    }
+
+    public function disable() {
+        $this->attributes[self::$disabled] = self::$disabled_value;        
+    }
+
+    public function push($options) {
+        foreach ($options as $option) {
+            array_push($this->children, $option);
+        }
+    }
+}
+
 class LegendElement extends HtmlBase
 {
     public static $tag = "legend";
@@ -510,8 +610,8 @@ class FieldsetElement extends HtmlBase
         }
     }
 
-    public function push($input_set) {
-        foreach ($input_set as $input) {
+    public function push($inputs) {
+        foreach ($inputs as $input) {
             array_push($this->children, $input);
         }
     }

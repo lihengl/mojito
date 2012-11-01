@@ -42,6 +42,20 @@ class AElement extends HtmlBase
     }
 }
 
+class ButtonElement extends HtmlBase
+{
+    public static $tag = "button";
+
+    public function __construct($button_text) {
+        $this->tagname = self::$tag;
+        $this->attributes = array(parent::$id=>"", parent::$class=>"");
+        $this->children = array();
+
+        $text = new TextElement($button_text);
+        array_push($this->children, $text);
+    }
+}
+
 class ImgElement extends HtmlBase
 {
     public static $tag = "img";
