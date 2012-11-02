@@ -35,12 +35,8 @@ class AElement extends HtmlBase
         return $this->attribute(self::$href, $link_url);
     }
 
-    public function blankwindow($use) {
-        if ($use === TRUE) {
-            $this->attribute[self::$target] = self::$blankwin_value;
-        } else {
-            $this->attribute[self::$target] = "";
-        }
+    public function blankwindow() {
+        $this->attributes[self::$target] = self::$blankwin_value;
     }
 }
 

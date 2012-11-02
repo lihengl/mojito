@@ -1,6 +1,11 @@
 <?php
 require_once 'html_base.php';
 
+interface Sortable
+{
+    public function sort();
+}
+
 class DivElement extends HtmlBase
 {
     private static $tag = "div";
@@ -8,6 +13,42 @@ class DivElement extends HtmlBase
     public function __construct() {
         parent::__construct(self::$tag);
         $this->children = array();
+    }
+}
+
+class LiElement extends HtmlBase
+{
+    private static $tag = "li";
+
+    public function __construct(Sortable $host, Renderable $content) {
+        parent::__construct(self::$tag);
+        $this->children = array($content);
+    }
+
+    public function push_text($item_text) {
+        $text = new TextElement($item_text);
+        array_push($this->children, $text);
+        return $text;
+    }
+}
+
+class OlElement extends HtmlBase implements Sortable
+{
+    private static $tag = "ol";
+
+    public function __construct() {
+        parent::__construct(self::$tag);
+        $this->children = array();
+    }
+
+    public function sort() {
+        // TODO
+    }
+
+    public function push_item(Renderable $content) {
+        $item = new LiElement($this, $content);
+        array_push($this->children, $item);
+        return $item;
     }
 }
 

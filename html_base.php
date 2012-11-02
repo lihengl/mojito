@@ -236,7 +236,7 @@ class BodyElement extends HtmlBase
         $this->children = array();
     }
 
-    public function push(Renderable $element) {
+    public function push(HtmlBase $element) {
         array_push($this->children, $element);
     }
 }
