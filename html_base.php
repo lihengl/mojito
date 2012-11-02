@@ -173,6 +173,9 @@ class HtmlElement extends HtmlBase
 
     private static $charset_value = "UTF-8";
 
+    private static $csstype_value = "text/css";
+    private static $cssrel_value = "stylesheet";
+
     private $head;
     private $body;
 
@@ -187,8 +190,16 @@ class HtmlElement extends HtmlBase
         array_push($this->children, $this->body);
     }
 
-    public function head_push(Renderable $element) {
-        $this->head->push($element);
+    // assuming there is only link for css
+    public function attach_style($stylesheet_url) {
+        $stylelink = new LinkElement($this->head);
+        $stylelink->href($stylesheet_url);
+        $stylelink->type(self::$csstype_value);
+        $stylelink->rel(self::$cssrel_value);
+
+        $this->head->push_link($stylelink);
+        
+        return $stylelink;
     }
 
     public function body_push(Renderable $element) {
@@ -212,8 +223,9 @@ class HeadElement extends HtmlBase
         array_push($this->children, $title);
     }
 
-    public function push(Renderable $element) {
-        array_push($this->children, $element);
+    public function push_link(LinkElement $link) {
+        array_push($this->children, $link);
+        return $link;
     }
 }
 
@@ -267,17 +279,13 @@ class LinkElement extends HtmlBase
     private static $type = "type";
     private static $rel = "rel";
 
-    public function __construct($href_value, $type_value, $rel_value) {
+    public function __construct(HeadElement $host) {
         parent::__construct(self::$tag);
-        $this->children = NULL;        
-
-        $this->attributes[self::$href] = $href_value;
-        $this->attributes[self::$type] = $type_value;
-        $this->attributes[self::$rel] = $rel_value;
+        $this->children = NULL;
     }
 
     public function href($value) {
-        return $this->attriubute(self::$href, $link_url);
+        return $this->attribute(self::$href, $value);
     }
 
     public function type($value) {

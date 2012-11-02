@@ -6,6 +6,7 @@ require 'form_elements.php';
 $title = "memory usage: " . memory_get_usage();
 
 $html = new HtmlElement($title);
+$html->attach_style("layout.css");
 
 $heading = new H1Element("MOJITO");
 $html->body_push($heading);
