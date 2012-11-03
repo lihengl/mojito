@@ -14,6 +14,10 @@ class DivElement extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
     }
+
+    public function push(HtmlBase $element) {
+        array_push($this->children, $element);
+    }
 }
 
 class LiElement extends HtmlBase

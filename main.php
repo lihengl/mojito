@@ -1,19 +1,7 @@
 <?php
-require 'inline_elements.php';
-require 'block_elements.php';
-require 'form_elements.php';
+require 'yf2etest2.php';
 
-$title = "memory usage: " . memory_get_usage();
+$test = new Yf2eTest2("Candidate: Li-Heng Liang");
 
-$html = new HtmlElement($title);
-$html->attach_style("layout.css");
-
-$heading = new H1Element("MOJITO");
-$html->body_push($heading);
-
-// put test code here
-
-// output to browser
-echo "<!DOCTYPE html>\n";
-echo $html->render("    ", 0);
+echo $test->render();
 ?>

@@ -125,7 +125,7 @@ abstract class HtmlBase implements Renderable
             $output = $this->render_empty($opening, $indent);
         } else {
             // shorten variable names to follow the 80-column rule
-            $unit = $indent_unit;
+            $unit =     $indent_unit;
             $level = $indent_level;
             $output = $this->render_paired($opening, $unit, $level);
         }
@@ -229,16 +229,6 @@ class HeadElement extends HtmlBase
     }
 }
 
-class BrElement extends HtmlBase
-{
-    private static $tag = "br";
-
-    public function __construct() {
-        parent::__construct(self::$tag);
-        $this->children = NULL;    
-    }
-}
-
 class BodyElement extends HtmlBase
 {
     private static $tag = "body";
@@ -330,6 +320,16 @@ class ScriptElement extends HtmlBase
     public function render($indent_unit, $indent_level) {
         $zeroindented_output = parent::render("    ", 0);
         return $zeroindented_output;
+    }
+}
+
+class BrElement extends HtmlBase
+{
+    private static $tag = "br";
+
+    public function __construct() {
+        parent::__construct(self::$tag);
+        $this->children = NULL;    
     }
 }
 ?>
