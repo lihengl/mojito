@@ -1,5 +1,5 @@
 <?php
-require_once 'html_base.php';
+require_once 'base_elements.php';
 
 interface Enlabelable
 {
@@ -50,6 +50,7 @@ class InputElement extends HtmlBase implements Enlabelable
 
     private static $maxlength = "maxlength";
     private static $checked = "checked";
+    private static $placeholder = "placeholder";
 
     private static $checked_value = "checked";
 
@@ -120,7 +121,7 @@ class InputElement extends HtmlBase implements Enlabelable
     }    
 
     public function maxlength($value = NULL) {
-        if ($this->texttype() == TRUE) {
+        if ($this->texttype() === TRUE) {
             return $this->attribute(self::$maxlength, $value);
         } else {
             // do nothing
@@ -133,7 +134,15 @@ class InputElement extends HtmlBase implements Enlabelable
         } else {
             // do nothing
         }
-    }        
+    }
+
+    public function placeholder($text) {
+        if ($this->texttype() === TRUE) {
+            $this->attributes[self::$placeholder] = $text;
+        } else {
+            // do nothing
+        }
+    }
 }
 
 class SelectElement extends HtmlBase implements Enlabelable
