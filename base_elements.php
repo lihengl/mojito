@@ -202,6 +202,10 @@ class HtmlElement extends HtmlBase
         return $stylelink;
     }
 
+    public function attach_entrypoint($function_name) {
+        $this->body->onload($function_name);
+    }
+
     public function body_push(HtmlBase $element) {
         $this->body->push($element);
     }
@@ -233,6 +237,8 @@ class BodyElement extends HtmlBase
 {
     private static $tag = "body";
 
+    private static $onload_event = "onload";    
+
     private $scripts;
 
     public function __construct(HtmlBase $host) {
@@ -249,6 +255,10 @@ class BodyElement extends HtmlBase
         } else {
             array_push($this->children, $element);
         }
+    }
+
+    public function onload($handler) {
+        $this->attribute(self::$onload_event, $handler);
     }
 
     // push script element into children before rendering

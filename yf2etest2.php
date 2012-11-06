@@ -24,13 +24,14 @@ class Yf2eTest2
     public function __construct($html_title) {
         $this->html = new HtmlElement($html_title);
         
-        $this->script = new ScriptElement(self::$jscript_url);        
+        $this->script = new ScriptElement(self::$jscript_url);
 
         $this->banner = new H1Element("Instant Search");
         $this->instruction = new PElement("Candidate: Li-Heng Liang");
         
         $this->searchbox = new FormElement("handler.php");
         $input = $this->searchbox->push_input(InputElement::$TextType, "search", "", "");
+        $input->id("searchbox");
         $input->placeholder("Enter Keyword");
 
         $this->suggestionbox = new DivElement();
@@ -46,6 +47,8 @@ class Yf2eTest2
         $this->html->body_push($this->searchbox);
         $this->html->body_push($this->suggestionbox);
         $this->html->body_push($this->resultlist);
+
+        $this->html->attach_entrypoint("main()");
     }
 
     public function render() {
