@@ -4,5 +4,9 @@ require 'yf2etest2.php';
 
 $test = new Yf2eTest2("Instant Search");
 
-echo $test->render();
+if (isset($_GET['query'])) {
+    echo $test->fetch($_GET['query'], TRUE);
+} else {
+    echo $test->render();
+}
 ?>

@@ -55,5 +55,18 @@ class Yf2eTest2
         $doc = $this->html->render(self::$indent_unit, self::$indent_level);
         return self::$doctype . "\n" . $doc;
     }
+
+    public function fetch($query, $require_markup = FALSE) {
+
+        $result = "";
+
+        if ($query == "AA") {
+            $result = "CORRECT!";
+        } else {
+            $result = "WRONG";
+        }
+
+        return $result;
+    }
 }
 ?>
