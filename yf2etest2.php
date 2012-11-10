@@ -49,6 +49,7 @@ class Yf2eTest2
         $this->html->body_push($this->resultlist);
 
         $this->html->attach_entrypoint("main()");
+        $this->html->attach_style("yf2etest2_layout.css");
     }
 
     public function render() {
@@ -56,17 +57,21 @@ class Yf2eTest2
         return self::$doctype . "\n" . $doc;
     }
 
-    public function fetch($query, $require_markup = FALSE) {
+    public function fetch($query) {
 
-        $result = "";
+        $example = array("string1", "string2", "string3");
 
-        if ($query == "AA") {
-            $result = "CORRECT!";
-        } else {
-            $result = "WRONG";
+        $item = array("wordtitle"=>$query,
+                      "descriptiontext"=>"descriptext",
+                      "examples"=>$example);
+
+        $list = array();
+
+        for ($count = 0; $count < 3; $count++) {
+            array_push($list, $item);
         }
 
-        return $result;
+        return json_encode($list);
     }
 }
 ?>
