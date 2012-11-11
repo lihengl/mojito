@@ -3,7 +3,20 @@ var ResultListId = "resultlist";
 var SuggestListId = "suggestlist";
 
 var requestHandler = "main.php";
-var QueryName = "lchar";
+var QueryName = "ajax_query";
+
+var queriedData = {
+
+    wordList: null,
+
+    displaySuggest: function(filterString) {
+    },
+
+    displayResult: function(filterString) {
+
+    }
+
+};
 
 function createXHR() {
     if (typeof XMLHttpRequest != "undefined") {
@@ -21,30 +34,32 @@ function appendURLParam(url, name, value) {
     return url;
 }
 
-function processResponse(responseJSON) {
+function processResponse(response) {
+    wordList = JSON.parse(response);
+
     var suggestlist = document.getElementById(SuggestListId);
     var resultList = document.getElementById(ResultListId);
 
-    var results = JSON.parse(responseJSON);
-
     var index = 0;
-    var resultCount = results.length;
+    var resultCount = wordList.length;
 
     var suggestCount = (resultCount < 3) ? resultCount : 3;
 
-    for (index = 0; index < suggestCount; index++) {
-        var suggestItem = document.createElement("li");
-        suggestItem.innerHTML = results[index].wordName;
-
-        suggestlist.appendChild(suggestItem);
-    }
-
     for (index = 0; index < resultCount; index++) {
+        var word = wordList[index];
+
+        if (index < suggestCount) {
+            var suggestItem = document.createElement("li");
+            suggestItem.innerHTML = word.name;
+
+            suggestlist.appendChild(suggestItem);            
+        }
+
         var titleItem = document.createElement("dt");
         var descriptionItem = document.createElement("dd");
 
-        titleItem.innerHTML = results[index].wordName;
-        descriptionItem.innerHTML = results[index].wordDesc;
+        titleItem.innerHTML = word.name;
+        descriptionItem.innerHTML = word.description;
 
         resultList.appendChild(titleItem);
         resultList.appendChild(descriptionItem);        
@@ -93,11 +108,9 @@ function processInput(oldValue, newValue) {
     } else if (newValue.length == 0) {
         flushOutput();
     } else if (oldValue.length < newValue.length) {
-        // TODO
-        alert("filter out");
+        // TODO: filter out
     } else {
-        // TODO
-        alert("loosen");
+        // TODO: loosen up
     }
 }
 

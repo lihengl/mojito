@@ -22,7 +22,7 @@ class Yf2eTest2
     private $html;
     private static $db;
 
-    public static function Query($lead_char) {
+    public static function QueryDB($lead_char) {
         $sql = "SELECT name, description
                 FROM words
                 WHERE lead_char = :lead_char";
@@ -50,15 +50,8 @@ class Yf2eTest2
         }
         
         self::$db = NULL;
-        
-        $results = array();
-        foreach ($words as $word) {
-            $item = array("wordName"=>$word['name'],
-                          "wordDesc"=>$word['description']);
-            array_push($results, $item);
-        }
 
-        return json_encode($results);
+        return $words;
     }
 
     private function body_pushes() {
