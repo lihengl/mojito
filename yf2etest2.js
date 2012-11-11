@@ -38,7 +38,7 @@ var queriedData = {
         for (index = 0; index < suggestCount; index++) {
             var word = this.wordList[index];
 
-            if (word.name.indexOf(filter) < 0) {
+            if (word.name.indexOf(filter) !== 0) {
                 // got filtered out, do not display it
                 continue;
             } else {
@@ -63,7 +63,7 @@ var queriedData = {
         for (index = 0; index < resultCount; index++) {
             var word = this.wordList[index];
 
-            if (word.name.indexOf(filter) < 0) {
+            if (word.name.indexOf(filter) !== 0) {
                 // got filtered out, do not display it
                 continue;
             } else {
