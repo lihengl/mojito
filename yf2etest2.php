@@ -11,7 +11,7 @@ class Yf2eTest2
     private static $indent_level = 0;
 
     private static $title = "Responsive Search";
-    private static $subtitle = "A Web Frontend Engineering Test Project";
+    private static $subtitle = "A Test Project for Web Frontend Engineering";
 
     private static $jscript = "yf2etest2.js";
 

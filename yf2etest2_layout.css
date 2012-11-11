@@ -1,5 +1,5 @@
 h2 {
-    margin-top: 6em;
+    margin-top: 5em;
 }
 
 dt, dd {
@@ -13,10 +13,6 @@ dt, dd {
 
 #header {
     text-align: center;
-}
-
-#body {
-    min-height: 64em;
 }
 
 #searchbox {
