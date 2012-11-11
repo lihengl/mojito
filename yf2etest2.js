@@ -7,13 +7,35 @@ var QueryName = "ajax_query";
 
 var queriedData = {
 
-    wordList: null,
+    displaySuggest: function(filterString, outletElement) {
+        var resultCount = this.wordList.length;
+        var suggestCount = (resultCount < 3) ? resultCount : 3;
 
-    displaySuggest: function(filterString) {
+        for (index = 0; index < suggestCount; index++) {
+            var word = this.wordList[index];
+
+            var suggestItem = document.createElement("li");
+
+            suggestItem.innerHTML = word.name;
+            outletElement.appendChild(suggestItem);
+        }
     },
 
-    displayResult: function(filterString) {
+    displayResult: function(filterString, outletElement) {
+        var resultCount = this.wordList.length;
 
+        for (index = 0; index < resultCount; index++) {
+            var word = this.wordList[index];
+
+            var titleItem = document.createElement("dt");
+            var descriptionItem = document.createElement("dd");
+
+            titleItem.innerHTML = word.name;
+            descriptionItem.innerHTML = word.description;
+
+            outletElement.appendChild(titleItem);
+            outletElement.appendChild(descriptionItem);
+        }
     }
 
 };
@@ -35,35 +57,13 @@ function appendURLParam(url, name, value) {
 }
 
 function processResponse(response) {
-    wordList = JSON.parse(response);
+    queriedData.wordList = JSON.parse(response);
 
-    var suggestlist = document.getElementById(SuggestListId);
+    var suggestList = document.getElementById(SuggestListId);
     var resultList = document.getElementById(ResultListId);
 
-    var index = 0;
-    var resultCount = wordList.length;
-
-    var suggestCount = (resultCount < 3) ? resultCount : 3;
-
-    for (index = 0; index < resultCount; index++) {
-        var word = wordList[index];
-
-        if (index < suggestCount) {
-            var suggestItem = document.createElement("li");
-            suggestItem.innerHTML = word.name;
-
-            suggestlist.appendChild(suggestItem);            
-        }
-
-        var titleItem = document.createElement("dt");
-        var descriptionItem = document.createElement("dd");
-
-        titleItem.innerHTML = word.name;
-        descriptionItem.innerHTML = word.description;
-
-        resultList.appendChild(titleItem);
-        resultList.appendChild(descriptionItem);        
-    }
+    queriedData.displaySuggest("", suggestList);
+    queriedData.displayResult("", resultList);
 }
 
 function sendRequest(queryValue) {
