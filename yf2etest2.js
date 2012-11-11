@@ -24,18 +24,16 @@ function appendURLParam(url, name, value) {
 var queriedData = {
 
     displaySuggest: function() {
-        var resultCount = this.wordList.length;
-        var suggestCount = (resultCount < 3) ? resultCount : 3;
-
         var suggestList = document.getElementById(SuggestListId);
-
         suggestList.innerHTML = "";    
         while (suggestlist.hasChildNodes()) {
             suggestList.removeChild(suggestList.lastChild);
         }
 
         var inputField = document.getElementById(ReceiverId);
-        var filter = inputField.value;        
+        var filter = inputField.value;
+        var resultCount = this.wordList.length;
+        var suggestCount = (resultCount < 3) ? resultCount : 3;
 
         for (index = 0; index < suggestCount; index++) {
             var word = this.wordList[index];
@@ -45,7 +43,6 @@ var queriedData = {
                 continue;
             } else {
                 var suggestItem = document.createElement("li");
-
                 suggestItem.innerHTML = word.name;
                 suggestList.appendChild(suggestItem);
             }
@@ -53,17 +50,15 @@ var queriedData = {
     },
 
     displayResult: function() {
-        var resultCount = this.wordList.length;
-
         var resultList = document.getElementById(ResultListId);
-
         resultList.innerHTML = "";
         while (resultlist.hasChildNodes()) {
             resultList.removeChild(resultList.lastChild);
-        }
+        }        
 
         var inputField = document.getElementById(ReceiverId);
-        var filter = inputField.value;        
+        var filter = inputField.value;
+        var resultCount = this.wordList.length;        
 
         for (index = 0; index < resultCount; index++) {
             var word = this.wordList[index];
@@ -130,8 +125,8 @@ function flushDisplay() {
 
 function processInput(oldValue, newValue) {
 
-    if (oldValue.length == 0) {
-        sendRequest(newValue);
+    if (oldValue.length == 0 && newValue.length > 0) {
+        sendRequest(newValue.charAt(0));
     } else if (newValue.length == 0) {
         flushDisplay();
     } else {
@@ -142,14 +137,18 @@ function processInput(oldValue, newValue) {
 
 var queryProcessor = function() {
 
-    var currentValue = this.value;
+    var currValue = this.value;
 
     if (typeof queryProcessor.lastValue == "undefined") {
-        sendRequest(currentValue);
-    } else if (queryProcessor.lastValue == currentValue) {
+        if (currValue.length > 0) {
+            sendRequest(currValue.charAt(0));
+        } else {
+            // do nothing
+        }
+    } else if (queryProcessor.lastValue == currValue) {
         // content not changed, do nothing?
     } else {
-        processInput(queryProcessor.lastValue, currentValue);
+        processInput(queryProcessor.lastValue, currValue);
     }
 
     queryProcessor.lastValue = this.value;
