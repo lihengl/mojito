@@ -1,4 +1,7 @@
-h1 {
+body {
     font-family: sans-serif;
+}
+
+h2 {
     font-weight: lighter;
 }

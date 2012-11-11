@@ -1,3 +1,26 @@
-h1 {
-    margin: 0;
+h2 {
+    margin-top: 6em;
+}
+
+dt, dd {
+    margin-bottom: 1em;
+}
+
+#document {
+    width: 20em;
+    margin: 0 auto;
+}
+
+#header {
+    text-align: center;
+}
+
+#body {
+    min-height: 64em;
+}
+
+#searchbox {
+    width: 16em;
+    margin-top: 4em;
+    margin-bottom: 4em;
 }

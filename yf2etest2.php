@@ -11,7 +11,7 @@ class Yf2eTest2
     private static $indent_level = 0;
 
     private static $title = "Responsive Search";
-    private static $subtitle = "A Frontend Engineering Test Project for Yahoo!";
+    private static $subtitle = "A Web Frontend Engineering Test Project";
 
     private static $jscript = "yf2etest2.js";
 
@@ -70,24 +70,12 @@ class Yf2eTest2
         return $results;
     }
 
-    // TODO: encapsulate this into HtmlElement
-    private function body_pushes() {
-        $this->html->body_push($this->script);
-        $this->html->body_push($this->application_title);
-        $this->html->body_push($this->application_subtitle);
-        $this->html->body_push($this->searchbox);
-        $this->html->body_push($this->suggest_label);
-        $this->html->body_push($this->suggest_list);
-        $this->html->body_push($this->result_label);
-        $this->html->body_push($this->result_list);        
-    }
-
     public function __construct($html_title) {
         $this->html = new HtmlElement($html_title);
         
         $this->script = new ScriptElement(self::$jscript);
 
-        $this->application_title = new H1Element(self::$title);
+        $this->application_title = new H2Element(self::$title);
         $this->application_subtitle = new PElement(self::$subtitle);
         
         $this->searchbox = new FormElement("index.php");
@@ -96,11 +84,13 @@ class Yf2eTest2
         $input->placeholder("Enter Keyword");
 
         $this->suggest_label = new PElement("Suggestions: ");
+        $this->suggest_label->classes("label");
 
         $this->suggest_list = new OlElement();
         $this->suggest_list->id("suggestlist");
 
         $this->result_label = new PElement("Results: ");
+        $this->result_label->classes("label");        
 
         $this->result_list = new DlElement();
         $this->result_list->id("resultlist");
@@ -117,6 +107,34 @@ class Yf2eTest2
     public function render() {
         $doc = $this->html->render(self::$indent_unit, self::$indent_level);
         return self::$doctype . "\n" . $doc;
+    }
+
+    // TODO: encapsulate this into HtmlElement
+    private function body_pushes() {
+        $this->html->body_push($this->script);
+
+        $header_div = new DivElement();
+        $header_div->id("header");
+
+        $header_div->push($this->application_title);
+        $header_div->push($this->application_subtitle);
+        $header_div->push($this->searchbox);
+
+        $body_div = new DivElement();
+        $body_div->id("body");
+
+        $body_div->push($this->suggest_label);
+        $body_div->push($this->suggest_list);
+        $body_div->push($this->result_label);
+        $body_div->push($this->result_list);
+
+        $document_div = new DivElement();
+        $document_div->id("document");
+
+        $document_div->push($header_div);
+        $document_div->push($body_div);
+
+        $this->html->body_push($document_div);        
     }
 }
 ?>
