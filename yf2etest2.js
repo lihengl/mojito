@@ -31,7 +31,7 @@ var queriedData = {
         }
 
         var inputField = document.getElementById(ReceiverId);
-        var filter = inputField.value;
+        var filter = inputField.value.toLowerCase();
         var resultCount = this.wordList.length;
         var suggestCount = (resultCount < 3) ? resultCount : 3;
 
@@ -57,7 +57,7 @@ var queriedData = {
         }        
 
         var inputField = document.getElementById(ReceiverId);
-        var filter = inputField.value;
+        var filter = inputField.value.toLowerCase();
         var resultCount = this.wordList.length;        
 
         for (index = 0; index < resultCount; index++) {
@@ -101,7 +101,9 @@ function sendRequest(queryValue) {
         }
     }
 
-    requestHandler = appendURLParam(requestHandler, QueryName, queryValue);
+    var query = queryValue.charAt(0).toLowerCase();
+
+    requestHandler = appendURLParam(requestHandler, QueryName, query);
 
     xhr.open("get", requestHandler, true);
     xhr.send(null);
@@ -126,7 +128,7 @@ function flushDisplay() {
 function processInput(oldValue, newValue) {
 
     if (oldValue.length == 0 && newValue.length > 0) {
-        sendRequest(newValue.charAt(0));
+        sendRequest(newValue);
     } else if (newValue.length == 0) {
         flushDisplay();
     } else {
@@ -141,7 +143,7 @@ var queryProcessor = function() {
 
     if (typeof queryProcessor.lastValue == "undefined") {
         if (currValue.length > 0) {
-            sendRequest(currValue.charAt(0));
+            sendRequest(currValue);
         } else {
             // do nothing
         }

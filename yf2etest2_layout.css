@@ -8,6 +8,7 @@ dt, dd {
 
 #document {
     width: 20em;
+    min-height: 760px;
     margin: 0 auto;
 }
 
