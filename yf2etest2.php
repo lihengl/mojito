@@ -15,7 +15,7 @@ class Yf2eTest2
 
     private static $jscript = "yf2etest2.js";
 
-    private static $db_server = "mysql:host=127.0.0.1;dbname=yf2etest2";
+    private static $db_server = "mysql:host=mysqlstagingasia.cnvitttjgspz.ap-southeast-1.rds.amazonaws.com;dbname=yf2etest2";
     private static $db_uesrname = "yf2etest2";
     private static $db_password = "yf2etest2";
 
