@@ -2,7 +2,7 @@ var ReceiverId = "searchbox";
 var ResultListId = "resultlist";
 var SuggestListId = "suggestlist";
 
-var requestHandler = "main.php";
+var requestHandler = "index.php";
 var QueryName = "ajax_query";
 
 function createXHR() {

@@ -42,10 +42,14 @@ class Yf2eTest2
 
         if ($db_query) {
             $query_successful = $db_query->execute($params);
+        } else {
+            // TODO: handle query preparation failure
         }
 
         if ($query_successful) {
             $words = $db_query->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            // TODO: handle query execution failure
         }
         
         self::$db = NULL;
@@ -86,7 +90,7 @@ class Yf2eTest2
         $this->application_title = new H1Element(self::$title);
         $this->application_subtitle = new PElement(self::$subtitle);
         
-        $this->searchbox = new FormElement("main.php");
+        $this->searchbox = new FormElement("index.php");
         $input = $this->searchbox->push_input(InputElement::$TextType, "search", "", "");
         $input->id("searchbox");
         $input->placeholder("Enter Keyword");
