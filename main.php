@@ -1,8 +1,8 @@
 <?php
 require 'yf2etest2.php';
 
-if (isset($_GET['qchar'])) {
-    echo Yf2eTest2::fetch($_GET['qchar']);
+if (isset($_GET['lchar'])) {
+    echo Yf2eTest2::Query($_GET['lchar']);
 } else if(isset($_GET['search'])) {
     // TODO: figure out what to do here
     // This gets called if the user press enter in the search box

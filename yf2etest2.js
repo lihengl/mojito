@@ -3,7 +3,7 @@ var ResultListId = "resultlist";
 var SuggestListId = "suggestlist";
 
 var requestHandler = "main.php";
-var QueryName = "qchar";
+var QueryName = "lchar";
 
 function createXHR() {
     if (typeof XMLHttpRequest != "undefined") {
@@ -21,7 +21,7 @@ function appendURLParam(url, name, value) {
     return url;
 }
 
-function handleResponse(responseJSON) {
+function processResponse(responseJSON) {
     var suggestlist = document.getElementById(SuggestListId);
     var resultList = document.getElementById(ResultListId);
 
@@ -34,7 +34,7 @@ function handleResponse(responseJSON) {
 
     for (index = 0; index < suggestCount; index++) {
         var suggestItem = document.createElement("li");
-        suggestItem.innerHTML = results[index].wordtitle;
+        suggestItem.innerHTML = results[index].wordName;
 
         suggestlist.appendChild(suggestItem);
     }
@@ -43,8 +43,8 @@ function handleResponse(responseJSON) {
         var titleItem = document.createElement("dt");
         var descriptionItem = document.createElement("dd");
 
-        titleItem.innerHTML = results[index].wordtitle;
-        descriptionItem.innerHTML = results[index].descriptiontext;
+        titleItem.innerHTML = results[index].wordName;
+        descriptionItem.innerHTML = results[index].wordDesc;
 
         resultList.appendChild(titleItem);
         resultList.appendChild(descriptionItem);        
@@ -57,7 +57,7 @@ function sendRequest(queryValue) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
             if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-                handleResponse(xhr.responseText);
+                processResponse(xhr.responseText);
             } else {
                 // TODO: handle AJAX failure
             }
@@ -101,19 +101,19 @@ function processInput(oldValue, newValue) {
     }
 }
 
-var inputHandler = function() {
+var queryProcessor = function() {
 
     var currentValue = this.value;
 
-    if (typeof inputHandler.lastValue == "undefined") {
+    if (typeof queryProcessor.lastValue == "undefined") {
         sendRequest(currentValue);
-    } else if (inputHandler.lastValue == currentValue) {
+    } else if (queryProcessor.lastValue == currentValue) {
         // content not changed, do nothing?
     } else {
-        processInput(inputHandler.lastValue, currentValue);
+        processInput(queryProcessor.lastValue, currentValue);
     }
 
-    inputHandler.lastValue = this.value;
+    queryProcessor.lastValue = this.value;
 };
 
 var EventManager = {
@@ -142,5 +142,5 @@ var EventManager = {
 
 function main() {
     var inputField = document.getElementById(ReceiverId);
-    EventManager.addHandler(inputField, "keyup", inputHandler);
+    EventManager.addHandler(inputField, "keyup", queryProcessor);
 }

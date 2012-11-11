@@ -22,31 +22,43 @@ class Yf2eTest2
     private $html;
     private static $db;
 
-    public static function fetch($query) {
-        
+    public static function Query($lead_char) {
+        $sql = "SELECT name, description
+                FROM words
+                WHERE lead_char = :lead_char";
+
+        $params = array("lead_char"=>$lead_char);
+
         try {
             self::$db = new PDO(self::$db_server, self::$db_uesrname, self::$db_password);
-        } catch (PDOException $e) {
-            //
+        } catch (PDOException $connect_e) {
+            // TODO: handle database connection failure
         }
 
-        $db_query = self::$db->query('select now()');
-        $data = $db_query->fetchAll(PDO::FETCH_ASSOC);
-
-        $examples = array("string1", "string2", "string3");
-
-        $item = array("wordtitle"=>$data[0]['now()'],
-                      "descriptiontext"=>"descriptext",
-                      "examples"=>$examples);
-
-        $list = array();
-        for ($count = 0; $count < 20; $count++) {
-            array_push($list, $item);
+        try {
+            $db_query = self::$db->prepare($sql);
+        } catch (PDOException $prepare_e) {
+            // TODO: handle query preparation error
         }
 
+        if ($db_query) {
+            $query_successful = $db_query->execute($params);
+        }
+
+        if ($query_successful) {
+            $words = $db_query->fetchAll(PDO::FETCH_ASSOC);
+        }
+        
         self::$db = NULL;
+        
+        $results = array();
+        foreach ($words as $word) {
+            $item = array("wordName"=>$word['name'],
+                          "wordDesc"=>$word['description']);
+            array_push($results, $item);
+        }
 
-        return json_encode($list);
+        return json_encode($results);
     }
 
     private function body_pushes() {
