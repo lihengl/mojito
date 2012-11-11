@@ -2,13 +2,7 @@
 require 'yf2etest2.php';
 
 if (isset($_GET['ajax_query'])) {
-    $words = Yf2eTest2::QueryDB($_GET['ajax_query']);
-    $results = array();
-    foreach ($words as $word) {
-        $item = array("name"=>$word['name'],
-                      "description"=>$word['description']);
-        array_push($results, $item);
-    }
+    $results = Yf2eTest2::Fetch($_GET['ajax_query']);
     echo json_encode($results);
 } else if(isset($_GET['search'])) {
     // TODO: figure out what to do here

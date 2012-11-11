@@ -5,41 +5,6 @@ var SuggestListId = "suggestlist";
 var requestHandler = "main.php";
 var QueryName = "ajax_query";
 
-var queriedData = {
-
-    displaySuggest: function(filterString, outletElement) {
-        var resultCount = this.wordList.length;
-        var suggestCount = (resultCount < 3) ? resultCount : 3;
-
-        for (index = 0; index < suggestCount; index++) {
-            var word = this.wordList[index];
-
-            var suggestItem = document.createElement("li");
-
-            suggestItem.innerHTML = word.name;
-            outletElement.appendChild(suggestItem);
-        }
-    },
-
-    displayResult: function(filterString, outletElement) {
-        var resultCount = this.wordList.length;
-
-        for (index = 0; index < resultCount; index++) {
-            var word = this.wordList[index];
-
-            var titleItem = document.createElement("dt");
-            var descriptionItem = document.createElement("dd");
-
-            titleItem.innerHTML = word.name;
-            descriptionItem.innerHTML = word.description;
-
-            outletElement.appendChild(titleItem);
-            outletElement.appendChild(descriptionItem);
-        }
-    }
-
-};
-
 function createXHR() {
     if (typeof XMLHttpRequest != "undefined") {
         return new XMLHttpRequest();
@@ -56,14 +21,76 @@ function appendURLParam(url, name, value) {
     return url;
 }
 
+var queriedData = {
+
+    displaySuggest: function() {
+        var resultCount = this.wordList.length;
+        var suggestCount = (resultCount < 3) ? resultCount : 3;
+
+        var suggestList = document.getElementById(SuggestListId);
+
+        suggestList.innerHTML = "";    
+        while (suggestlist.hasChildNodes()) {
+            suggestList.removeChild(suggestList.lastChild);
+        }
+
+        var inputField = document.getElementById(ReceiverId);
+        var filter = inputField.value;        
+
+        for (index = 0; index < suggestCount; index++) {
+            var word = this.wordList[index];
+
+            if (word.name.indexOf(filter) < 0) {
+                // got filtered out, do not display it
+                continue;
+            } else {
+                var suggestItem = document.createElement("li");
+
+                suggestItem.innerHTML = word.name;
+                suggestList.appendChild(suggestItem);
+            }
+        }
+    },
+
+    displayResult: function() {
+        var resultCount = this.wordList.length;
+
+        var resultList = document.getElementById(ResultListId);
+
+        resultList.innerHTML = "";
+        while (resultlist.hasChildNodes()) {
+            resultList.removeChild(resultList.lastChild);
+        }
+
+        var inputField = document.getElementById(ReceiverId);
+        var filter = inputField.value;        
+
+        for (index = 0; index < resultCount; index++) {
+            var word = this.wordList[index];
+
+            if (word.name.indexOf(filter) < 0) {
+                // got filtered out, do not display it
+                continue;
+            } else {
+                var titleItem = document.createElement("dt");
+                var descriptionItem = document.createElement("dd");
+
+                titleItem.innerHTML = word.name;
+                descriptionItem.innerHTML = word.description;
+
+                resultList.appendChild(titleItem);
+                resultList.appendChild(descriptionItem);
+            }
+        }
+    }
+
+};
+
 function processResponse(response) {
     queriedData.wordList = JSON.parse(response);
 
-    var suggestList = document.getElementById(SuggestListId);
-    var resultList = document.getElementById(ResultListId);
-
-    queriedData.displaySuggest("", suggestList);
-    queriedData.displayResult("", resultList);
+    queriedData.displaySuggest();
+    queriedData.displayResult();
 }
 
 function sendRequest(queryValue) {
@@ -85,7 +112,7 @@ function sendRequest(queryValue) {
     xhr.send(null);
 }
 
-function flushOutput() {
+function flushDisplay() {
     var suggestList = document.getElementById(SuggestListId);
     var resultList = document.getElementById(ResultListId);    
     
@@ -106,11 +133,10 @@ function processInput(oldValue, newValue) {
     if (oldValue.length == 0) {
         sendRequest(newValue);
     } else if (newValue.length == 0) {
-        flushOutput();
-    } else if (oldValue.length < newValue.length) {
-        // TODO: filter out
+        flushDisplay();
     } else {
-        // TODO: loosen up
+        queriedData.displaySuggest();
+        queriedData.displayResult();
     }
 }
 

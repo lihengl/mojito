@@ -22,11 +22,10 @@ class Yf2eTest2
     private $html;
     private static $db;
 
-    public static function QueryDB($lead_char) {
+    private static function query_db($lead_char) {
         $sql = "SELECT name, description
                 FROM words
                 WHERE lead_char = :lead_char";
-
         $params = array("lead_char"=>$lead_char);
 
         try {
@@ -51,20 +50,30 @@ class Yf2eTest2
         
         self::$db = NULL;
 
-        return $words;
+        return $words;        
     }
 
+    public static function Fetch($query_value) {
+        $words = self::query_db($query_value);
+
+        $results = array();
+        foreach ($words as $word) {
+            $item = array("name"=>$word['name'],
+                          "description"=>$word['description']);
+            array_push($results, $item);
+        }        
+
+        return $results;
+    }
+
+    // TODO: encapsulate this into HtmlElement
     private function body_pushes() {
         $this->html->body_push($this->script);
-
         $this->html->body_push($this->application_title);
         $this->html->body_push($this->application_subtitle);
-        
         $this->html->body_push($this->searchbox);
-
         $this->html->body_push($this->suggest_label);
         $this->html->body_push($this->suggest_list);
-
         $this->html->body_push($this->result_label);
         $this->html->body_push($this->result_list);        
     }
