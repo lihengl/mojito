@@ -46,12 +46,70 @@ class OlElement extends HtmlBase implements Sortable
     }
 
     public function sort() {
-        // TODO
     }
 
     public function push_item(Renderable $content) {
         $item = new LiElement($this, $content);
         array_push($this->children, $item);
+        return $item;
+    }
+}
+
+class UlElement extends HtmlBase implements Sortable
+{
+    private static $tag = "ul";
+
+    public function __construct() {
+        parent::__construct(self::$tag);
+        $this->children = array();
+    }
+
+    public function sort() {
+    }
+
+    public function push_item(Renderable $content) {
+        $item = new LiElement($this, $content);
+        array_push($this->children, $item);
+        return $item;
+    }
+}
+
+class DtElement extends HtmlBase
+{
+    private static $tag = "dt";
+
+    public function __construct(DlElement $host, Renderable $content) {
+        parent::__construct(self::$tag);
+        $this->children = array($content);
+    }
+}
+
+class DdElement extends HtmlBase
+{
+    private static $tag = "dd";
+
+    public function __construct(DlElement $host, Renderable $content) {
+        parent::__construct(self::$tag);
+        $this->children = array($content);
+    }
+}
+
+class DlElement extends HtmlBase
+{
+    private static $tag = "dl";
+
+    public function __construct() {
+        parent::__construct(self::$tag);
+        $this->children = array();
+    }
+
+    public function push_item(Renderable $title, Renderable $description) {
+        $title_item = new DtElement($this, $title);
+        $description_item = new DdElement($this, $description);
+        array_push($this->children, $title_item);
+        array_push($this->children, $description_item);
+
+        $item = array("title"=>$title_item, "description"=>$description_item);
         return $item;
     }
 }

@@ -1,12 +1,11 @@
 var ReceiverId = "searchbox";
-var DisplayerId = "resultlist";
+var ResultListId = "resultlist";
+var SuggestListId = "suggestlist";
 
-var Handler = "main.php";
-var QueryKey = "query";
+var requestHandler = "main.php";
+var QueryName = "qchar";
 
-var Result = ["hoo", "haa"];
-
-function createXhr() {
+function createXHR() {
     if (typeof XMLHttpRequest != "undefined") {
         return new XMLHttpRequest();
     } else if (typeof ActiveXObject != "undefined") {
@@ -16,98 +15,105 @@ function createXhr() {
     }
 }
 
-function appendUrlParam(url, name, value) {
+function appendURLParam(url, name, value) {
     url += (url.indexOf("?") == -1 ? "?" : "&");
     url += encodeURIComponent(name) + "=" + encodeURIComponent(value);
     return url;
 }
 
-function filter(candidate, criteria) {
-    var passed = false;
+function handleResponse(responseJSON) {
+    var suggestlist = document.getElementById(SuggestListId);
+    var resultList = document.getElementById(ResultListId);
 
-    if (candidate.indexOf(criteria) != 0) {
-        passed = false;
-    } else {
-        passed = true;
-    }
-
-    return passed;
-}
-
-function processResponse(response) {
-    var container = document.getElementById(DisplayerId);
-    var results = JSON.parse(response);
+    var results = JSON.parse(responseJSON);
 
     var index = 0;
-    var count = results.length;
+    var resultCount = results.length;
 
-    for (index = 0; index < count; index++) {
-        var wordEntry = document.createElement("ul");
-        var titleItem = document.createElement("li");
-        var descriptionItem = document.createElement("li");
+    var suggestCount = (resultCount < 3) ? resultCount : 3;
 
-        wordEntry.appendChild(titleItem);
-        wordEntry.appendChild(descriptionItem);
+    for (index = 0; index < suggestCount; index++) {
+        var suggestItem = document.createElement("li");
+        suggestItem.innerHTML = results[index].wordtitle;
+
+        suggestlist.appendChild(suggestItem);
+    }
+
+    for (index = 0; index < resultCount; index++) {
+        var titleItem = document.createElement("dt");
+        var descriptionItem = document.createElement("dd");
 
         titleItem.innerHTML = results[index].wordtitle;
         descriptionItem.innerHTML = results[index].descriptiontext;
 
-        wordEntry.className = "entry";
-        container.appendChild(wordEntry);
+        resultList.appendChild(titleItem);
+        resultList.appendChild(descriptionItem);        
     }
 }
 
-function request(key) {
-    var xhr = createXhr();
+function sendRequest(queryValue) {
+    var xhr = createXHR();
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
             if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-                processResponse(xhr.responseText);
+                handleResponse(xhr.responseText);
             } else {
-                var container = document.getElementById(DisplayerId);                
-                container.innerHTML = "ajax failed";
+                // TODO: handle AJAX failure
             }
         }
     }
 
-    Handler = appendUrlParam(Handler, QueryKey, key);
+    requestHandler = appendURLParam(requestHandler, QueryName, queryValue);
 
-    xhr.open("get", Handler, true);
+    xhr.open("get", requestHandler, true);
     xhr.send(null);
 }
 
-function flush() {
-    var container = document.getElementById(DisplayerId);
-    container.innerHTML = "";
+function flushOutput() {
+    var suggestList = document.getElementById(SuggestListId);
+    var resultList = document.getElementById(ResultListId);    
+    
+    suggestList.innerHTML = "";
+    resultList.innerHTML = "";
+
+    // handle situations when setting innerHTML to empty string fails
+    while (suggestlist.hasChildNodes()) {
+        suggestList.removeChild(suggestList.lastChild);
+    }
+    while (resultlist.hasChildNodes()) {
+        resultList.removeChild(resultList.lastChild);
+    }    
 }
 
 function processInput(oldValue, newValue) {
 
     if (oldValue.length == 0) {
-        request(newValue);
+        sendRequest(newValue);
     } else if (newValue.length == 0) {
-        flush();
+        flushOutput();
     } else if (oldValue.length < newValue.length) {
+        // TODO
         alert("filter out");
     } else {
+        // TODO
         alert("loosen");
     }
 }
 
-var scanInput = function() {
+var inputHandler = function() {
 
-    var query = this.value;
+    var currentValue = this.value;
 
-    if (typeof scanInput.lastValue == "undefined") {
-        request(query);
-    } else if (scanInput.lastValue == this.value) {
+    if (typeof inputHandler.lastValue == "undefined") {
+        sendRequest(currentValue);
+    } else if (inputHandler.lastValue == currentValue) {
         // content not changed, do nothing?
     } else {
-        processInput(scanInput.lastValue, this.value);
+        processInput(inputHandler.lastValue, currentValue);
     }
 
-    scanInput.lastValue = this.value;
+    inputHandler.lastValue = this.value;
 };
 
 var EventManager = {
@@ -135,6 +141,6 @@ var EventManager = {
 };
 
 function main() {
-    var inputbox = document.getElementById(ReceiverId);
-    EventManager.addHandler(inputbox, "keyup", scanInput);
+    var inputField = document.getElementById(ReceiverId);
+    EventManager.addHandler(inputField, "keyup", inputHandler);
 }

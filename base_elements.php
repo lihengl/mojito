@@ -202,7 +202,7 @@ class HtmlElement extends HtmlBase
         return $stylelink;
     }
 
-    public function attach_entrypoint($function_name) {
+    public function attach_scriptentry($function_name) {
         $this->body->onload($function_name);
     }
 
