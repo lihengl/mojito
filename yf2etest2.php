@@ -11,7 +11,7 @@ class Yf2eTest2
     private static $indent_level = 0;
 
     private static $title = "Responsive Search";
-    private static $subtitle = "A Test Project for Web Frontend Engineering";
+    private static $subtitle = "A Test Project for Web Frontend Programming";
 
     private static $jscript = "yf2etest2.js";
 
@@ -75,8 +75,8 @@ class Yf2eTest2
         
         $this->script = new ScriptElement(self::$jscript);
 
-        $this->application_title = new H2Element(self::$title);
-        $this->application_subtitle = new PElement(self::$subtitle);
+        $this->application_title = new H1Element(self::$title);
+        $this->application_subtitle = new H2Element(self::$subtitle);
         
         $this->searchbox = new FormElement("index.php");
         $input = $this->searchbox->push_input(InputElement::$TextType, "search", "", "");
@@ -111,14 +111,13 @@ class Yf2eTest2
 
     // TODO: encapsulate this into HtmlElement
     private function body_pushes() {
-        $this->html->body_push($this->script);
+        $this->html->body_push($this->script);;
 
-        $header_div = new DivElement();
-        $header_div->id("header");
+        $head_div = new DivElement();
+        $head_div->id("head");
 
-        $header_div->push($this->application_title);
-        $header_div->push($this->application_subtitle);
-        $header_div->push($this->searchbox);
+        $head_div->push($this->application_title);
+        $head_div->push($this->application_subtitle);
 
         $body_div = new DivElement();
         $body_div->id("body");
@@ -128,13 +127,9 @@ class Yf2eTest2
         $body_div->push($this->result_label);
         $body_div->push($this->result_list);
 
-        $document_div = new DivElement();
-        $document_div->id("document");
-
-        $document_div->push($header_div);
-        $document_div->push($body_div);
-
-        $this->html->body_push($document_div);        
+        $this->html->body_push($head_div);
+        $this->html->body_push($this->searchbox);
+        $this->html->body_push($body_div);        
     }
 }
 ?>

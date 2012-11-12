@@ -2,7 +2,10 @@ body {
     font-family: sans-serif;
 }
 
-h2 {
+h1 {
     text-transform: uppercase;
+}
+
+h2 {
     font-weight: lighter;
 }
