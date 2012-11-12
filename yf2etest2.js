@@ -33,18 +33,21 @@ var queriedData = {
         var inputField = document.getElementById(ReceiverId);
         var filter = inputField.value.toLowerCase();
         var resultCount = this.wordList.length;
-        var suggestCount = (resultCount < 3) ? resultCount : 3;
+        var displayedCount = 0;
 
-        for (index = 0; index < suggestCount; index++) {
+        for (index = 0; index < resultCount; index++) {
             var word = this.wordList[index];
 
-            if (word.name.indexOf(filter) !== 0) {
+            if (displayedCount >= 3) {
+                break;
+            } else if (word.name.indexOf(filter) !== 0) {
                 // got filtered out, do not display it
                 continue;
             } else {
                 var suggestItem = document.createElement("li");
                 suggestItem.innerHTML = word.name;
                 suggestList.appendChild(suggestItem);
+                displayedCount++;
             }
         }
     },

@@ -1,5 +1,14 @@
+body {
+    font-size: 100%;
+}
+
 h2 {
     margin-top: 5em;
+}
+
+li {
+    display: inline;
+    padding-right: 1em;
 }
 
 dt, dd {
