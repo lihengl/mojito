@@ -19,7 +19,6 @@ class Yf2eTest2
     private static $db_uesrname = "yf2etest2";
     private static $db_password = "yf2etest2";
 
-    private $html;
     private static $db;
 
     private static function query_db($lead_char) {
@@ -70,13 +69,15 @@ class Yf2eTest2
         return $results;
     }
 
+    private $html;    
+
     public function __construct($html_title) {
         $this->html = new HtmlElement($html_title);
         
         $this->script = new ScriptElement(self::$jscript);
 
         $this->application_title = new H1Element(self::$title);
-        $this->application_subtitle = new H2Element(self::$subtitle);
+        $this->application_subtitle = new H6Element(self::$subtitle);
         
         $this->searchbox = new FormElement("index.php");
         $input = $this->searchbox->push_input(InputElement::$TextType, "search", "", "");
