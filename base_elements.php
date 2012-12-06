@@ -2,10 +2,10 @@
 interface Renderable
 {
     public function name();
-    public function render($indent_unit, $indent_level);
+    public function compose($indent_unit, $indent_level);
 }
 
-class TextElement implements Renderable
+class HtmlText implements Renderable
 {
     public $content;
 
@@ -14,10 +14,10 @@ class TextElement implements Renderable
     }
 
     public function name() {
-        return "#";
+        return NULL;
     }
 
-    public function render($indent_unit, $indent_level) {
+    public function compose($indent_unit, $indent_level) {
         $indent = str_repeat($indent_unit, $indent_level);
         $output = "";
         $text_content = $this->content;
@@ -57,7 +57,7 @@ abstract class HtmlBase implements Renderable
         $this->attributes = array(self::$id=>"", self::$class=>"");
     }
 
-    private function render_attributes() {
+    private function compose_attributes() {
         $rendering_pieces = array();
         foreach ($this->attributes as $name=>$value) {
             $rendering_piece = "";
@@ -73,13 +73,13 @@ abstract class HtmlBase implements Renderable
         return $attribute_rendering;
     }
 
-    private function render_empty($opening, $indent) {
+    private function compose_empty($opening, $indent) {
         $rendering = $opening . self::$empty_closing;
         $formatted = $indent . $rendering . "\n";
         return $formatted;
     }
 
-    private function render_paired($opening, $indent_unit, $indent_level) {
+    private function compose_paired($opening, $indent_unit, $indent_level) {
         $indent = str_repeat($indent_unit, $indent_level);
 
         $openline = $opening . self::$tag_closing;
@@ -88,7 +88,7 @@ abstract class HtmlBase implements Renderable
         $child_level = $indent_level + 1;
 
         foreach ($this->children as $child) {
-            $midlines .= $child->render($indent_unit, $child_level);
+            $midlines .= $child->compose($indent_unit, $child_level);
         }
 
         $closeline = self::$paired_closing . $this->tagname . self::$tag_closing;
@@ -105,12 +105,12 @@ abstract class HtmlBase implements Renderable
         return $this->tagname;
     }
 
-    public function render($indent_unit, $indent_level) {
+    public function compose($indent_unit, $indent_level) {
         $indent = str_repeat($indent_unit, $indent_level);
 
         $opening = self::$tag_opening . $this->tagname;
         
-        $attribute = $this->render_attributes();
+        $attribute = $this->compose_attributes();
 
         if ($attribute != "") {
             $opening .= self::$separator_char . $attribute;
@@ -122,12 +122,12 @@ abstract class HtmlBase implements Renderable
         $output = "";
 
         if ($this->children === NULL) {
-            $output = $this->render_empty($opening, $indent);
+            $output = $this->compose_empty($opening, $indent);
         } else {
             // shorten variable names to follow the 80-column rule
             $unit =     $indent_unit;
             $level = $indent_level;
-            $output = $this->render_paired($opening, $unit, $level);
+            $output = $this->compose_paired($opening, $unit, $level);
         }
 
         return $output;
@@ -164,205 +164,6 @@ abstract class HtmlBase implements Renderable
 
     public function id($value = NULL) {
         return $this->attribute(self::$id, $value);
-    }
-}
-
-class HtmlElement extends HtmlBase
-{   
-    private static $tag = "html";
-
-    private static $charset_value = "UTF-8";
-
-    private static $csstype_value = "text/css";
-    private static $cssrel_value = "stylesheet";
-
-    private $head;
-    private $body;
-
-    public function __construct($title_string) {
-        parent::__construct(self::$tag);
-        $this->children = array();
-
-        $this->head = new HeadElement($this, self::$charset_value, $title_string);
-        array_push($this->children, $this->head);
-
-        $this->body = new BodyElement($this);
-        array_push($this->children, $this->body);
-    }
-
-    // assuming there is only link for css
-    public function attach_style($stylesheet_url) {
-        $stylelink = new LinkElement($this->head);
-        $stylelink->href($stylesheet_url);
-        $stylelink->type(self::$csstype_value);
-        $stylelink->rel(self::$cssrel_value);
-
-        $this->head->push_link($stylelink);
-        
-        return $stylelink;
-    }
-
-    public function attach_scriptentry($function_name) {
-        $this->body->onload($function_name);
-    }
-
-    public function body_push(HtmlBase $element) {
-        $this->body->push($element);
-    }
-}
-
-class HeadElement extends HtmlBase
-{
-    private static $tag = "head";
-
-    public function __construct(HtmlBase $host, $charset_value, $title) {
-        parent::__construct(self::$tag);
-        $this->children = array();
-
-        $meta = new MetaElement($this);
-        $meta->charset($charset_value);
-        array_push($this->children, $meta);
-
-        $title = new TitleElement($this, $title);
-        array_push($this->children, $title);
-    }
-
-    public function push_link(LinkElement $link) {
-        array_push($this->children, $link);
-        return $link;
-    }
-}
-
-class BodyElement extends HtmlBase
-{
-    private static $tag = "body";
-
-    private static $onload_event = "onload";    
-
-    private $scripts;
-
-    public function __construct(HtmlBase $host) {
-        parent::__construct(self::$tag);
-        $this->children = array();
-        $this->scripts = array();
-    }
-
-    public function push(HtmlBase $element) {
-        // keep scripts in a separate array so that it can be
-        // place at the end of all other child element upon rendering
-        if ($element instanceof ScriptElement) {
-            array_push($this->scripts, $element);
-        } else {
-            array_push($this->children, $element);
-        }
-    }
-
-    public function onload($handler) {
-        $this->attribute(self::$onload_event, $handler);
-    }
-
-    // push script element into children before rendering
-    // this way we keep the scripts always the last elements in body
-    // and other visual elements can be loaded first
-    public function render($indent_unit, $indent_level) {
-        foreach($this->scripts as $script) {
-            array_push($this->children, $script);
-        }
-        return parent::render($indent_unit, $indent_level);
-    }
-}
-
-class MetaElement extends HtmlBase
-{
-    private static $tag = "meta";
-
-    private static $charset = "charset";
-
-    public function __construct(HeadElement $host) {
-        parent::__construct(self::$tag);
-        $this->children = NULL;        
-
-        $this->attributes[self::$charset] = "";
-    }
-
-    public function charset($value) {
-        return $this->attribute(self::$charset, $value);
-    }
-}
-
-class LinkElement extends HtmlBase
-{
-    private static $tag = "link";
-
-    private static $href = "href";
-    private static $type = "type";
-    private static $rel = "rel";
-
-    public function __construct(HeadElement $host) {
-        parent::__construct(self::$tag);
-        $this->children = NULL;
-    }
-
-    public function href($value) {
-        return $this->attribute(self::$href, $value);
-    }
-
-    public function type($value) {
-        return $this->attribute(self::$type, $value);
-    }
-
-    public function rel($value) {
-        return $this->attribute(self::$rel, $value);
-    }
-}
-
-class TitleElement extends HtmlBase
-{
-    private static $tag = "title";
-
-    public function __construct(HeadElement $parent, $title_text) {
-        parent::__construct(self::$tag);
-        $this->children = array();
-
-        $text = new TextElement($title_text);
-        array_push($this->children, $text);
-    }
-}
-
-class ScriptElement extends HtmlBase
-{
-    private static $tag = "script";
-
-    private static $src = "src";
-    private static $type = "type";
-
-    private static $type_value = "text/javascript";
-
-    public function __construct($script_url) { 
-        parent::__construct(self::$tag);
-        $this->children = array();        
-
-        $this->attributes[self::$src] = $script_url;
-        $this->attributes[self::$type] = self::$type_value;
-    }
-
-    public function src($script_url) {
-        return $this->attribute(self::$src, $script_url);
-    }
-
-    public function render($indent_unit, $indent_level) {
-        $zeroindented_output = parent::render($indent_unit, 0);
-        return $zeroindented_output;
-    }
-}
-
-class BrElement extends HtmlBase
-{
-    private static $tag = "br";
-
-    public function __construct() {
-        parent::__construct(self::$tag);
-        $this->children = NULL;    
     }
 }
 ?>
