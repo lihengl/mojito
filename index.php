@@ -1,16 +1,14 @@
 <?php
 require_once "html_elements.php";
 
-$doctitle = "testsite";
-$heading = "BronteTe";
-$line_1 = "this is going to be the first line of text";
-$line_2 = "this is going to be a second line, yyaa";
+$title = "Mojito Framework";
+$heading = "MOJITO";
+$description = "web framework with php, mysql and javascript";
 
-$html = new HtmlElement($doctitle);
+$html = new HtmlElement($title);
 
 $html->body_push(new H1Element($heading));
-$html->body_push(new PElement($line_1));
-$html->body_push(new PElement($line_2));
+$html->body_push(new PElement($description));
 
 $html->render();
 ?>

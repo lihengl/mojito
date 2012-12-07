@@ -57,7 +57,7 @@ class HeadElement extends HtmlBase
 {
     private static $tag = "head";
 
-    public function __construct(HtmlBase $host, $charset_value, $title) {
+    public function __construct(HtmlElement $host, $charset_value, $title) {
         parent::__construct(self::$tag);
         $this->children = array();
 
@@ -81,7 +81,7 @@ class BodyElement extends HtmlBase
 
     private $scripts;
 
-    public function __construct(HtmlBase $host) {
+    public function __construct(HtmlElement $host) {
         parent::__construct(self::$tag);
         $this->children = array();
         $this->scripts = array();

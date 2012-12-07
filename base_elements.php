@@ -141,7 +141,7 @@ abstract class HtmlBase implements Renderable
             return $values;
         } else if (strpos($value, self::$separator_char)) {
             return "";
-        } else if ($existing == "") {
+        } else if ($existing === "") {
             $this->attributes[self::$class] = $value;
             return $value;
         } else if (strpos($existing, $value)) {
