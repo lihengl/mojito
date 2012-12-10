@@ -1,0 +1,19 @@
+body {
+    text-align: center;
+}
+
+.large-sized {
+    font-size: 2em;
+}
+
+.small-sized {
+    font-size: 1.0em;
+}
+
+.primary-tinted {
+    color: #339988;
+}
+
+.default-tinted {
+    color: #000000;
+}
