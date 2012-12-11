@@ -1,5 +1,5 @@
 <?php
-require_once 'html_base.php';
+require_once 'dombase.php';
 
 interface Labelable
 {

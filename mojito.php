@@ -1,7 +1,7 @@
 <?php
-require 'modules/html_elements.php';
+require 'framework/htmls.php';
 
-class MojitoTopbar extends UlElement
+class SessionBar extends UlElement
 {
     public function __construct($username) {
         parent::__construct();
@@ -9,30 +9,31 @@ class MojitoTopbar extends UlElement
     }
 }
 
-class MojitoDocument
+class MojitoDocument extends HtmlElement
 {
     private static $style = "mojito/config/style.css";
-    private static $stylebase = "mojito/modules/style_base.css";
+    private static $stylebase = "mojito/framework/cssbase.css";
 
+    private static $doctype = "<!DOCTYPE html>\n";
     private static $charset = "UTF-8";
     private static $indent = "    ";
 
-    private $dom;
-
     public function __construct($title) {
-        $this->dom = new HtmlElement(self::$charset, $title);
-        $this->dom->style_push(self::$stylebase);
-        $this->dom->style_push(self::$style);
-        $this->dom->body_push(new MojitoTopbar("Li-Heng Liang"));
+        parent::__construct(self::$charset, $title);
 
-        $heading = $this->dom->body_push(new H1Element("FIRSURANCE"));
-        $heading->classes("center-aligned");
+        $this->style_push(self::$stylebase);
+        $this->style_push(self::$style);
+
+        $this->body_push(new SessionBar("Li-Heng Liang"));
+
+        $heading = $this->body_push(new H1Element("隨需平台"));
         $heading->classes("small-sized");
         $heading->classes("default-tinted");
     }
 
     public function render() {
-        $composed_html = $this->dom->compose(self::$indent, 0);
+        $composed_html = $this->compose(self::$indent, 0);
+        echo self::$doctype;
         echo $composed_html;
     }
 }
