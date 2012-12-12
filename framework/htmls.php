@@ -1,9 +1,9 @@
 <?php
 require_once 'dombase.php';
 
-interface Traversable
+interface Sortable
 {
-    public function traverse();
+    public function sort();
 }
 
 interface Labelable
@@ -298,7 +298,7 @@ class LiElement extends HtmlBase
 {
     private static $tag = "li";
 
-    public function __construct(Traversable $host, Renderable $content) {
+    public function __construct(Sortable $host, Renderable $content) {
         parent::__construct(self::$tag);
         $this->children = array($content);
     }
@@ -310,7 +310,7 @@ class LiElement extends HtmlBase
     }
 }
 
-class OlElement extends HtmlBase implements Traversable
+class OlElement extends HtmlBase implements Sortable
 {
     private static $tag = "ol";
 
@@ -319,7 +319,7 @@ class OlElement extends HtmlBase implements Traversable
         $this->children = array();
     }
 
-    public function traverse() {
+    public function sort() {
     }
 
     public function push_item(Renderable $content) {
@@ -329,7 +329,7 @@ class OlElement extends HtmlBase implements Traversable
     }
 }
 
-class UlElement extends HtmlBase implements Traversable
+class UlElement extends HtmlBase implements Sortable
 {
     private static $tag = "ul";
 
@@ -338,7 +338,7 @@ class UlElement extends HtmlBase implements Traversable
         $this->children = array();
     }
 
-    public function traverse() {
+    public function sort() {
     }
 
     public function push_item(Renderable $content) {
