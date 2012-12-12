@@ -1,22 +1,28 @@
 <?php
 require 'framework/htmls.php';
 
-class SessionBar extends UlElement
+class ControlBar extends UlElement
 {
-    private static $id = "sessionbar";
+    private static $id = "controlbar";
+
+    private $controls;
 
     public function __construct() {
         parent::__construct();
         $this->id(self::$id);
 
-        $this->push_item(new HtmlText("banner"));
-        $this->push_item(new HtmlText("username"));
-        $this->push_item(new HtmlText("userip"));
+        $this->push(new HtmlText("隨需平台"), FALSE);
+        $this->push(new HtmlText("李易致"), FALSE);
+        $this->push(new HtmlText("企展群"), FALSE);        
+        $this->push(new HtmlText("登出"), FALSE);
     }
 
+    public function push(HtmlText $control, $is_right) {
+        parent::push($control);
+    }
 }
 
-abstract class MojitoRoom extends HtmlElement
+abstract class MojitoBase extends HtmlElement
 {
     private static $style = "mojito/config/style.css";
     private static $stylebase = "mojito/framework/cssbase.css";
@@ -30,9 +36,7 @@ abstract class MojitoRoom extends HtmlElement
         parent::__construct(self::$charset, $title);
 
         $this->style_push(self::$stylebase);
-        $this->style_push(self::$style);
-
-        $this->body_push(new SessionBar());       
+        $this->style_push(self::$style);        
     }
 
     public function render() {
@@ -41,4 +45,20 @@ abstract class MojitoRoom extends HtmlElement
         echo $composed_html;
     }
 }
+
+class MojitoPortal extends MojitoBase
+{
+    public function __construct($title) {
+        parent::__construct($title);
+    }
+}
+
+class MojitoRoom extends MojitoBase
+{
+    public function __construct($title) {
+        parent::__construct($title);
+        $this->body_push(new ControlBar());
+    }
+}
+
 ?>

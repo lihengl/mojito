@@ -322,7 +322,7 @@ class OlElement extends HtmlBase implements Sortable
     public function sort() {
     }
 
-    public function push_item(Renderable $content) {
+    public function push(Renderable $content) {
         $item = new LiElement($this, $content);
         array_push($this->children, $item);
         return $item;
@@ -341,7 +341,7 @@ class UlElement extends HtmlBase implements Sortable
     public function sort() {
     }
 
-    public function push_item(Renderable $content) {
+    public function push(Renderable $content) {
         $item = new LiElement($this, $content);
         array_push($this->children, $item);
         return $item;
@@ -377,7 +377,7 @@ class DlElement extends HtmlBase
         $this->children = array();
     }
 
-    public function push_item(Renderable $title, Renderable $description) {
+    public function push(Renderable $title, Renderable $description) {
         $title_item = new DtElement($this, $title);
         $description_item = new DdElement($this, $description);
         array_push($this->children, $title_item);
