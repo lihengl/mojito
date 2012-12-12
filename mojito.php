@@ -3,19 +3,27 @@ require 'framework/htmls.php';
 
 class SessionBar extends UlElement
 {
-    public function __construct($username) {
+    private static $id = "sessionbar";
+
+    public function __construct() {
         parent::__construct();
-        $this->id("topbar");
+        $this->id(self::$id);
+
+        $this->push_item(new HtmlText("banner"));
+        $this->push_item(new HtmlText("username"));
+        $this->push_item(new HtmlText("userip"));
     }
+
 }
 
-class MojitoDocument extends HtmlElement
+abstract class MojitoRoom extends HtmlElement
 {
     private static $style = "mojito/config/style.css";
     private static $stylebase = "mojito/framework/cssbase.css";
 
     private static $doctype = "<!DOCTYPE html>\n";
     private static $charset = "UTF-8";
+
     private static $indent = "    ";
 
     public function __construct($title) {
@@ -24,11 +32,7 @@ class MojitoDocument extends HtmlElement
         $this->style_push(self::$stylebase);
         $this->style_push(self::$style);
 
-        $this->body_push(new SessionBar("Li-Heng Liang"));
-
-        $heading = $this->body_push(new H1Element("隨需平台"));
-        $heading->classes("small-sized");
-        $heading->classes("default-tinted");
+        $this->body_push(new SessionBar());       
     }
 
     public function render() {
