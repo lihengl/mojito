@@ -1,42 +1,50 @@
 <?php
 require 'framework/htmls.php';
 
-class ControlBar extends UlElement
+class MojitoController extends UlElement
 {
-    private static $id = "controlbar";
+    private static $id = "controller";
+
+    private static $right_class = "rightsided";
+    private static $left_class = "leftsided";    
 
     private $controls;
 
     public function __construct() {
         parent::__construct();
         $this->id(self::$id);
-
-        $this->push(new HtmlText("隨需平台"), FALSE);
-        $this->push(new HtmlText("李易致"), FALSE);
-        $this->push(new HtmlText("企展群"), FALSE);        
-        $this->push(new HtmlText("登出"), FALSE);
     }
 
-    public function push(HtmlText $control, $is_right) {
-        parent::push($control);
+    public function right_push(AElement $control) {
+        $item = parent::push($control);
+        $item->classes(self::$right_class);
     }
+
+    public function left_push(AElement $control) {
+        $item = parent::push($control);
+        $item->classes(self::$left_class);
+    }    
 }
 
-abstract class MojitoBase extends HtmlElement
+class MojitoApplication extends HtmlElement
 {
+    private static $globalstyle = "mojito/framework/default.css";    
     private static $style = "mojito/config/style.css";
-    private static $stylebase = "mojito/framework/cssbase.css";
 
     private static $doctype = "<!DOCTYPE html>\n";
     private static $charset = "UTF-8";
 
     private static $indent = "    ";
 
+    private $controller;
+
     public function __construct($title) {
         parent::__construct(self::$charset, $title);
 
-        $this->style_push(self::$stylebase);
-        $this->style_push(self::$style);        
+        $this->style_push(self::$globalstyle);
+        $this->style_push(self::$style);
+
+        $this->controller = $this->body_push(new MojitoController());        
     }
 
     public function render() {
@@ -44,21 +52,17 @@ abstract class MojitoBase extends HtmlElement
         echo self::$doctype;
         echo $composed_html;
     }
-}
 
-class MojitoPortal extends MojitoBase
-{
-    public function __construct($title) {
-        parent::__construct($title);
-    }
-}
+    public function controller_push($link, $title, $is_rightsided) {
+        $control = new AElement($link, $title);
 
-class MojitoRoom extends MojitoBase
-{
-    public function __construct($title) {
-        parent::__construct($title);
-        $this->body_push(new ControlBar());
-    }
-}
+        if ($is_rightsided === TRUE) {
+            $this->controller->right_push($control);
+        } else {
+            $this->controller->left_push($control);
+        }
 
+        return $control;
+    }    
+}
 ?>

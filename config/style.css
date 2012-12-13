@@ -1,5 +1,9 @@
-body {
-    text-align: center;
+#controller {
+    background-color: #000000;
+}
+
+#controller a:hover {
+    background-color: #333333;
 }
 
 .large-sized {

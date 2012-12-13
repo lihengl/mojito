@@ -6,20 +6,34 @@ body {
     margin: 0;
 }
 
-#controlbar {
+#controller {
     background-color: #000000;
+    text-align: left;
     font-size: 1em;
     width: 100%;    
     height: 2.4em;
     line-height: 2.4em;
-    padding: 0;
+    padding-left: 4em;
+    padding-right: 4em;
+    padding-top: 0px;
+    padding-bottom: 0px;
     margin: 0;
     position: fixed;
     top: 0px;    
     list-style-type: none;
 }
 
-#controlbar li {
-    color: #ffffff;
+#controller li {
     display: inline;
+}
+
+#controller a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.6em;
+    margin: 0;
+}
+
+#controller a:hover {
+    background-color: #444444;
 }
