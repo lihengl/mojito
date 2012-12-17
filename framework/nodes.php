@@ -5,7 +5,7 @@ interface Renderable
     public function compose($indent_unit, $indent_level);
 }
 
-class HtmlText implements Renderable
+class TextNode implements Renderable
 {
     public $content;
 
@@ -32,7 +32,7 @@ class HtmlText implements Renderable
     }
 }
 
-abstract class HtmlBase implements Renderable
+abstract class HtmlNode implements Renderable
 {
     private static $tag_opening = "<";
     private static $tag_closing = ">";

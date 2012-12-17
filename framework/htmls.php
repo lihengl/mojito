@@ -1,5 +1,5 @@
 <?php
-require_once 'dombase.php';
+require_once 'nodes.php';
 
 interface Sortable
 {
@@ -11,7 +11,7 @@ interface Labelable
     public function label($text);
 }
 
-class HtmlElement extends HtmlBase
+class HtmlElement extends HtmlNode
 {   
     private static $tag = "html";
 
@@ -43,13 +43,13 @@ class HtmlElement extends HtmlBase
         return $stylelink;
     }
 
-    public function body_push(HtmlBase $element) {
+    public function body_push(HtmlNode $element) {
         $this->body->push($element);
         return $element;
     }
 }
 
-class HeadElement extends HtmlBase
+class HeadElement extends HtmlNode
 {
     private static $tag = "head";
 
@@ -71,7 +71,7 @@ class HeadElement extends HtmlBase
     }
 }
 
-class BodyElement extends HtmlBase
+class BodyElement extends HtmlNode
 {
     private static $tag = "body";
 
@@ -83,7 +83,7 @@ class BodyElement extends HtmlBase
         $this->scripts = array();
     }
 
-    public function push(HtmlBase $element) {
+    public function push(HtmlNode $element) {
         // keep scripts in a separate array so that it can be
         // place at the end of all other child element upon rendering
         if ($element instanceof ScriptElement) {
@@ -104,7 +104,7 @@ class BodyElement extends HtmlBase
     }
 }
 
-class MetaElement extends HtmlBase
+class MetaElement extends HtmlNode
 {
     private static $tag = "meta";
 
@@ -122,7 +122,7 @@ class MetaElement extends HtmlBase
     }
 }
 
-class LinkElement extends HtmlBase
+class LinkElement extends HtmlNode
 {
     private static $tag = "link";
 
@@ -148,7 +148,7 @@ class LinkElement extends HtmlBase
     }
 }
 
-class TitleElement extends HtmlBase
+class TitleElement extends HtmlNode
 {
     private static $tag = "title";
 
@@ -156,12 +156,12 @@ class TitleElement extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $text = new HtmlText($title_text);
+        $text = new TextNode($title_text);
         array_push($this->children, $text);
     }
 }
 
-class ScriptElement extends HtmlBase
+class ScriptElement extends HtmlNode
 {
     private static $tag = "script";
 
@@ -188,7 +188,7 @@ class ScriptElement extends HtmlBase
     }
 }
 
-class BrElement extends HtmlBase
+class BrElement extends HtmlNode
 {
     private static $tag = "br";
 
@@ -198,7 +198,7 @@ class BrElement extends HtmlBase
     }
 }
 
-class SpanElement extends HtmlBase
+class SpanElement extends HtmlNode
 {
     private static $tag = "span";
 
@@ -208,7 +208,7 @@ class SpanElement extends HtmlBase
     }
 }
 
-class AElement extends HtmlBase
+class AElement extends HtmlNode
 {
     private static $tag = "a";
 
@@ -224,7 +224,7 @@ class AElement extends HtmlBase
         $this->attributes[self::$href] = $link_url;
         $this->attributes[self::$target] = "";
 
-        $text = new HtmlText($link_text);
+        $text = new TextNode($link_text);
         array_push($this->children, $text);
     }
 
@@ -237,7 +237,7 @@ class AElement extends HtmlBase
     }
 }
 
-class ButtonElement extends HtmlBase
+class ButtonElement extends HtmlNode
 {
     private static $tag = "button";
 
@@ -245,12 +245,12 @@ class ButtonElement extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $text = new HtmlText($button_text);
+        $text = new TextNode($button_text);
         array_push($this->children, $text);
     }
 }
 
-class ImgElement extends HtmlBase
+class ImgElement extends HtmlNode
 {
     private static $tag = "img";
 
@@ -280,7 +280,7 @@ class ImgElement extends HtmlBase
     }
 }
 
-class DivElement extends HtmlBase
+class DivElement extends HtmlNode
 {
     private static $tag = "div";
 
@@ -289,13 +289,13 @@ class DivElement extends HtmlBase
         $this->children = array();
     }
 
-    public function push(HtmlBase $element) {
+    public function push(HtmlNode $element) {
         array_push($this->children, $element);
         return $element;
     }
 }
 
-class LiElement extends HtmlBase
+class LiElement extends HtmlNode
 {
     private static $tag = "li";
 
@@ -305,13 +305,13 @@ class LiElement extends HtmlBase
     }
 
     public function push_text($item_text) {
-        $text = new HtmlText($item_text);
+        $text = new TextNode($item_text);
         array_push($this->children, $text);
         return $text;
     }
 }
 
-class OlElement extends HtmlBase implements Sortable
+class OlElement extends HtmlNode implements Sortable
 {
     private static $tag = "ol";
 
@@ -330,7 +330,7 @@ class OlElement extends HtmlBase implements Sortable
     }
 }
 
-class UlElement extends HtmlBase implements Sortable
+class UlElement extends HtmlNode implements Sortable
 {
     private static $tag = "ul";
 
@@ -349,7 +349,7 @@ class UlElement extends HtmlBase implements Sortable
     }
 }
 
-class DtElement extends HtmlBase
+class DtElement extends HtmlNode
 {
     private static $tag = "dt";
 
@@ -359,7 +359,7 @@ class DtElement extends HtmlBase
     }
 }
 
-class DdElement extends HtmlBase
+class DdElement extends HtmlNode
 {
     private static $tag = "dd";
 
@@ -369,7 +369,7 @@ class DdElement extends HtmlBase
     }
 }
 
-class DlElement extends HtmlBase
+class DlElement extends HtmlNode
 {
     private static $tag = "dl";
 
@@ -389,7 +389,7 @@ class DlElement extends HtmlBase
     }
 }
 
-class PElement extends HtmlBase
+class PElement extends HtmlNode
 {
     private static $tag = "p";
 
@@ -397,12 +397,12 @@ class PElement extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $text = new HtmlText($paragraph_text);     
+        $text = new TextNode($paragraph_text);     
         array_push($this->children, $text);
     }
 
     public function push_text($paragraph_text) {
-        $text = new HtmlText($paragraph_text);
+        $text = new TextNode($paragraph_text);
         array_push($this->children, $text);
     }
 
@@ -412,7 +412,7 @@ class PElement extends HtmlBase
     }
 }
 
-class HrElement extends HtmlBase
+class HrElement extends HtmlNode
 {
     private static $tag = "hr";
 
@@ -422,7 +422,7 @@ class HrElement extends HtmlBase
     }
 }
 
-class H1Element extends HtmlBase
+class H1Element extends HtmlNode
 {
     private static $tag = "h1";
 
@@ -430,12 +430,12 @@ class H1Element extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $text = new HtmlText($heading_text);
+        $text = new TextNode($heading_text);
         array_push($this->children, $text);
     }
 }
 
-class H2Element extends HtmlBase
+class H2Element extends HtmlNode
 {
     private static $tag = "h2";
 
@@ -443,12 +443,12 @@ class H2Element extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $text = new HtmlText($heading_text);
+        $text = new TextNode($heading_text);
         array_push($this->children, $text);
     }
 }
 
-class H3Element extends HtmlBase
+class H3Element extends HtmlNode
 {
     private static $tag = "h3";
 
@@ -456,12 +456,12 @@ class H3Element extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
            
-        $text = new HtmlText($heading_text);
+        $text = new TextNode($heading_text);
         array_push($this->children, $text);
     }
 }
 
-class H4Element extends HtmlBase
+class H4Element extends HtmlNode
 {
     private static $tag = "h4";
 
@@ -469,12 +469,12 @@ class H4Element extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
            
-        $text = new HtmlText($heading_text);
+        $text = new TextNode($heading_text);
         array_push($this->children, $text);
     }
 }
 
-class H5Element extends HtmlBase
+class H5Element extends HtmlNode
 {
     private static $tag = "h5";
 
@@ -482,12 +482,12 @@ class H5Element extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
            
-        $text = new HtmlText($heading_text);
+        $text = new TextNode($heading_text);
         array_push($this->children, $text);
     }
 }
 
-class H6Element extends HtmlBase
+class H6Element extends HtmlNode
 {
     private static $tag = "h6";
 
@@ -495,12 +495,12 @@ class H6Element extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
            
-        $text = new HtmlText($heading_text);
+        $text = new TextNode($heading_text);
         array_push($this->children, $text);
     }
 }
 
-class LabelElement extends HtmlBase
+class LabelElement extends HtmlNode
 {
     private static $tag = "label";
 
@@ -510,7 +510,7 @@ class LabelElement extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $this->text = new HtmlText($label_text);
+        $this->text = new TextNode($label_text);
         // do not push this into the child yet
     }
 
@@ -525,7 +525,7 @@ class LabelElement extends HtmlBase
     }
 }
 
-class InputElement extends HtmlBase implements Labelable
+class InputElement extends HtmlNode implements Labelable
 {
     public static $TextType = "text";
     public static $PasswordType = "password";
@@ -639,7 +639,7 @@ class InputElement extends HtmlBase implements Labelable
     }
 }
 
-class SelectElement extends HtmlBase implements Labelable
+class SelectElement extends HtmlNode implements Labelable
 {
     private static $tag = "select";
 
@@ -694,7 +694,7 @@ class SelectElement extends HtmlBase implements Labelable
     }    
 }
 
-class TextareaElement extends HtmlBase implements Labelable
+class TextareaElement extends HtmlNode implements Labelable
 {
     private static $tag = "textarea";
 
@@ -706,7 +706,7 @@ class TextareaElement extends HtmlBase implements Labelable
         
         $this->attributes[self::$name] = $name;
 
-        $initial_text = new HtmlText($init_value);
+        $initial_text = new TextNode($init_value);
         array_push($this->children, $initial_text);
     }
 
@@ -723,7 +723,7 @@ class TextareaElement extends HtmlBase implements Labelable
     }    
 }
 
-class FormElement extends HtmlBase
+class FormElement extends HtmlNode
 {
     private static $tag = "form";
 
@@ -802,7 +802,7 @@ class FormElement extends HtmlBase
     }
 }
 
-class OptionElement extends HtmlBase
+class OptionElement extends HtmlNode
 {
     private static $tag = "option";
 
@@ -818,7 +818,7 @@ class OptionElement extends HtmlBase
         $this->attributes[self::$value] = $value;
         $this->attributes[self::$selected] = "";
 
-        $text = new HtmlText($option_text);
+        $text = new TextNode($option_text);
         array_push($this->children, $text);
     }
 
@@ -827,7 +827,7 @@ class OptionElement extends HtmlBase
     }
 }
 
-class OptgroupElement extends HtmlBase
+class OptgroupElement extends HtmlNode
 {
     private static $tag = "optgroup";
 
@@ -859,7 +859,7 @@ class OptgroupElement extends HtmlBase
     }
 }
 
-class LegendElement extends HtmlBase
+class LegendElement extends HtmlNode
 {
     private static $tag = "legend";
 
@@ -867,12 +867,12 @@ class LegendElement extends HtmlBase
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $text = new HtmlText($content_text);
+        $text = new TextNode($content_text);
         array_push($this->children, $text);
     }
 }
 
-class FieldsetElement extends HtmlBase
+class FieldsetElement extends HtmlNode
 {
     private static $tag = "fieldset";
 

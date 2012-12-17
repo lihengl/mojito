@@ -6,10 +6,6 @@ body {
     margin: 0;
 }
 
-#base {
-    width: 100%;
-}
-
 #navbar {
     background-color: #000000;
     display: table;
@@ -48,9 +44,6 @@ body {
     background-color: #333333;
 }
 
-#navbar a img {
-    vertical-align: text-bottom;
-    width: 1.1em;    
-    height: 1.1em;
-    line-height: 1.1em;
+#navbar-hidden {
+    display: none;
 }
