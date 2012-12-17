@@ -291,6 +291,7 @@ class DivElement extends HtmlBase
 
     public function push(HtmlBase $element) {
         array_push($this->children, $element);
+        return $element;
     }
 }
 
