@@ -1,15 +1,17 @@
 <?php
 require 'framework/htmls.php';
 
-interface Configurable
+interface RequestHandler
 {
-    public function configure($file);
+    public function get($parameters);
+    public function post($parameters);
 }
 
-class MojitoNavbar extends UlElement implements Configurable
+class NavbarElement extends UlElement
 {
+    private static $configfile = "mojito/config/navbar.json";
+
     private static $id = "navbar";
-    private static $id_hidden = "navbar-hidden";
 
     private static $class_left = "left-sided";
     private static $class_right = "right-sided";
@@ -27,13 +29,13 @@ class MojitoNavbar extends UlElement implements Configurable
         $this->id(self::$id);
     }
 
-    public function configure($file) {
+    public function configure() {
         $key_leftitems = "leftitems";
         $key_rightitems = "rightitems";
         $key_title = "title";
         $key_link = "link";
 
-        $content = file_get_contents($file);
+        $content = file_get_contents(self::$configfile);
         $config = json_decode($content, TRUE);
 
         $left_items = $config[$key_leftitems];
@@ -50,13 +52,17 @@ class MojitoNavbar extends UlElement implements Configurable
             $pushed->classes(self::$class_right);
         }
     }
+}
 
-    public function hide() {
-        $this->id(self::$id_hidden);
-    }
+class CoverElement extends DivElement
+{
+    private static $id = "cover";
 
-    public function show() {
+    public function __construct() {
+        parent::__construct();
         $this->id(self::$id);
+
+     //   $this->push(new H1Element("隨需平台"));
     }
 }
 
@@ -66,38 +72,76 @@ class MojitoDocument extends HtmlElement
     private static $charset = "UTF-8";
     private static $indent = "    ";
 
+    private static $stylesheet_global = "mojito/mojito.css";
+    private static $stylesheet_custom = "mojito/config/custom.css";
+
+    private static $class_hidden = "navbar-hidden";    
+
+    private $navbar;
+    private $header;
+    private $footer;
+
+    public $bodylist;
+
     public function __construct($title) {
         parent::__construct(self::$charset, $title);
+
+        $this->style_push(self::$stylesheet_global);
+        $this->style_push(self::$stylesheet_custom);
+
+        $this->navbar = new NavbarElement();
+        $this->navbar->configure();
+        $this->body_push($this->navbar);
+
+        $this->cover = new CoverElement();
+        //$this->body_push($this->cover);        
     }
 
-    public function output() {
+    public function render() {
         $document = $this->compose(self::$indent, 0);
         return self::$doctype . $document;
     }
+
+    public function hide($hide = NULL) {
+        if ($hide === TRUE) {          
+            $this->navbar->id(self::$class_hidden);
+        } else {
+        }
+    }
 }
 
-class MojitoApplication
+class MojitoDatabase
 {
-    private static $stylesheet_global = "mojito/mojito.css";    
-    private static $stylesheet_custom = "mojito/config/custom.css";
-    private static $configfile_navbar = "mojito/config/navbar.json";
 
-    private $navbar;
+}
 
-    protected $dom;    
+class MojitoApplication implements RequestHandler
+{
+    protected $database;    
+    protected $document;
 
     public function __construct($title) {
-        $this->dom = new MojitoDocument($title);
-        $this->dom->style_push(self::$stylesheet_global);
-        $this->dom->style_push(self::$stylesheet_custom);
-
-        $this->navbar = $this->dom->body_push(new MojitoNavbar());
-        $this->navbar->configure(self::$configfile_navbar);
+        $this->document = new MojitoDocument($title);     
     }
 
-    public function respond() {
-        $html = $this->dom->output();
-        echo $html;
+    public function get($parameters) {
+        $this->document->hide(TRUE);        
+        return $this->document->render();
+    }
+
+    public function post($parameters) {
+
+        $this->document->body_push(new PElement("hihi"));
+        $this->document->body_push(new BrElement());
+
+        $pdo = new PDO('mysql:host=127.0.0.1;dbname=firstins', 'fws', 'fws', array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+        $statement = $pdo->query("SELECT * FROM user");
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+        foreach($row as $entry) {
+            $this->document->body_push(new H1Element($entry));
+        }
+
+        return $this->document->render();
     }
 }
 ?>

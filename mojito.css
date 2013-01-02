@@ -6,8 +6,13 @@ body {
     margin: 0;
 }
 
+#navbar-hidden {
+    display: none;
+}
+
 #navbar {
     background-color: #000000;
+    border-bottom: solid 1px #000000;
     display: table;
     font-size: 1em;
     width: 100%;
@@ -16,12 +21,9 @@ body {
     padding: 0;
     margin: 0;
     position: fixed;
-    top: 0; 
+    top: 0;
     list-style-type: none;
-}
-
-#navbar li {
-    display: table-cell;   
+    z-index: 1;
 }
 
 #navbar .left-sided {
@@ -31,6 +33,10 @@ body {
 #navbar .right-sided {
     width: 1px;
     white-space: nowrap;
+}
+
+#navbar li {
+    display: table-cell;
 }
 
 #navbar a {
@@ -44,6 +50,21 @@ body {
     background-color: #333333;
 }
 
-#navbar-hidden {
-    display: none;
+#cover {
+    background-color: #666666;
+    background-image: url("config/cover.jpg");
+    background-repeat: no-repeat;
+    height: 400px;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    width: 100%;    
+}
+
+#cover h1 {
+    color: #ffffff;
+    font-size: 4em;
+    padding: 0;
+    padding-left: 1em;
+    margin: 0;
 }

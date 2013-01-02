@@ -1,9 +1,17 @@
-#controller {
-    background-color: #000000;
+/*
+values in this stylesheet will override the global counterparts
+*/
+p {
+    text-align: left;
+    width: 480px;
 }
 
-#controller a:hover {
-    background-color: #333333;
+#navbar {
+    background-color: #004433;
+}
+
+#navbar a:hover {
+    background-color: #005544;
 }
 
 .large-sized {
