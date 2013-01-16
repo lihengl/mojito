@@ -1,11 +1,11 @@
 <?php
-interface Renderable
+interface Composable
 {
     public function name();
     public function compose($indent_unit, $indent_level);
 }
 
-class TextNode implements Renderable
+class TextNode implements Composable
 {
     public $content;
 
@@ -32,7 +32,7 @@ class TextNode implements Renderable
     }
 }
 
-abstract class HtmlNode implements Renderable
+abstract class HtmlNode implements Composable
 {
     private static $tag_opening = "<";
     private static $tag_closing = ">";

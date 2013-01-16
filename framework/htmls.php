@@ -1,5 +1,5 @@
 <?php
-require_once 'nodes.php';
+require 'nodes.php';
 
 interface Sortable
 {
@@ -299,15 +299,14 @@ class LiElement extends HtmlNode
 {
     private static $tag = "li";
 
-    public function __construct(Sortable $host, Renderable $content) {
+    public function __construct(Sortable $host, Composable $content) {
         parent::__construct(self::$tag);
         $this->children = array($content);
     }
 
-    public function push_text($item_text) {
-        $text = new TextNode($item_text);
-        array_push($this->children, $text);
-        return $text;
+    public function push(Composable $node) {
+        array_push($this->children, $node);
+        return $node;
     }
 }
 
@@ -323,7 +322,7 @@ class OlElement extends HtmlNode implements Sortable
     public function sort() {
     }
 
-    public function push(Renderable $content) {
+    public function push(Composable $content) {
         $item = new LiElement($this, $content);
         array_push($this->children, $item);
         return $item;
@@ -342,7 +341,7 @@ class UlElement extends HtmlNode implements Sortable
     public function sort() {
     }
 
-    public function push(Renderable $content) {
+    public function push(Composable $content) {
         $item = new LiElement($this, $content);
         array_push($this->children, $item);
         return $item;
@@ -353,7 +352,7 @@ class DtElement extends HtmlNode
 {
     private static $tag = "dt";
 
-    public function __construct(DlElement $host, Renderable $content) {
+    public function __construct(DlElement $host, Composable $content) {
         parent::__construct(self::$tag);
         $this->children = array($content);
     }
@@ -363,7 +362,7 @@ class DdElement extends HtmlNode
 {
     private static $tag = "dd";
 
-    public function __construct(DlElement $host, Renderable $content) {
+    public function __construct(DlElement $host, Composable $content) {
         parent::__construct(self::$tag);
         $this->children = array($content);
     }
@@ -378,7 +377,7 @@ class DlElement extends HtmlNode
         $this->children = array();
     }
 
-    public function push(Renderable $title, Renderable $description) {
+    public function push(Composable $title, Composable $description) {
         $title_item = new DtElement($this, $title);
         $description_item = new DdElement($this, $description);
         array_push($this->children, $title_item);
@@ -393,12 +392,12 @@ class PElement extends HtmlNode
 {
     private static $tag = "p";
 
-    public function __construct($paragraph_text) {
+    public function __construct($text) {
         parent::__construct(self::$tag);
         $this->children = array();
 
-        $text = new TextNode($paragraph_text);     
-        array_push($this->children, $text);
+        $node = new TextNode($text);     
+        array_push($this->children, $node);
     }
 
     public function push_text($paragraph_text) {
